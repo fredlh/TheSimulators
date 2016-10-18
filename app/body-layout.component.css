@@ -1,0 +1,15 @@
+#sideBar {
+    float: left;
+    width: 20%;
+    height: 90%;    
+    background-color: orange;
+    text-align: center;
+}
+
+#mapView {
+    float: right;
+    width: 80%;
+    height: 90%;
+    text-align: center;
+    background-color: gray;
+}

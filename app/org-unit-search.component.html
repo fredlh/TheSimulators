@@ -1,0 +1,12 @@
+<div id="search-component">
+    <h4>Organisation Unit Search
+    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" placeholder="type something to search ..."/>
+    </h4>
+    <div>
+        <!--
+        <div *ngFor="let orgUnit of orgUnits | async" (click)="gotoDetail(orgUnit)" class="search-result">
+            {{orgUnit.name}}
+        </div>
+        -->
+    </div>
+</div>
