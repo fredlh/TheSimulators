@@ -1,10 +1,10 @@
 import { Component }    from '@angular/core';
 
 @Component({
-    moduleId: module.id,
+    //moduleId: module.id,
     selector: 'map-view',
-    templateUrl: 'map-view.component.html',
-    styleUrls: [ 'map-view.component.css' ]
+    templateUrl: 'app/map-view.component.html',
+    styleUrls: [ 'app/map-view.component.css' ]
 })
 
 export class MapViewComponent {

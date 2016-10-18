@@ -1,10 +1,10 @@
 import { Component }        from '@angular/core';
 
 @Component({
-    moduleId: module.id,
+    //moduleId: module.id,
     selector: 'nav-bar',
-    templateUrl: 'nav-bar.component.html',
-    styleUrls: [ 'nav-bar.component.css' ]
+    templateUrl: 'app/nav-bar.component.html',
+    styleUrls: [ 'app/nav-bar.component.css' ]
 })
 
 

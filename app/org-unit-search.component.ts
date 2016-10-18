@@ -5,10 +5,10 @@ import { OrgUnitSearchService } from './org-unit-search.service';
 import { OrgUnit }              from './org-unit';
 
 @Component({
-    moduleId: module.id,
+    //moduleId: module.id,
     selector: 'org-unit-search',
-    templateUrl: 'org-unit-search.component.html',
-    styleUrls: [ 'org-unit-search.component.css' ],
+    templateUrl: 'app/org-unit-search.component.html',
+    styleUrls: [ 'app/org-unit-search.component.css' ],
     providers: [ OrgUnitSearchService ]
 })
 
