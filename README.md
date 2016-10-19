@@ -3,14 +3,14 @@ INF5750 Group Project - Fall 2016 - TheSimulators
 
 How to download and run:
 
--	[x] Clone the git
+-	Clone the git
 
--	[x] Change to the wanted branch
+-	Change to the wanted branch
 
--	[x] npm install
+-	npm install
 
--	[x] typings install
+-	typings install
 
--	[x] npm run build
+-	npm run build
 
--	[x] npm run start
+-	npm run start
