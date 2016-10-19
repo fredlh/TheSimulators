@@ -1,8 +1,7 @@
 {
+  "name": "angular2-grunt-starter",
   "globalDependencies": {
-    "core-js": "registry:dt/core-js#0.0.0+20160725163759",
-    "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
-    "node": "registry:dt/node#6.0.0+20160909174046",
+    "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#bd269cad4cb2b495f940c7b6afc5825d568029be",
     "geojson": "registry:dt/geojson#0.0.0+20160619034323",
     "leaflet": "github:haoliangyu/DefinitelyTyped/leaflet/leaflet.d.ts#leaflet"
   }
