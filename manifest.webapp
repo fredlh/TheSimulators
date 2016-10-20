@@ -1,0 +1,20 @@
+{
+  "launch_path": "public/index.html",
+  "default_locale": "en",
+  "activities": {
+    "dhis": {
+      "href": "*"
+    }
+  },
+  "appType": "APP",
+  "name": "app-skeleton",
+  "version": "1.0.0",
+  "description": "Skeleton app for a DHIS2 web app",
+  "developer": {
+    "name": "Mark Polak"
+  },
+  "icons": {
+    "48": "icon.png"
+  },
+  "manifest_generated_at": "Tue Oct 18 2016 17:21:12 GMT+0200 (CEST)"
+}
