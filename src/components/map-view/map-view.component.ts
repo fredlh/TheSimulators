@@ -13,13 +13,16 @@ import {Location} from "../../core/location.class";
 
 export class MapViewComponent implements OnInit {
 
+    private map;
+
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
     constructor(private mapService: MapService, private geocoder: GeocodingService) {
     }
 
     ngOnInit(): void {
-        let map = L.map("map", {
+        let map = this.map;
+        map = L.map("map", {
             zoomControl: false,
             center: L.latLng(40.731253, -73.996139),
             zoom: 12,
