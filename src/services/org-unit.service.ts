@@ -17,7 +17,7 @@ export class OrgUnitService {
     private basicAuth = `Basic ${btoa('admin:district')}`;
     private headers = new Headers({'Content-Type': 'application/json'});
 
-    private orgUnit;
+    private orgUnits: OrgUnit[];
 
     constructor(private http: Http) {}
 
@@ -26,7 +26,7 @@ export class OrgUnitService {
         this.headers.append('Authorization', "Basic " + btoa("admin:district"));
         return Observable.create(observer => {
           this.http
-            .get(`${this.serverUrl}/organisationUnits.json?paging=false&level=1`, {headers: this.headers})
+            .get(`${this.serverUrl}/organisationUnits.json?paging=false&level=2`, {headers: this.headers})
             .map(res => res.json())
             .subscribe((data) => {
              observer.next(data);
@@ -34,17 +34,15 @@ export class OrgUnitService {
           });
         });
     }
-    
-    /*
-    getOrgUnits(): Promise<OrgUnit[]> {
-        return this.http
-                .get(`${this.serverUrl}/organisationUnits.json?paging=false&level=1`, {headers: this.headers})
-                .toPromise()
-                .then(response => response.json().data as OrgUnit[])
-                .catch(this.handleError);
-    }
-    */
 
+
+    setOrgUnits(orgUnits: OrgUnit[]): void {
+        this.orgUnits = orgUnits;
+    }
+
+    getSavedOrgUnits(): OrgUnit[] {
+        return this.orgUnits;
+    }
 
 
     private handleError(error: any): any {

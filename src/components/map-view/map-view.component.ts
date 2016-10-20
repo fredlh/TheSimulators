@@ -172,7 +172,7 @@ export class MapViewComponent implements OnInit {
         .addEventListener("click", function(e) {
             //map.setView(bounds2[0]);
             //map.setZoom(5);
-            map.flyToBounds(bounds2, {padding: [10, 10]});
+            map.flyToBounds(bounds2, {paddingTopLeft: [50, 50]});
         })
         .addEventListener("contextmenu", function(e: MouseEvent) {
             map.openPopup(`

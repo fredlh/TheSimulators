@@ -15,7 +15,7 @@ import { OrgUnitService }       from "../../services/org-unit.service";
 
 export class OrgUnitSearchComponent {
     private searchTerms = new Subject<string>();
-    private orgUnit: OrgUnit;
+    private orgUnits: OrgUnit[];
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -24,14 +24,19 @@ export class OrgUnitSearchComponent {
             console.log("ID: " + orgUnits[i].id);
             console.log("displayName: " + orgUnits[i].displayName);
         }
-        this.orgUnit = orgUnits[0];
     }
 
     search(term: string): void {
         this.searchTerms.next(term);
 
-        this.orgUnitService.getOrgUnits().subscribe(res => this.printOrgUnits(res.organisationUnits));
+        this.orgUnitService.getOrgUnits().subscribe(res => {
+            //this.orgUnits = res.organisatuinUnits
+            this.orgUnits = res.organisationUnits;
+            this.printOrgUnits(res.organisationUnits);
+            this.orgUnitService.setOrgUnits(this.orgUnits);
+        });
     }
+
 
   
 }

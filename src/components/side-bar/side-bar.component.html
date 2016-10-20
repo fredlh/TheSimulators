@@ -1,9 +1,9 @@
 <div id="sideBar">
     <h3 class="center">Side bar</h3>
-    <ul>
-        <li>Dette</li>
-        <li>Er</li>
-        <li>En</li>
-        <li>Liste</li>
-    </ul>
+    <div *ngIf="orgUnits">
+        <ul>
+            <li *ngFor = "let orgUnit of orgUnits"> {{orgUnit.id}}, {{orgUnit.displayName}}</li>
+        </ul>
+    </div>
+    <button (click)="checkNewOrgUnits()">TEST</button>
 </div>
