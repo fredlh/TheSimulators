@@ -5,6 +5,9 @@ import {MapService} from "../../services/map.service";
 import {GeocodingService} from "../../services/geocoding.service";
 import {Location} from "../../core/location.class";
 
+import { OrgUnitService } from "../../services/org-unit.service";
+import { OrgUnit } from "../../core/org-unit";
+
 @Component({
     selector: "map-view",
     template: require<any>("./map-view.component.html"),
@@ -14,10 +17,11 @@ import {Location} from "../../core/location.class";
 export class MapViewComponent implements OnInit {
 
     private map;
+    private orgUnit;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
-    constructor(private mapService: MapService, private geocoder: GeocodingService) {
+    constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {
     }
 
     ngOnInit(): void {
