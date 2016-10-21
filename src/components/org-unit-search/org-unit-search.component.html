@@ -1,10 +1,17 @@
 <div id="search-component">
+    <div class="form-group">
+        <form id="searchForm">
+            <input type="text" class="form-control" #searchBox id="search-box" placeholder="Search for an origanisation unit ..." required>
+            <input type="submit" value="Search" id="search-button" class="btn btn-primary" (click)="search(searchBox.value)">
+        </form>
+        <button id="advanced-search-button" class="btn btn-info">Advanced Search</button>
+    </div>
+    <!--
     <input #searchBox id="search-box" (keyup)="search(searchBox.value)" placeholder="search here ..."/>
     <div>
-        <!--
         <div *ngFor="let orgUnit of orgUnits | async" (click)="gotoDetail(orgUnit)" class="search-result">
             {{orgUnit.name}}
         </div>
-        -->
     </div>
+    -->
 </div>

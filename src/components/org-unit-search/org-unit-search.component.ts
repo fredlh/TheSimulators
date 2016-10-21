@@ -1,7 +1,8 @@
 import { Component, OnInit }    from "@angular/core";
+import { FormControl }          from "@angular/forms";
 import { Subject }              from "rxjs/Subject";
+import { Observable }           from "rxjs/Observable";
 
-import { OrgUnitSearchService } from "../../services/org-unit-search.service";
 import { OrgUnit }              from "../../core/org-unit";
 
 import { OrgUnitService }       from "../../services/org-unit.service";
@@ -9,34 +10,31 @@ import { OrgUnitService }       from "../../services/org-unit.service";
 @Component({
     selector: "org-unit-search",
     template: require<any>("./org-unit-search.component.html"),
-    styles: [ require<any>("./org-unit-search.component.less") ],
-    providers: [ OrgUnitSearchService ]
+    styles: [ require<any>("./org-unit-search.component.less") ]
 })
 
-export class OrgUnitSearchComponent {
+export class OrgUnitSearchComponent implements OnInit {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
 
     constructor(private orgUnitService: OrgUnitService) {}
 
     printOrgUnits(orgUnits: OrgUnit[]): void {
-        for (var i = 0; i < orgUnits.length; i++) {
+        for (let i = 0; i < orgUnits.length; i++) {
             console.log("ID: " + orgUnits[i].id);
             console.log("displayName: " + orgUnits[i].displayName);
         }
     }
 
     search(term: string): void {
-        this.searchTerms.next(term);
-
-        this.orgUnitService.getOrgUnits().subscribe(res => {
-            //this.orgUnits = res.organisatuinUnits
-            this.orgUnits = res.organisationUnits;
-            this.printOrgUnits(res.organisationUnits);
-            this.orgUnitService.setOrgUnits(this.orgUnits);
-        });
+        this.orgUnits = this.orgUnitService.search(term);
     }
 
+    ngOnInit(): void {
+        // TODO: Auto search on key-press, rather than a button?
+    }
 
-  
+    gotoDetail(orgUnit: OrgUnit) {
+        console.log("gotoDetail(): " + orgUnit);
+    }
 }

@@ -1,9 +1,13 @@
 <div id="sideBar">
-    <h3 class="center">Side bar</h3>
-    <div *ngIf="orgUnits">
-        <ul>
-            <li *ngFor = "let orgUnit of orgUnits"> {{orgUnit.id}}, {{orgUnit.displayName}}</li>
-        </ul>
-    </div>
-    <button (click)="checkNewOrgUnits()">TEST</button>
+    <h3 style="text-align: center;">Search results </h3>
+    <table class="table" *ngIf="orgUnits !== undefined">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+        <tr *ngFor="let orgUnit of orgUnits">
+            <td>{{orgUnit.id}}</td>
+            <td>{{orgUnit.displayName}}</td>
+         </tr>
+    </table>
 </div>

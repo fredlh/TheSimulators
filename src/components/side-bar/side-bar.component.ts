@@ -1,8 +1,10 @@
-import { Component, NgZone }    from "@angular/core";
+import { Component, OnInit }    from "@angular/core";
 
 import { OrgUnit }  from "../../core/org-unit";
 
 import { OrgUnitService } from "../../services/org-unit.service";
+
+import { OrgUnitUpdate} from "../../core/org-unit-update.interface";
 
 @Component({
     selector: "side-bar",
@@ -10,16 +12,18 @@ import { OrgUnitService } from "../../services/org-unit.service";
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent {
+export class SideBarComponent implements OrgUnitUpdate {
     private orgUnits: OrgUnit[] = null;
 
-    constructor(private orgUnitService: OrgUnitService, private zone: NgZone) {}
+    constructor(private orgUnitService: OrgUnitService) {}
 
-    checkNewOrgUnits(): void {
-        this.orgUnits  = this.orgUnitService.getSavedOrgUnits();
-        if (this.orgUnits  === undefined || this.orgUnits === null) {
-            this.orgUnits = null;
-        }
+    onOrgUnitGet(orgUnits: OrgUnit[]): void {
+        this.orgUnits = orgUnits;
+        console.log("Side bar - received new orgUnits: " + this.orgUnits);
+    }
+
+    ngOnInit(): void {
+        this.orgUnitService.registerOrgUnitUpdateListener(this);
     }
 
 }

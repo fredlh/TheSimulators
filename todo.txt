@@ -1,0 +1,48 @@
+OrgUnit:
+--------
+- Implement all the fields in the class
+
+
+OrgUnitService:
+---------------
+- Create
+    - updateOrgUnit()
+    - deleteOrgUnit()
+
+
+Search:
+------
+- Auto search on each new word, rather than a button?
+- Implement advanced search
+- How to return all results and let the user be able to select one?
+
+
+Map:
+----
+- Draw function which accepts an OrgUnit object --> draws the orgUnit on the map
+- A drawn OrgUnit should be clickable
+    - View the info in some sort of textarea or label?
+    - Edit button
+        - Open a form, default values are the existing ones, able to edit
+        - Save button which updates the orgUnit on the server
+    - Delete button
+        - Deletes the orgUnit from the server
+        - Remove the orgUnit from the map
+- Able to create new orgUnit
+    - By placing a marker
+    - By writing in the longitude and latitude (default current ones)
+        - View chose ones in real-time on map?
+
+Side bar:
+---------
+- Make it an expandable list?
+- Make it possible to hide and show?
+- List all info of a selected orgUnit
+    - Including info of its children?
+
+
+General:
+--------
+- Cleanup of imports
+    - Remove unneeded ones
+    - Fix the layout (order of imports + pretty-looking ones)
