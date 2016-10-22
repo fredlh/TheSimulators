@@ -53,10 +53,16 @@ export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
         };
 
         $("#notaccordion").togglepanels();
+
+        $("#advancedSearchDiv").toggle('show');
+    }
+
+    doAdvancedSearch(): void {
+        console.log("Not implemented yet");
     }
 
     ngAfterViewInit() {
-        $("#advanced-search-button").text("Hello, world!");
+       
     }
 
     search(term: string): void {

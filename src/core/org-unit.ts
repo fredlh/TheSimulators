@@ -9,4 +9,5 @@ export class OrgUnit {
     dimensionItemType: String;
     children: OrgUnit[];
     users: OrgUnit[];
+    coordinates;
 }

@@ -6,6 +6,38 @@
         </form>
         <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Search</button>
     </div>
+
+    <div id='advancedSearchDiv' style="display:none;">
+        <form id="advancedSearchForm">
+            <table>
+                <tr>
+                    <td>
+                        <label id="labelText">Level:</label>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" id="inputText" #level>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label id="labelText">Created:</label>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" id="inputText" #created>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label id="labelText">Opening date:</label>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" id="inputText" #openingDate>
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Search" class="btn btn-primary" (click)="doAdvancedSearch()">
+        </form>
+    </div>
     <!--
     <input #searchBox id="search-box" (keyup)="search(searchBox.value)" placeholder="search here ..."/>
     <div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnChanges }    from "@angular/core";
+import { Component, OnInit, AfterViewInit, OnChanges, AfterContentChecked }    from "@angular/core";
 
 import { OrgUnit }  from "../../core/org-unit";
 
@@ -14,7 +14,7 @@ declare var $:any;
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges {
+export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges, AfterContentChecked {
     private orgUnits: OrgUnit[] = null;
 
     constructor(private orgUnitService: OrgUnitService) {}
@@ -29,11 +29,15 @@ export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges
     }
 
     ngAfterViewInit() {
- 
+        console.log("AFTER VIEW INIT");
     }
 
     ngOnChanges(): void {
         console.log("CHAAANGE");
+    }
+
+    ngAfterContentChecked(): void {
+        
     }
 
     test(): void {
