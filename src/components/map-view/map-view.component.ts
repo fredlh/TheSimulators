@@ -20,98 +20,9 @@ import { OrgUnitService } from "../../services/org-unit.service";
 export class MapViewComponent implements OnInit, DrawAble {
 
     private orgUnits: OrgUnit[];
+    private polygons = [];
 
     private map;
-    //private bounds = L.latLngBounds(L.latLng(54.5, -5.8), L.latLng(56.1, -3.0));
-
-    private bounds = [[
-        [-11.3516,8.0819],
-        [-11.3553,8.0796],
-        [-11.3592,8.0779],
-        [-11.3615,8.0764],
-        [-11.3665,8.0724],
-        [-11.374,8.0686],
-        [-11.3765,8.0678],
-        [-11.3815,8.0666],
-        [-11.3859,8.0644],
-        [-11.3891,8.0631],
-        [-11.3934,8.0607],
-        [-11.3972,8.0589],
-        [-11.3994,8.0572],
-        [-11.4048,8.0523],
-        [-11.4075,8.0501],
-        [-11.4115,8.0482],
-        [-11.4144,8.0461],
-        [-11.4169,8.0434],
-        [-11.4184,8.0406],
-        [-11.4189,8.0384],
-        [-11.4192,8.0331],
-        [-11.42,8.0298],
-        [-11.4236,8.024],
-        [-11.4258,8.0228],
-        [-11.4339,8.0207],
-        [-11.4389,8.0222],
-        [-11.4417,8.0235],
-        [-11.4428,8.0253],
-        [-11.4461,8.0281],
-        [-11.448,8.0307],
-        [-11.449,8.0344],
-        [-11.4492,8.0454],
-        [-11.4494,8.0494],
-        [-11.4501,8.0522],
-        [-11.4521,8.0567],
-        [-11.4528,8.0595],
-        [-11.4531,8.0625],
-        [-11.4532,8.0677],
-        [-11.4527,8.0727],
-        [-11.4514,8.0786],
-        [-11.4527,8.0836],
-        [-11.4532,8.0874],
-        [-11.4535,8.0964],
-        [-11.4535,8.1033],
-        [-11.4529,8.1072],
-        [-11.4507,8.1126],
-        [-11.45,8.1163],
-        [-11.4502,8.1202],
-        [-11.4509,8.1229],
-        [-11.4532,8.1282],
-        [-11.4534,8.1325],
-        [-11.4524,8.1357],
-        [-11.4482,8.1423],
-        [-11.4442,8.1401],
-        [-11.442,8.14],
-        [-11.44,8.1409],
-        [-11.4369,8.1434],
-        [-11.434,8.145],
-        [-11.4298,8.1459],
-        [-11.4273,8.1468],
-        [-11.4206,8.1501],
-        [-11.4166,8.1532],
-        [-11.4096,8.1603],
-        [-11.4056,8.1634],
-        [-11.4026,8.1641],
-        [-11.3982,8.1636],
-        [-11.3938,8.1616],
-        [-11.3913,8.1609],
-        [-11.3859,8.1603],
-        [-11.3833,8.1597],
-        [-11.3779,8.1574],
-        [-11.3736,8.1564],
-        [-11.3695,8.1524],
-        [-11.3657,8.1475],
-        [-11.3638,8.1444],
-        [-11.3623,8.1407],
-        [-11.3589,8.1286],
-        [-11.3574,8.1218],
-        [-11.3525,8.1071],
-        [-11.3509,8.1012],
-        [-11.3505,8.0968],
-        [-11.3504,8.091],
-        [-11.3508,8.0868],
-        [-11.3516,8.0819]
-    ]];
-
-    private bounds2 = [[[-12.4644,8.0374],[-12.4605,8.0338],[-12.4245,8.0338],[-12.4201,8.033],[-12.4152,8.0309],[-12.4093,8.0294],[-12.4061,8.0276],[-12.401,8.0237],[-12.3926,8.0196],[-12.389,8.0188],[-12.386,8.0187],[-12.3681,8.0188],[-12.3642,8.0183],[-12.3588,8.0161],[-12.3534,8.0147],[-12.3519,8.0139],[-12.3487,8.0109],[-12.3472,8.008],[-12.3438,8.0046],[-12.3363,8.001],[-12.3298,7.9995],[-12.3279,7.9985],[-12.3257,7.9967],[-12.323,7.9935],[-12.3203,7.9888],[-12.3187,7.987],[-12.3168,7.986],[-12.3146,7.9854],[-12.3068,7.985],[-12.3031,7.9844],[-12.2977,7.9823],[-12.2939,7.9817],[-12.2879,7.9815],[-12.2842,7.9809],[-12.2788,7.9787],[-12.2737,7.9773],[-12.2658,7.9725],[-12.2653,7.968],[-12.265,7.9592],[-12.2688,7.9567],[-12.2715,7.9558],[-12.2787,7.955],[-12.2819,7.9534],[-12.2831,7.9524],[-12.2881,7.9475],[-12.2895,7.9454],[-12.2909,7.9417],[-12.2912,7.9379],[-12.291,7.9333],[-12.2897,7.9293],[-12.2863,7.9252],[-12.283,7.9227],[-12.2726,7.9181],[-12.2702,7.9165],[-12.2683,7.913],[-12.2695,7.9082],[-12.2729,7.9055],[-12.2766,7.9022],[-12.2806,7.8979],[-12.2841,7.8933],[-12.2913,7.8892],[-12.2998,7.888],[-12.3077,7.8852],[-12.3119,7.8849],[-12.3165,7.886],[-12.3219,7.8899],[-12.3242,7.8905],[-12.3263,7.8901],[-12.3314,7.8879],[-12.3355,7.8855],[-12.343,7.882],[-12.346,7.8833],[-12.3474,7.8883],[-12.3521,7.8949],[-12.3537,7.8957],[-12.3587,7.8962],[-12.3613,7.8969],[-12.3637,7.8982],[-12.3688,7.9022],[-12.3771,7.9064],[-12.381,7.9069],[-12.3844,7.9063],[-12.3884,7.9042],[-12.3915,7.9028],[-12.3958,7.9004],[-12.3993,7.8988],[-12.4005,7.898],[-12.4053,7.8931],[-12.4092,7.8855],[-12.4102,7.882],[-12.4102,7.8777],[-12.4088,7.8745],[-12.4031,7.8709],[-12.3991,7.8693],[-12.3954,7.8675],[-12.3904,7.8647],[-12.3878,7.8609],[-12.3872,7.8568],[-12.3872,7.8513],[-12.3874,7.8466],[-12.3883,7.8435],[-12.3902,7.8399],[-12.3915,7.8365],[-12.394,7.8322],[-12.3959,7.8283],[-12.3984,7.8249],[-12.4009,7.8223],[-12.4053,7.8198],[-12.4113,7.8209],[-12.4145,7.8213],[-12.4223,7.8215],[-12.4278,7.8213],[-12.4298,7.8211],[-12.4374,7.8186],[-12.444,7.8178],[-12.4474,7.8167],[-12.4496,7.8144],[-12.4501,7.812],[-12.4496,7.8096],[-12.4476,7.8056],[-12.4472,7.8016],[-12.4486,7.7978],[-12.4532,7.7917],[-12.4535,7.7886],[-12.452,7.7862],[-12.4502,7.7846],[-12.4463,7.7829],[-12.4435,7.7807],[-12.4379,7.7756],[-12.4353,7.774],[-12.4319,7.7731],[-12.4268,7.7728],[-12.4203,7.7729],[-12.4247,7.7625],[-12.4292,7.7541],[-12.4366,7.7463],[-12.4417,7.7433],[-12.4446,7.7419],[-12.4481,7.7415],[-12.4571,7.7418],[-12.4702,7.7443],[-12.4814,7.7487],[-12.4864,7.7495],[-12.4944,7.7513],[-12.4988,7.7505],[-12.5041,7.7481],[-12.5077,7.7454],[-12.5146,7.7397],[-12.5208,7.7351],[-12.5248,7.7311],[-12.5291,7.7246],[-12.5323,7.7217],[-12.5359,7.7197],[-12.5527,7.7135],[-12.5583,7.7085],[-12.5655,7.7031],[-12.5692,7.7011],[-12.5807,7.6971],[-12.5868,7.6963],[-12.5928,7.6963],[-12.5968,7.6973],[-12.5972,7.6978],[-12.5992,7.6998],[-12.5997,7.7041],[-12.6033,7.7119],[-12.6064,7.7173],[-12.6078,7.7207],[-12.6103,7.7257],[-12.6108,7.7313],[-12.6103,7.7357],[-12.6084,7.7401],[-12.6066,7.7449],[-12.6023,7.747],[-12.597,7.7473],[-12.5928,7.7469],[-12.589,7.7462],[-12.582,7.7436],[-12.5755,7.7431],[-12.5695,7.7431],[-12.5657,7.7435],[-12.5627,7.7453],[-12.5592,7.7511],[-12.5569,7.7619],[-12.5583,7.7678],[-12.5588,7.7729],[-12.5591,7.7829],[-12.5597,7.7872],[-12.5635,7.7953],[-12.5658,7.7995],[-12.5677,7.8062],[-12.5699,7.8105],[-12.5737,7.8191],[-12.575,7.8241],[-12.5774,7.8293],[-12.5782,7.8329],[-12.5783,7.8358],[-12.5784,7.8532],[-12.5787,7.8593],[-12.5794,7.8621],[-12.5815,7.8667],[-12.583,7.8725],[-12.5854,7.8777],[-12.5861,7.8815],[-12.5865,7.8919],[-12.587,7.8953],[-12.5887,7.898],[-12.5916,7.901],[-12.5982,7.9051],[-12.6007,7.9077],[-12.6023,7.9102],[-12.605,7.9131],[-12.6082,7.9145],[-12.6074,7.9191],[-12.604,7.9239],[-12.6024,7.9271],[-12.6011,7.9321],[-12.5974,7.9403],[-12.5952,7.9447],[-12.5945,7.9489],[-12.5945,7.9579],[-12.5953,7.9622],[-12.5992,7.9702],[-12.6017,7.9745],[-12.6053,7.9818],[-12.606,7.9854],[-12.6067,7.9958],[-12.6005,8.0018],[-12.5975,8.004],[-12.5961,8.0057],[-12.5944,8.0105],[-12.5917,8.0138],[-12.5886,8.0149],[-12.5824,8.0155],[-12.5803,8.0161],[-12.5763,8.018],[-12.5731,8.0193],[-12.5688,8.0219],[-12.565,8.0236],[-12.5623,8.0266],[-12.5606,8.0303],[-12.5586,8.0338],[-12.5548,8.0425],[-12.5544,8.0468],[-12.5546,8.0494],[-12.5552,8.0519],[-12.5574,8.0563],[-12.5592,8.0631],[-12.5583,8.0597],[-12.5509,8.0596],[-12.5474,8.0589],[-12.5429,8.0569],[-12.5361,8.0551],[-12.5308,8.0529],[-12.5249,8.0514],[-12.5195,8.0491],[-12.5157,8.0486],[-12.5128,8.0485],[-12.493,8.0487],[-12.4877,8.048],[-12.484,8.0457],[-12.4818,8.0437],[-12.4768,8.0387],[-12.4728,8.0355],[-12.4689,8.0339],[-12.4644,8.0374]]];
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -119,8 +30,7 @@ export class MapViewComponent implements OnInit, DrawAble {
     }
 
     ngOnInit(): void {
-        let map = this.map;
-        map = L.map("map", {
+        this.map = L.map("map", {
             zoomControl: false,
             center: L.latLng(40.731253, -73.996139),
             zoom: 12,
@@ -128,6 +38,8 @@ export class MapViewComponent implements OnInit, DrawAble {
             maxZoom: 19,
             layers: [this.mapService.baseMaps.OpenStreetMap]
         });
+
+        let map = this.map;
 
         L.control.zoom({ position: "topright" }).addTo(map);
         L.control.layers(this.mapService.baseMaps).addTo(map);
@@ -139,122 +51,6 @@ export class MapViewComponent implements OnInit, DrawAble {
                 location => map.panTo([location.latitude, location.longitude]),
                 err => console.error(err)
             );
-
-        // define rectangle geographical bounds
-        //var bounds = [[54.559322, -5.767822], [56.1210604, -3.021240]];
-        
-        let bounds = this.bounds;
-        
-        // create an orange rectangle
-        //L.rectangle(bounds, {color: "blue", weight: 1, fillOpacity: 0.1, fillColor: "orange"}).addTo(map);
-
-        //L.polygon(bounds, {color: "blue", weight: 1}).addTo(map);
-
-        // zoom the map to the rectangle bounds
-        //map.fitBounds(bounds);
-
-        
-        let firstzone = ({
-            "type": "Feature",
-            "properties": {"zonename": "ThisCountry", "color": "blue", "highlightcolor": "orange"},
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": bounds
-            }
-        });
-        
-        L.geoJSON(firstzone, {
-            onEachFeature: function(feature, layer) {
-                layer.bindPopup(feature.properties.zonename);
-            },
-            style: function (feature) {
-                return {color: feature.properties.color};
-            }
-        })
-        .addEventListener("mouseover", function(e) {
-            this.setStyle(function(feature) {
-                return {color: feature.properties.highlightcolor};
-            })
-        })
-        .addEventListener("mouseout", function(e) {
-            this.setStyle(function(feature) {
-                return {color: feature.properties.color};
-            })
-        })
-        .addTo(map);
-
-
-        let bounds2 = this.bounds2;
-
-        let secondzone = ({
-            "type": "Feature",
-            "properties": {"zonename": "NAME OF ZONE", "color": "red", "highlightcolor": "black"},
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": bounds2
-            }
-        });
-
-        L.geoJSON(secondzone, {
-            onEachFeature: function(feature, layer) {
-                layer.bindPopup(feature.properties.zonename);
-            },
-            style: function(feature) {
-                return {color: feature.properties.color};
-            }
-        })
-        .addEventListener("mouseover", function(e) {
-            this.setStyle(function(feature) {
-                if (feature.properties.zonename === "NAME OF ZONE")
-                {
-                    return {color: "dark grey"};
-                }
-
-                return {color: feature.properties.highlightcolor};
-            })
-        })
-        .addEventListener("mouseout", function(e) {
-            this.setStyle(function(feature) {
-                return {color: feature.properties.color};
-            })
-        })
-        .addEventListener("click", function(e) {
-            //map.flyToBounds(bounds2, {paddingTopLeft: [50, 50]}); // coords does not agree, so flies to wrong area atm
-        })
-        .addTo(map);
-
-        /*
-        let pop = L.popup(`
-        Who is Frederich
-        Why he is an awesome douchebag
-        And he says hello
-        `);
-
-        L.polygon(bounds2, {color: "red", weight: 1})
-        .addEventListener("mouseover", function(e) {
-            this.setStyle({color: "black", weight: 5});
-        })
-        .addEventListener("mouseout", function(e) {
-            this.setStyle({color: "red", weight: 1});
-            
-        })
-        .addEventListener("click", function(e) {
-            //map.setView(bounds2[0]);
-            //map.setZoom(5);
-            map.flyToBounds(bounds2, {paddingTopLeft: [50, 50]});
-        })
-        .addEventListener("contextmenu", function(e: MouseEvent) {
-            map.openPopup(`
-        Who is Frederich
-        Why he is an awesome douchebag
-        And he says hello
-        `, e.latlng);
-        })
-        .addTo(map);
-
-        // zoom the map to the rectangle bounds
-        map.fitBounds(bounds2);
-        */
     }
 
     ngAfterViewInit(): void {
@@ -264,8 +60,89 @@ export class MapViewComponent implements OnInit, DrawAble {
 
     addPolygons(orgUnits: OrgUnit[]) {
         this.orgUnits = orgUnits;
+        let map = this.map;
+
+        // OBS: At this time all polygons are created on the map
+        //      This means that polygons may be put on top of others,
+        //      making the polygons below impossible to reach
+        //      Should probably limit to one "category" at a time,
+        //      easily done by limiting to a single "level" at a time
+
+        // For each orgUnit in the argument array
         for (let org of orgUnits) {
-            console.log("ID: " + org.id + ", name: " + org.displayName);
+
+            // Check if orgUnit contains coordinates
+            if (org.coordinates !== undefined) {
+
+                // Coordinates is gathered in the form of a string, needs to parse it into [[[x,y],[x,y]],[[x,y]]] number array
+
+                // Check if coordinate indicate a polygon (and not a single point --- marker)
+                if (org.coordinates[1] === "[") {
+
+                    let bracketsRemoved = org.coordinates.slice(4, org.coordinates.length - 4); // Remove brackets on each end (1)
+                    let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
+
+                    let parsedCoordinates = [];
+
+                    // For each subfigure within the figure
+                    for (let subfig of subfigures) {
+
+                        let subfigureBuildup = [];
+
+                        let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
+
+                        // For each x,y tupple within the subfigure
+                        for (let tuppel of individualTuppels) {
+                            let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
+                            let tuppelBuildup = [];
+                            tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
+                            tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
+
+                            subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
+                        }
+
+                        parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
+                    }
+
+                    // Set up polygon information
+                    let poly = ({
+                        "type": "Feature",
+                        "properties": {"id": org.id, "name": org.displayName, "color": "black", "fillColor": "blue", "weight": "1"},
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": parsedCoordinates
+                        }
+                    });
+
+                    // Push the polygon into an array for easy access later
+                    this.polygons.push(L.geoJSON(poly, {
+                        onEachFeature: function(feature, layer) {
+                            layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
+                        },
+                        style: function(feature) {
+                            return {color: feature.properties.color};
+                        }
+                    })
+                    .addEventListener("mouseover", function(e) {
+                        this.setStyle(function(feature) {
+                            return {fillColor: feature.properties.fillColor};
+                        });
+                    })
+                    .addEventListener("mouseout", function(e) {
+                        this.setStyle(function(feature) {
+                            return {fillColor: feature.properties.color};
+                        });
+                    })
+                    .addEventListener("click", function(e) {
+                        // map.flyToBounds(bounds2, {paddingTopLeft: [50, 50]}); // coords does not agree, so flies to wrong area atm
+                    })
+                    .addTo(map));
+
+                    //map.fitBounds(parsedCoordinates);
+                } else {
+                    // Markers for single point locations
+                }
+            }
         }
     }
 }
