@@ -1,4 +1,4 @@
-import { Component, OnInit }    from "@angular/core";
+import { Component, OnInit, ViewChild, AfterViewInit }    from "@angular/core";
 import { FormControl }          from "@angular/forms";
 import { Subject }              from "rxjs/Subject";
 import { Observable }           from "rxjs/Observable";
@@ -7,13 +7,15 @@ import { OrgUnit }              from "../../core/org-unit";
 
 import { OrgUnitService }       from "../../services/org-unit.service";
 
+declare var $:any;
+
 @Component({
     selector: "org-unit-search",
     template: require<any>("./org-unit-search.component.html"),
     styles: [ require<any>("./org-unit-search.component.less") ]
 })
 
-export class OrgUnitSearchComponent implements OnInit {
+export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
 
@@ -24,6 +26,14 @@ export class OrgUnitSearchComponent implements OnInit {
             console.log("ID: " + orgUnits[i].id);
             console.log("displayName: " + orgUnits[i].displayName);
         }
+    }
+
+    advancedSearch(): void {
+        console.log("yo");
+    }
+
+    ngAfterViewInit() {
+        $("#advanced-search-button").text("Hello, world!");
     }
 
     search(term: string): void {

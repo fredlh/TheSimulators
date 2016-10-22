@@ -65,6 +65,11 @@ module.exports = {
         }),
         new OptimizeJsPlugin({
           sourceMap: false
+        }),
+        new webpack.ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery'
         })
     ]
 };

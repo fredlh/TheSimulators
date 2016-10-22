@@ -31,7 +31,7 @@ export class OrgUnitService {
     }
 
     getOrgUnits(query?: string): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false`;
+        let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all`;
         if (query !== undefined && query.trim() !== "") {
             apiUrl += "&query=" + query;
         }
@@ -64,8 +64,8 @@ export class OrgUnitService {
     }
 
     private callOrgUnitUpdateListeners(): void {
-        for (let i = 0; i < this.orgUnitUpdateListeners.length; i++) {
-            this.orgUnitUpdateListeners[i].onOrgUnitGet(this.orgUnits);
+        for (let listener of this.orgUnitUpdateListeners) {
+            listener.onOrgUnitGet(this.orgUnits);
         }
     }
 }

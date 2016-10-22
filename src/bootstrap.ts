@@ -32,7 +32,7 @@ import {OrgUnitService} from "./services/org-unit.service";
         MapService,
         GeocodingService,
         OrgUnitService
-    ]
+    ],
 })
 
 export class AppModule {}

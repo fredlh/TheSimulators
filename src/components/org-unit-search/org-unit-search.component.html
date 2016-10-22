@@ -4,7 +4,7 @@
             <input type="text" class="form-control" #searchBox id="search-box" placeholder="Search for an origanisation unit ..." required>
             <input type="submit" value="Search" id="search-button" class="btn btn-primary" (click)="search(searchBox.value)">
         </form>
-        <button id="advanced-search-button" class="btn btn-info">Advanced Search</button>
+        <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Search</button>
     </div>
     <!--
     <input #searchBox id="search-box" (keyup)="search(searchBox.value)" placeholder="search here ..."/>
