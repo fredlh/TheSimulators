@@ -57,8 +57,17 @@ export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
         $("#advancedSearchDiv").toggle('show');
     }
 
-    doAdvancedSearch(): void {
-        console.log("Not implemented yet");
+    doAdvancedSearch(level: string, maxLevel: string): void {
+        console.log("Perform advanced search:");
+        console.log("level: " + level + " | maxLevel: " + maxLevel);
+
+        let urlString = "";
+        if (+level !== 0) urlString += "&level=" + +level;
+        if (+maxLevel !== 0) urlString += "&maxLevel=" + +maxLevel;
+
+        console.log("URL: " + urlString);
+
+        this.orgUnitService.search(urlString);
     }
 
     ngAfterViewInit() {

@@ -5,13 +5,21 @@ import {MapService} from "../../services/map.service";
 import {GeocodingService} from "../../services/geocoding.service";
 import {Location} from "../../core/location.class";
 
+import { DrawAble } from "../../core/draw-able.interface";
+
+import { OrgUnit } from "../../core/org-unit";
+
+import { OrgUnitService } from "../../services/org-unit.service";
+
 @Component({
     selector: "map-view",
     template: require<any>("./map-view.component.html"),
     styles: [ require<any>("./map-view.component.less") ]
 })
 
-export class MapViewComponent implements OnInit {
+export class MapViewComponent implements OnInit, DrawAble {
+
+    private orgUnits: OrgUnit[];
 
     private map;
     //private bounds = L.latLngBounds(L.latLng(54.5, -5.8), L.latLng(56.1, -3.0));
@@ -107,7 +115,7 @@ export class MapViewComponent implements OnInit {
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
-    constructor(private mapService: MapService, private geocoder: GeocodingService) {
+    constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {
     }
 
     ngOnInit(): void {
@@ -251,5 +259,13 @@ export class MapViewComponent implements OnInit {
 
     ngAfterViewInit(): void {
         this.markerComponent.Initialize();
+        this.orgUnitService.registerDrawAbleComponent(this);
+    }
+
+    addPolygons(orgUnits: OrgUnit[]) {
+        this.orgUnits = orgUnits;
+        for (let org of orgUnits) {
+            console.log("ID: " + org.id + ", name: " + org.displayName);
+        }
     }
 }

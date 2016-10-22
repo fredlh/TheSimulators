@@ -10,6 +10,7 @@ import "rxjs/Rx";
 import { OrgUnit }  from "../core/org-unit";
 
 import { OrgUnitUpdate } from "../core/org-unit-update.interface";
+import { DrawAble }      from "../core/draw-able.interface";
 
 
 @Injectable()
@@ -22,12 +23,17 @@ export class OrgUnitService {
     private orgUnits: OrgUnit[];
 
     private orgUnitUpdateListeners = [];
+    private drawAbleComponents = [];
 
     constructor(private http: Http) {}
 
     registerOrgUnitUpdateListener(listener: OrgUnitUpdate) {
         this.orgUnitUpdateListeners.push(listener);
         console.log("Registerned listener: " + listener);
+    }
+
+    registerDrawAbleComponent(drawAble: DrawAble) {
+        this.drawAbleComponents.push(drawAble);
     }
 
     getOrgUnits(query?: string): any {
@@ -55,6 +61,7 @@ export class OrgUnitService {
         this.getOrgUnits(term).subscribe(res => {
             this.orgUnits = res.organisationUnits;
             this.callOrgUnitUpdateListeners();
+            this.callDrawDrawAbleComponents();
         });
        return this.orgUnits;
     }
@@ -66,6 +73,12 @@ export class OrgUnitService {
     private callOrgUnitUpdateListeners(): void {
         for (let listener of this.orgUnitUpdateListeners) {
             listener.onOrgUnitGet(this.orgUnits);
+        }
+    }
+
+    private callDrawDrawAbleComponents(): void {
+        for (let drawAble of this.drawAbleComponents) {
+            drawAble.addPolygons(this.orgUnits);
         }
     }
 }

@@ -15,27 +15,20 @@
                         <label id="labelText">Level:</label>
                     </td>
                     <td>
-                        <input type="text" class="form-control" id="inputText" #level>
+                        <input type="number" class="form-control" id="inputText" #level>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label id="labelText">Created:</label>
+                        <label id="labelText">Max level:</label>
                     </td>
                     <td>
-                        <input type="text" class="form-control" id="inputText" #created>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label id="labelText">Opening date:</label>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" id="inputText" #openingDate>
+                        <input type="number" class="form-control" id="inputText" #maxLevel>
                     </td>
                 </tr>
             </table>
-            <input type="submit" value="Search" class="btn btn-primary" (click)="doAdvancedSearch()">
+            <input type="submit" value="Search" class="btn btn-primary" 
+                    (click)="doAdvancedSearch(level.value, maxLevel.value)">
         </form>
     </div>
     <!--
