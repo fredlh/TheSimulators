@@ -9,6 +9,9 @@
 
     <div id='advancedSearchDiv' style="display:none;">
         <form id="advancedSearchForm">
+            <input type="text" class="form-control" id="inputText" #advancedSearchBox placeholder="Search for an origanisation unit ..." required>
+            <br />
+            <br />
             <table>
                 <tr>
                     <td>
@@ -28,7 +31,7 @@
                 </tr>
             </table>
             <input type="submit" value="Search" class="btn btn-primary" 
-                    (click)="doAdvancedSearch(level.value, maxLevel.value)">
+                    (click)="doAdvancedSearch(advancedSearchBox.value, level.value, maxLevel.value)">
         </form>
     </div>
     <!--

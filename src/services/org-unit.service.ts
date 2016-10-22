@@ -39,7 +39,11 @@ export class OrgUnitService {
     getOrgUnits(query?: string): any {
         let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all`;
         if (query !== undefined && query.trim() !== "") {
-            apiUrl += "&query=" + query;
+            if (query.startsWith("&query")) {
+                apiUrl += query;
+            } else {
+                apiUrl += "&query=" + query;
+            }
         }
         console.log("Requesting org units from api: " + apiUrl);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));

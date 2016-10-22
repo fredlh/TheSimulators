@@ -57,11 +57,11 @@ export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
         $("#advancedSearchDiv").toggle('show');
     }
 
-    doAdvancedSearch(level: string, maxLevel: string): void {
+    doAdvancedSearch(query:string, level: string, maxLevel: string): void {
         console.log("Perform advanced search:");
         console.log("level: " + level + " | maxLevel: " + maxLevel);
 
-        let urlString = "";
+        let urlString = "&query=" + query;
         if (+level !== 0) urlString += "&level=" + +level;
         if (+maxLevel !== 0) urlString += "&maxLevel=" + +maxLevel;
 
