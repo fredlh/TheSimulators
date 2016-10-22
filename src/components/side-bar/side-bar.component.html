@@ -1,5 +1,6 @@
 <div id="sideBar">
     <h3 style="text-align: center;">Search results </h3>
+    <!--
     <table class="table" *ngIf="orgUnits !== undefined">
         <tr>
             <th>ID</th>
@@ -10,4 +11,22 @@
             <td>{{orgUnit.displayName}}</td>
          </tr>
     </table>
+    -->
+
+
+<div id="notaccordion" *ngIf="orgUnits !== undefined">
+    <div *ngFor="let orgUnit of orgUnits">
+        <h5><a href="#">{{orgUnit.displayName}}</a></h5>
+        <div>
+            <ul>
+                <li>ID: {{orgUnit.id}}</li>
+                <li>Level: {{orgUnit.level}}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
 </div>
