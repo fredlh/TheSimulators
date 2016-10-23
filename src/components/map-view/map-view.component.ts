@@ -62,6 +62,16 @@ export class MapViewComponent implements OnInit, DrawAble {
                 location => map.panTo([8.0, -12.5]).zoomOut(4),
                 err => console.error(err)
             );
+
+        this.layer1 = L.layerGroup([]);
+        this.layer2 = L.layerGroup([]);
+        this.layer3 = L.layerGroup([]);
+        this.layer4 = L.layerGroup([]);
+
+        this.layer1.addTo(this.map);
+        this.layer2.addTo(this.map);
+        this.layer3.addTo(this.map);
+        this.layer4.addTo(this.map);
     }
 
     ngAfterViewInit(): void {
@@ -72,13 +82,21 @@ export class MapViewComponent implements OnInit, DrawAble {
     addPolygons(orgUnits: OrgUnit[]) {
         this.orgUnits = orgUnits;
         let map = this.map;
-        let selectedPolygon = this.selectedPolygon;
+
+        const ms = this;
 
         // OBS: At this time all polygons are created on the map
         //      This means that polygons may be put on top of others,
         //      making the polygons below impossible to reach
         //      Should probably limit to one "category" at a time,
         //      easily done by limiting to a single "level" at a time
+
+        // Remove layers to not create duplicates when they are added
+        // back towards the end of the function
+        ms.layer1.remove();
+        ms.layer2.remove();
+        ms.layer3.remove();
+        ms.layer4.remove();
 
         // For each orgUnit in the argument array
         for (let org of orgUnits) {
@@ -95,13 +113,11 @@ export class MapViewComponent implements OnInit, DrawAble {
                     let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
 
                     let parsedCoordinates = [];
-                    let inverseParsedCoordinates = [];
 
                     // For each subfigure within the figure
                     for (let subfig of subfigures) {
 
                         let subfigureBuildup = [];
-                        let inverseSubfigureBuildup = [];
 
                         let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
 
@@ -113,16 +129,10 @@ export class MapViewComponent implements OnInit, DrawAble {
                             tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
                             tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
 
-                            let inverseTuppelBuildup = [];
-                            inverseTuppelBuildup.push(Number(individualNumbers[1]));
-                            inverseTuppelBuildup.push(Number(individualNumbers[0]));
-
                             subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
-                            inverseSubfigureBuildup.push(inverseTuppelBuildup);
                         }
 
                         parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
-                        inverseParsedCoordinates.push(inverseSubfigureBuildup);
                     }
 
                     // Set up polygon information
@@ -138,22 +148,17 @@ export class MapViewComponent implements OnInit, DrawAble {
                     let polygons;
 
                     if (org.level === 1) {
-                        polygons = this.level1;
+                        polygons = ms.level1;
                     } else if (org.level === 2) {
-                        polygons = this.level2;
+                        polygons = ms.level2;
                     } else if (org.level === 3) {
-                        polygons = this.level3;
+                        polygons = ms.level3;
                     } else { // Assuming only 4 levels
-                        polygons = this.level4;
+                        polygons = ms.level4;
                     }
 
-                    let level1 = this.level1;
-                    let level2 = this.level2;
-                    let level3 = this.level3;
-                    let level4 = this.level4;
-
                     // Push the polygon into an array for easy access later
-                    polygons.push(L.geoJSON(poly, {
+                    let tempGeo = L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
                             layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
                         },
@@ -163,7 +168,7 @@ export class MapViewComponent implements OnInit, DrawAble {
                     })
                     .addEventListener("mouseover", function(e) {
                         this.setStyle(function(feature) {
-                            if (selectedPolygon === feature.properties.id) {
+                            if (ms.selectedPolygon === feature.properties.id) {
                                 return {fillColor: feature.properties.selectedColor};
                             } else {
                                 return {fillColor: feature.properties.highlightColor};
@@ -172,7 +177,7 @@ export class MapViewComponent implements OnInit, DrawAble {
                     })
                     .addEventListener("mouseout", function(e) {
                         this.setStyle(function(feature) {
-                            if (selectedPolygon === feature.properties.id) {
+                            if (ms.selectedPolygon === feature.properties.id) {
                                 return {fillColor: feature.properties.selectedColor};
                             } else {
                                 return {fillColor: feature.properties.defaultColor};
@@ -180,47 +185,69 @@ export class MapViewComponent implements OnInit, DrawAble {
                         });
                     })
                     .addEventListener("click", function(e) {
-                        map.flyToBounds(inverseParsedCoordinates, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+                        map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
 
                         this.setStyle(function(feature) {
-                            selectedPolygon = feature.properties.id;
+                            ms.selectedPolygon = feature.properties.id;
                         });
 
-                        for (let p of level1) {
+                        for (let p of ms.level1) {
                             p.fire("selectedChanged");
                         }
 
-                        for (let p of level2) {
+                        for (let p of ms.level2) {
                             p.fire("selectedChanged");
                         }
 
-                        for (let p of level3) {
+                        for (let p of ms.level3) {
                             p.fire("selectedChanged");
                         }
 
-                        for (let p of level4) {
+                        for (let p of ms.level4) {
                             p.fire("selectedChanged");
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
                         this.setStyle(function(feature) {
-                            console.log("Detected selectedChanged event");
-                            if (selectedPolygon === feature.properties.id) {
+                            if (ms.selectedPolygon === feature.properties.id) {
                                 return {fillColor: feature.properties.selectedColor};
                             } else {
                                 return {fillColor: feature.properties.defaultColor};
                             }
                         });
-                    }));
+                    });
+
+                    // Only add polygon if it isn't already added
+                    let notFound = true;
+                    for (let p of polygons) {
+                        let pId;
+                        p.setStyle(function(feature) {
+                            pId = feature.properties.id;
+                        });
+
+                        if (pId === org.id) {
+                            notFound = false;
+                        }
+                    }
+
+                    if (notFound) {
+                        polygons.push(tempGeo);
+                    }
+
                 } else {
                     // Markers for single point locations
                 }
             }
         }
 
-        this.layer1 = L.layerGroup(this.level1).addTo(this.map);
-        this.layer2 = L.layerGroup(this.level2).addTo(this.map);
-        this.layer3 = L.layerGroup(this.level3).addTo(this.map);
-        this.layer4 = L.layerGroup(this.level4).addTo(this.map);                
+        ms.layer1 = L.layerGroup(ms.level1);
+        ms.layer2 = L.layerGroup(ms.level2);
+        ms.layer3 = L.layerGroup(ms.level3);
+        ms.layer4 = L.layerGroup(ms.level4);
+
+        ms.layer1.addTo(ms.map);
+        ms.layer2.addTo(ms.map);
+        ms.layer3.addTo(ms.map);
+        ms.layer4.addTo(ms.map);
     }
 }
