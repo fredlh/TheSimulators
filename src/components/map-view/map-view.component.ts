@@ -20,7 +20,15 @@ import { OrgUnitService } from "../../services/org-unit.service";
 export class MapViewComponent implements OnInit, DrawAble {
 
     private orgUnits: OrgUnit[];
-    private polygons: L.GeoJSON[] = [];
+    private level1: L.GeoJSON[] = [];
+    private level2: L.GeoJSON[] = [];
+    private level3: L.GeoJSON[] = [];
+    private level4: L.GeoJSON[] = [];
+
+    private layer1;
+    private layer2;
+    private layer3;
+    private layer4;
 
     private map;
 
@@ -64,7 +72,6 @@ export class MapViewComponent implements OnInit, DrawAble {
         this.orgUnits = orgUnits;
         let map = this.map;
         let selectedPolygon = this.selectedPolygon;
-        let polygons = this.polygons;
 
         // OBS: At this time all polygons are created on the map
         //      This means that polygons may be put on top of others,
@@ -127,6 +134,23 @@ export class MapViewComponent implements OnInit, DrawAble {
                         }
                     });
 
+                    let polygons;
+
+                    if (org.level === 1) {
+                        polygons = this.level1;
+                    } else if (org.level === 2) {
+                        polygons = this.level2;
+                    } else if (org.level === 3) {
+                        polygons = this.level3;
+                    } else { // Assuming only 4 levels
+                        polygons = this.level4;
+                    }
+
+                    let level1 = this.level1;
+                    let level2 = this.level2;
+                    let level3 = this.level3;
+                    let level4 = this.level4;
+
                     // Push the polygon into an array for easy access later
                     polygons.push(L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
@@ -155,13 +179,25 @@ export class MapViewComponent implements OnInit, DrawAble {
                         });
                     })
                     .addEventListener("click", function(e) {
-                        map.flyToBounds(inverseParsedCoordinates, {paddingTopLeft: [50, 50]}); // coords does not agree, so flies to wrong area atm
+                        map.flyToBounds(inverseParsedCoordinates, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
 
                         this.setStyle(function(feature) {
                             selectedPolygon = feature.properties.id;
                         });
 
-                        for (let p of polygons) {
+                        for (let p of level1) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of level2) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of level3) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of level4) {
                             p.fire("selectedChanged");
                         }
                     })
@@ -174,12 +210,16 @@ export class MapViewComponent implements OnInit, DrawAble {
                                 return {fillColor: feature.properties.defaultColor};
                             }
                         });
-                    })
-                    .addTo(map));
+                    }));
                 } else {
                     // Markers for single point locations
                 }
             }
         }
+
+        this.layer1 = L.layerGroup(this.level1).addTo(this.map);
+        this.layer2 = L.layerGroup(this.level2).addTo(this.map);
+        this.layer3 = L.layerGroup(this.level3).addTo(this.map);
+        this.layer4 = L.layerGroup(this.level4).addTo(this.map);                
     }
 }
