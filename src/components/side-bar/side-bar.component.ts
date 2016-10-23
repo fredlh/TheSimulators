@@ -6,7 +6,7 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { OrgUnitUpdate} from "../../core/org-unit-update.interface";
 
-declare var $:any;
+declare var $: any;
 
 @Component({
     selector: "side-bar",
@@ -14,7 +14,7 @@ declare var $:any;
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges, AfterContentChecked {
+export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges {
     private orgUnits: OrgUnit[] = null;
 
     constructor(private orgUnitService: OrgUnitService) {}
@@ -36,10 +36,6 @@ export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges
         console.log("CHAAANGE");
     }
 
-    ngAfterContentChecked(): void {
-        
-    }
-
     test(): void {
         console.log("teeest");
         $.fn.togglepanels = function(){
@@ -48,7 +44,7 @@ export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges
             .find("h3")
                 .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
                 .hover(function() { $(this).toggleClass("ui-state-hover"); })
-                .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+                .prepend(`<span class="ui-icon ui-icon-triangle-1-e"></span>`)
                 .click(function() {
                 $(this)
                     .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")

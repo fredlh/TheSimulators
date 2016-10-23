@@ -7,7 +7,7 @@ import { OrgUnit }              from "../../core/org-unit";
 
 import { OrgUnitService }       from "../../services/org-unit.service";
 
-declare var $:any;
+declare var $: any;
 
 @Component({
     selector: "org-unit-search",
@@ -15,7 +15,7 @@ declare var $:any;
     styles: [ require<any>("./org-unit-search.component.less") ]
 })
 
-export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
+export class OrgUnitSearchComponent implements OnInit {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
 
@@ -38,7 +38,7 @@ export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
             .find("h5")
                 .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
                 .hover(function() { $(this).toggleClass("ui-state-hover"); })
-                .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+                .prepend(`<span class="ui-icon ui-icon-triangle-1-e"></span>`)
                 .click(function() {
                 $(this)
                     .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
@@ -54,28 +54,13 @@ export class OrgUnitSearchComponent implements OnInit, AfterViewInit {
 
         $("#notaccordion").togglepanels();
 
-        $("#advancedSearchDiv").toggle('show');
+        $("#advancedSearchDiv").toggle("show");
+
+        
     }
 
-    doAdvancedSearch(query:string, level: string, maxLevel: string): void {
-        console.log("Perform advanced search:");
-        console.log("level: " + level + " | maxLevel: " + maxLevel);
-
-        let urlString = "&query=" + query;
-        if (+level !== 0) urlString += "&level=" + +level;
-        if (+maxLevel !== 0) urlString += "&maxLevel=" + +maxLevel;
-
-        console.log("URL: " + urlString);
-
-        this.orgUnitService.search(urlString);
-    }
-
-    ngAfterViewInit() {
-       
-    }
-
-    search(term: string): void {
-        this.orgUnits = this.orgUnitService.search(term);
+    search(term: string, level: string, maxLevel: string): void {
+        this.orgUnitService.search(term, level, maxLevel);
     }
 
     ngOnInit(): void {

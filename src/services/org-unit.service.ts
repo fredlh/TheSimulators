@@ -36,15 +36,8 @@ export class OrgUnitService {
         this.drawAbleComponents.push(drawAble);
     }
 
-    getOrgUnits(query?: string): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all`;
-        if (query !== undefined && query.trim() !== "") {
-            if (query.startsWith("&query")) {
-                apiUrl += query;
-            } else {
-                apiUrl += "&query=" + query;
-            }
-        }
+    getOrgUnits(query: string): any {
+        let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${query}`;
         console.log("Requesting org units from api: " + apiUrl);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));
         return Observable.create(observer => {
@@ -58,11 +51,16 @@ export class OrgUnitService {
         });
     }
 
-    search(term: string): OrgUnit[] {
+    search(term = "", level = "", maxLevel = ""): OrgUnit[] {
         if (term.trim() === "") {
             return undefined;
         }
-        this.getOrgUnits(term).subscribe(res => {
+
+        let searchUrl = "&query=" + term;
+        if (level !== "") searchUrl += "&level=" + level;
+        if (maxLevel !== "") searchUrl += "&maxLevel=" + maxLevel;
+
+        this.getOrgUnits(searchUrl).subscribe(res => {
             this.orgUnits = res.organisationUnits;
             this.callOrgUnitUpdateListeners();
             this.callDrawDrawAbleComponents();

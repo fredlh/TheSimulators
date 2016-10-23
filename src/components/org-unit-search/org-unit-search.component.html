@@ -2,44 +2,24 @@
     <div class="form-group">
         <form id="searchForm">
             <input type="text" class="form-control" #searchBox id="search-box" placeholder="Search for an origanisation unit ..." required>
-            <input type="submit" value="Search" id="search-button" class="btn btn-primary" (click)="search(searchBox.value)">
+            <input type="submit" value="Search" id="search-button" class="btn btn-primary" 
+                  (click)="search(searchBox.value, level.value, maxLevel.value)">
         </form>
-        <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Search</button>
+        <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Options</button>
     </div>
 
-    <div id='advancedSearchDiv' style="display:none;">
-        <form id="advancedSearchForm">
-            <input type="text" class="form-control" id="inputText" #advancedSearchBox placeholder="Search for an origanisation unit ..." required>
-            <br />
-            <br />
-            <table>
-                <tr>
-                    <td>
-                        <label id="labelText">Level:</label>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control" id="inputText" #level>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label id="labelText">Max level:</label>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control" id="inputText" #maxLevel>
-                    </td>
-                </tr>
-            </table>
-            <input type="submit" value="Search" class="btn btn-primary" 
-                    (click)="doAdvancedSearch(advancedSearchBox.value, level.value, maxLevel.value)">
-        </form>
-    </div>
-    <!--
-    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" placeholder="search here ..."/>
-    <div>
-        <div *ngFor="let orgUnit of orgUnits | async" (click)="gotoDetail(orgUnit)" class="search-result">
-            {{orgUnit.name}}
+    <div id="advancedSearchDiv">
+        <div class="form-group row">
+            <form id="advancedSearchForm">
+                <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
+                <div class="col-xs-10">
+                    <input class="form-control" type="number" id="example-number-input" #level>
+                </div>
+                <label id="labelText" class="col-sm-2 col-form-label-lg">Max level</label>
+                <div class="col-xs-10">
+                    <input class="form-control" type="number" id="example-number-input" #maxLevel>
+                </div>
+            </form>
         </div>
     </div>
-    -->
 </div>
