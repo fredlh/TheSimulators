@@ -60,7 +60,10 @@ export class OrgUnitSearchComponent implements OnInit {
     }
 
     search(term: string, level: string, maxLevel: string): void {
-        this.orgUnitService.search(term, level, maxLevel);
+        let lvl = level === "All" ? "" : level;
+        let maxLvl = maxLevel === "None" ? "" : maxLevel
+        //console.log("level: " + lvl + " | maxLevel: " + maxLvl);
+        this.orgUnitService.search(term, lvl, maxLvl);
     }
 
     ngOnInit(): void {

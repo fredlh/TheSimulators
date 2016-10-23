@@ -161,8 +161,8 @@ export class MapViewComponent implements OnInit, DrawAble {
                             selectedPolygon = feature.properties.id;
                         });
 
-                        for (let i = 0; i < polygons.length; i = i + 1) {
-                            polygons[i].fire("selectedChanged");
+                        for (let p of polygons) {
+                            p.fire("selectedChanged");
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {

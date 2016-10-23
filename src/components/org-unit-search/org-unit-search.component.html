@@ -13,11 +13,23 @@
             <form id="advancedSearchForm">
                 <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
                 <div class="col-xs-10">
-                    <input class="form-control" type="number" id="example-number-input" #level>
+                    <select class="form-control" id="exampleSelect1" #level>
+                        <option>All</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
                 </div>
                 <label id="labelText" class="col-sm-2 col-form-label-lg">Max level</label>
                 <div class="col-xs-10">
-                    <input class="form-control" type="number" id="example-number-input" #maxLevel>
+                    <select class="form-control" id="exampleSelect1" #maxLevel>
+                        <option>None</option>                        
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
                 </div>
             </form>
         </div>
