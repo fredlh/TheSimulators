@@ -16,6 +16,8 @@ declare var $: any;
 
 export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges {
     private orgUnits: OrgUnit[] = null;
+    private collapsList1: string[] = [];
+    private collapsList2: string[] = [];
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -26,6 +28,11 @@ export class SideBarComponent implements OrgUnitUpdate, AfterViewInit, OnChanges
 
     ngOnInit(): void {
         this.orgUnitService.registerOrgUnitUpdateListener(this);
+
+        for (let i = 0; i < 1000; i++) {
+            this.collapsList1.push("collapse" + i);
+            this.collapsList2.push("#collapse" + i);
+        }
     }
 
     ngAfterViewInit() {

@@ -34,8 +34,8 @@ export class OrgUnitSearchComponent implements OnInit {
 
         $.fn.togglepanels = function(){
             return this.each(function(){
-                $(this).addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
-            .find("h5")
+                $(this)
+                .find("h5")
                 .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
                 .hover(function() { $(this).toggleClass("ui-state-hover"); })
                 .prepend(`<span class="ui-icon ui-icon-triangle-1-e"></span>`)
@@ -55,14 +55,12 @@ export class OrgUnitSearchComponent implements OnInit {
         $("#notaccordion").togglepanels();
 
         $("#advancedSearchDiv").toggle("show");
-
-        
     }
 
     search(term: string, level: string, maxLevel: string): void {
         let lvl = level === "All" ? "" : level;
-        let maxLvl = maxLevel === "None" ? "" : maxLevel
-        //console.log("level: " + lvl + " | maxLevel: " + maxLvl);
+        let maxLvl = maxLevel === "None" ? "" : maxLevel;
+        // console.log("level: " + lvl + " | maxLevel: " + maxLvl);
         this.orgUnitService.search(term, lvl, maxLvl);
     }
 
