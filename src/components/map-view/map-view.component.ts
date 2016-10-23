@@ -58,7 +58,8 @@ export class MapViewComponent implements OnInit, DrawAble {
         this.mapService.map = map;
         this.geocoder.getCurrentLocation()
             .subscribe(
-                location => map.panTo([location.latitude, location.longitude]),
+                // location => map.panTo([location.latitude, location.longitude]),
+                location => map.panTo([8.0, -12.5]).zoomOut(4),
                 err => console.error(err)
             );
     }
