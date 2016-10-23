@@ -20,9 +20,11 @@ import { OrgUnitService } from "../../services/org-unit.service";
 export class MapViewComponent implements OnInit, DrawAble {
 
     private orgUnits: OrgUnit[];
-    private polygons = [];
+    private polygons: L.GeoJSON[] = [];
 
     private map;
+
+    private selectedPolygon;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -61,6 +63,8 @@ export class MapViewComponent implements OnInit, DrawAble {
     addPolygons(orgUnits: OrgUnit[]) {
         this.orgUnits = orgUnits;
         let map = this.map;
+        let selectedPolygon = this.selectedPolygon;
+        let polygons = this.polygons;
 
         // OBS: At this time all polygons are created on the map
         //      This means that polygons may be put on top of others,
@@ -83,31 +87,40 @@ export class MapViewComponent implements OnInit, DrawAble {
                     let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
 
                     let parsedCoordinates = [];
+                    let inverseParsedCoordinates = [];
 
                     // For each subfigure within the figure
                     for (let subfig of subfigures) {
 
                         let subfigureBuildup = [];
+                        let inverseSubfigureBuildup = [];
 
                         let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
 
                         // For each x,y tupple within the subfigure
                         for (let tuppel of individualTuppels) {
                             let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
+
                             let tuppelBuildup = [];
                             tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
                             tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
 
+                            let inverseTuppelBuildup = [];
+                            inverseTuppelBuildup.push(Number(individualNumbers[1]));
+                            inverseTuppelBuildup.push(Number(individualNumbers[0]));
+
                             subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
+                            inverseSubfigureBuildup.push(inverseTuppelBuildup);
                         }
 
                         parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
+                        inverseParsedCoordinates.push(inverseSubfigureBuildup);
                     }
 
                     // Set up polygon information
                     let poly = ({
                         "type": "Feature",
-                        "properties": {"id": org.id, "name": org.displayName, "color": "black", "fillColor": "blue", "weight": "1"},
+                        "properties": {"id": org.id, "name": org.displayName, "defaultColor": "black", "highlightColor": "blue", "selectedColor": "red", "weight": "1"},
                         "geometry": {
                             "type": "Polygon",
                             "coordinates": parsedCoordinates
@@ -115,30 +128,54 @@ export class MapViewComponent implements OnInit, DrawAble {
                     });
 
                     // Push the polygon into an array for easy access later
-                    this.polygons.push(L.geoJSON(poly, {
+                    polygons.push(L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
                             layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
                         },
                         style: function(feature) {
-                            return {color: feature.properties.color};
+                            return {color: feature.properties.defaultColor};
                         }
                     })
                     .addEventListener("mouseover", function(e) {
                         this.setStyle(function(feature) {
-                            return {fillColor: feature.properties.fillColor};
+                            if (selectedPolygon === feature.properties.id) {
+                                return {fillColor: feature.properties.selectedColor};
+                            } else {
+                                return {fillColor: feature.properties.highlightColor};
+                            }
                         });
                     })
                     .addEventListener("mouseout", function(e) {
                         this.setStyle(function(feature) {
-                            return {fillColor: feature.properties.color};
+                            if (selectedPolygon === feature.properties.id) {
+                                return {fillColor: feature.properties.selectedColor};
+                            } else {
+                                return {fillColor: feature.properties.defaultColor};
+                            }
                         });
                     })
                     .addEventListener("click", function(e) {
-                        // map.flyToBounds(bounds2, {paddingTopLeft: [50, 50]}); // coords does not agree, so flies to wrong area atm
+                        map.flyToBounds(inverseParsedCoordinates, {paddingTopLeft: [50, 50]}); // coords does not agree, so flies to wrong area atm
+
+                        this.setStyle(function(feature) {
+                            selectedPolygon = feature.properties.id;
+                        });
+
+                        for (let i = 0; i < polygons.length; i = i + 1) {
+                            polygons[i].fire("selectedChanged");
+                        }
+                    })
+                    .addEventListener("selectedChanged", function(e) {
+                        this.setStyle(function(feature) {
+                            console.log("Detected selectedChanged event");
+                            if (selectedPolygon === feature.properties.id) {
+                                return {fillColor: feature.properties.selectedColor};
+                            } else {
+                                return {fillColor: feature.properties.defaultColor};
+                            }
+                        });
                     })
                     .addTo(map));
-
-                    //map.fitBounds(parsedCoordinates);
                 } else {
                     // Markers for single point locations
                 }
