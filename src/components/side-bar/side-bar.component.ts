@@ -36,7 +36,10 @@ export class SideBarComponent implements SideBarInterface {
         // TODO: User has clicked on an orgUnit at the map
         // - scroll to the clicked on in the sidebar
         // - "click" on it (expand it)
-        console.log("Side bar: " + "noticed a map click with id " + orgUnitId);
+        let innerDiv = "#" + orgUnitId + " a";
+        let parentDiv = "#sideBar";
+        $(innerDiv)[0].click();
+        $(parentDiv).scrollTop($(parentDiv).scrollTop() + $(innerDiv).position().top - 50);
     }
 
     sideBarClicked(orgUnitId: string) {
