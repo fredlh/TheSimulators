@@ -80,10 +80,39 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     }
 
     onSearch(orgUnits: OrgUnit[]): void {
+
+        // Need to clear all data?
+
+        // ATM reseting when new search is received
+        this.level1 = [];
+        this.level2 = [];
+        this.level3 = [];
+        this.level4 = [];
+
         this.addPolygons(orgUnits);
     }
-    onSideBarClick(orgUnitId: string): void {
 
+    onSideBarClick(orgUnitId: string): void {
+        // Set selected
+        this.selectedPolygon = orgUnitId;
+
+        // Tell all polygons to check
+        // The one selected will trigger a fly-to
+        for (let p of this.level1) {
+            p.fire("selectedChanged");
+        }
+
+        for (let p of this.level2) {
+            p.fire("selectedChanged");
+        }
+
+        for (let p of this.level3) {
+            p.fire("selectedChanged");
+        }
+
+        for (let p of this.level4) {
+            p.fire("selectedChanged");
+        }
     }
 
     private addPolygons(orgUnits: OrgUnit[]) {
@@ -192,7 +221,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         });
                     })
                     .addEventListener("click", function(e) {
-                        map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+                        // map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
 
                         this.setStyle(function(feature) {
                             ms.selectedPolygon = feature.properties.id;
@@ -216,9 +245,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
+                        let geo = this;
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
+                                map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
                                 return {fillColor: feature.properties.selectedColor};
+
                             } else {
                                 return {fillColor: feature.properties.defaultColor};
                             }
