@@ -193,11 +193,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         polygons = ms.level4;
                     }
 
+                    let id = org.id;
+
                     // Push the polygon into an array for easy access later
                     let tempGeo = L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
-                            //layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
-                            layer.bindTooltip(feature.properties.id + "<br>" + feature.properties.name);
+                            // layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
+                            layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
                             return {color: feature.properties.defaultColor};
@@ -226,10 +228,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     .addEventListener("click", function(e) {
                         // map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
 
-                        this.setStyle(function(feature) {
-                            ms.selectedPolygon = feature.properties.id;
-                            ms.orgUnitService.callOnMapClick(feature.properties.id);
-                        });
+                        // this.setStyle(function(feature) {
+                        //     ms.selectedPolygon = feature.properties.id;
+                        //     ms.orgUnitService.callOnMapClick(feature.properties.id);
+                        // });
+
+                        ms.selectedPolygon = id;
+                        ms.orgUnitService.callOnMapClick(id);
 
                         for (let p of ms.level1) {
                             p.fire("selectedChanged");
@@ -261,6 +266,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     });
 
                     // Only add polygon if it isn't already added
+
+                    // ATM this is not needed as all data is wiped for each search
+                    /*
                     let notFound = true;
                     for (let p of polygons) {
                         let pId;
@@ -276,9 +284,71 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     if (notFound) {
                         polygons.push(tempGeo);
                     }
+                    */
+
+                    polygons.push(tempGeo);
 
                 } else {
                     // Markers for single point locations
+
+                    // Coordinates indicate marker
+                    let markers;
+
+                    if (org.level === 1) {
+                        markers = ms.level1;
+                    } else if (org.level === 2) {
+                        markers = ms.level2;
+                    } else if (org.level === 3) {
+                        markers = ms.level3;
+                    } else { // Assuming only 4 levels
+                        markers = ms.level4;
+                    }
+
+                    let bracketsRemoved = org.coordinates.slice(1, org.coordinates.length - 1);
+                    let markerCoordinate = [];
+
+                    // For each x,y tupple within the subfigure
+                    let individualNumbers = bracketsRemoved.split(","); // Split into seperate number values (4)
+
+                    markerCoordinate.push(Number(individualNumbers[1]));
+                    markerCoordinate.push(Number(individualNumbers[0]));
+
+                    // Set up marker information
+                    let markOptions = ({
+                        "title": org.displayName + " | coords: " + markerCoordinate
+                    });
+
+                    let id = org.id;
+                    let markerlatlng = L.latLng(markerCoordinate[0], markerCoordinate[1]);
+                    let tempMark = L.marker(markerlatlng, markOptions)
+                    .addEventListener("click", function(e) {
+                        ms.selectedPolygon = id;
+                        ms.orgUnitService.callOnMapClick(id);
+
+                        for (let p of ms.level1) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of ms.level2) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of ms.level3) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of ms.level4) {
+                            p.fire("selectedChanged");
+                        }
+                    })
+                    .addEventListener("selectedChanged", function(e) {
+                        if (id === ms.selectedPolygon) {
+                            let coords = this.getLatLng();
+                            map.flyTo([coords.lat, coords.lng - 0.00002], 18);
+                        }
+                    });
+
+                    markers.push(tempMark);
                 }
             }
         }
