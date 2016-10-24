@@ -24,7 +24,15 @@ export class SideBarComponent implements SideBarInterface {
     constructor(private orgUnitService: OrgUnitService) {}
 
     onSearch(orgUnits: OrgUnit[]): void {
+        this.collapsList1 = [];
+        this.collapsList2 = [];
+        for (let i = 0; i < orgUnits.length; i++) {
+            this.collapsList1.push("collapse" + i);
+            this.collapsList2.push("#collapse" + i);
+        }
+
         this.orgUnits = orgUnits;
+
         console.log("Side bar - received new orgUnits: " + this.orgUnits);
         if (this.orgUnits === undefined || this.orgUnits === null || this.orgUnits.length === 0) {
             this.toggleSideBar(false);
@@ -32,6 +40,7 @@ export class SideBarComponent implements SideBarInterface {
             this.toggleSideBar(true);
         }
     }
+
     onMapClick(orgUnitId: string) {
         // TODO: User has clicked on an orgUnit at the map
         // - scroll to the clicked on in the sidebar
@@ -49,18 +58,13 @@ export class SideBarComponent implements SideBarInterface {
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
-
-        for (let i = 0; i < 1000; i++) {
-            this.collapsList1.push("collapse" + i);
-            this.collapsList2.push("#collapse" + i);
-        }
     }
 
     toggleSideBar(show?: Boolean): void {
         console.log("\nBefore:");
         console.log("show = " + show);
         console.log("sideBarVisible = " + this.sideBarVisible);
-        
+
         if (show === undefined) {
             $("#sideBar").toggle("show");
             this.sideBarVisible = !this.sideBarVisible;
@@ -69,12 +73,12 @@ export class SideBarComponent implements SideBarInterface {
         if (show === true && this.sideBarVisible !== true) {
             $("#sideBar").toggle("show");
             this.sideBarVisible = !this.sideBarVisible;
-        
+
         } else if (show === false && this.sideBarVisible !== false) {
             $("#sideBar").toggle("show");
             this.sideBarVisible = !this.sideBarVisible;
         }
-        
+
         console.log("\nAfter:");
         console.log("show = " + show);
         console.log("sideBarVisible = " + this.sideBarVisible);

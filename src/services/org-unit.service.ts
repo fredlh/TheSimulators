@@ -23,7 +23,7 @@ export class OrgUnitService {
     private orgUnits: OrgUnit[];
 
     private sideBar: SideBarInterface;
-    private mapView : MapViewInterface;
+    private mapView: MapViewInterface;
 
     constructor(private http: Http) {}
 
