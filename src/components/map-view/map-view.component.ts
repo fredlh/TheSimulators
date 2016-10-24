@@ -197,6 +197,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     let tempGeo = L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
                             layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
+                            layer.bindTooltip(feature.properties.id + "<br>" + feature.properties.name);
                         },
                         style: function(feature) {
                             return {color: feature.properties.defaultColor};
@@ -210,6 +211,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 return {fillColor: feature.properties.highlightColor};
                             }
                         });
+
+                        this.toggleTooltip();
                     })
                     .addEventListener("mouseout", function(e) {
                         this.setStyle(function(feature) {
