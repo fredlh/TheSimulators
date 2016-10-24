@@ -196,7 +196,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     // Push the polygon into an array for easy access later
                     let tempGeo = L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
-                            layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
+                            //layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
                             layer.bindTooltip(feature.properties.id + "<br>" + feature.properties.name);
                         },
                         style: function(feature) {
