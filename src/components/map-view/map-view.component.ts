@@ -344,7 +344,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     .addEventListener("selectedChanged", function(e) {
                         if (id === ms.selectedPolygon) {
                             let coords = this.getLatLng();
-                            map.flyTo([coords.lat, coords.lng - 0.00002], 18);
+                            map.flyTo([coords.lat, coords.lng - 0.0004], 18);
                         }
                     });
 
