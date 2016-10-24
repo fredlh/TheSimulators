@@ -39,12 +39,8 @@ export class SideBarComponent implements SideBarInterface {
         console.log("Side bar: " + "noticed a map click with id " + orgUnitId);
     }
 
-    sideBarClicked() {
-        console.log("Side bar clicked: ");
-        //this.orgUnitService.callOnSideBarClick(orgUnitId);
-        //$("#sideBar").each(function( index ) {
-        // console.log(index + ": " + $(this).text() );
-        //});
+    sideBarClicked(orgUnitId: string) {
+        this.orgUnitService.callOnSideBarClick(orgUnitId);
     }
 
 
