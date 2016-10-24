@@ -9,8 +9,8 @@ import "rxjs/Rx";
 
 import { OrgUnit }  from "../core/org-unit";
 
-import { OrgUnitUpdate } from "../core/org-unit-update.interface";
-import { DrawAble }      from "../core/draw-able.interface";
+import { SideBarInterface } from "../core/side-bar.interface";
+import { MapViewInterface }      from "../core/map-view.interface";
 
 
 @Injectable()
@@ -22,18 +22,17 @@ export class OrgUnitService {
 
     private orgUnits: OrgUnit[];
 
-    private orgUnitUpdateListeners = [];
-    private drawAbleComponents = [];
+    private sideBar: SideBarInterface;
+    private mapView : MapViewInterface;
 
     constructor(private http: Http) {}
 
-    registerOrgUnitUpdateListener(listener: OrgUnitUpdate) {
-        this.orgUnitUpdateListeners.push(listener);
-        console.log("Registerned listener: " + listener);
+    registerSideBar(sideBar: SideBarInterface) {
+        this.sideBar = sideBar;
     }
 
-    registerDrawAbleComponent(drawAble: DrawAble) {
-        this.drawAbleComponents.push(drawAble);
+    registerMapView(mapView: MapViewInterface) {
+        this.mapView = mapView;
     }
 
     getOrgUnits(query: string): any {
@@ -62,8 +61,7 @@ export class OrgUnitService {
 
         this.getOrgUnits(searchUrl).subscribe(res => {
             this.orgUnits = res.organisationUnits;
-            this.callOrgUnitUpdateListeners();
-            this.callDrawDrawAbleComponents();
+            this.callOnSearch();
         });
        return this.orgUnits;
     }
@@ -72,15 +70,16 @@ export class OrgUnitService {
         console.error("An error occured", error);
     }
 
-    private callOrgUnitUpdateListeners(): void {
-        for (let listener of this.orgUnitUpdateListeners) {
-            listener.onOrgUnitGet(this.orgUnits);
-        }
+    private callOnSearch(): void {
+        this.sideBar.onSearch(this.orgUnits);
+        this.mapView.onSearch(this.orgUnits);
     }
 
-    private callDrawDrawAbleComponents(): void {
-        for (let drawAble of this.drawAbleComponents) {
-            drawAble.addPolygons(this.orgUnits);
-        }
+    callOnMapClick(orgUnitId: string): void {
+        this.sideBar.onMapClick(orgUnitId);
+    }
+
+    callOnSideBarClick(orgUnitId: string): void {
+        this.mapView.onSideBarClick(orgUnitId);
     }
 }

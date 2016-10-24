@@ -1,6 +1,7 @@
 OrgUnit:
 --------
---- Implement all the fields in the class
+- Implement all the fields in the class
+    - How is children and parents represented?
 
 
 OrgUnitService:
@@ -8,13 +9,14 @@ OrgUnitService:
 - Create
     - updateOrgUnit()
     - deleteOrgUnit()
+    - saveOrgUnit()
 
 
 Search:
 ------
 - Auto search on each new word, rather than a button?
-- Implement advanced search
-- How to return all results and let the user be able to select one?
+--- Implement advanced search
+--- How to return all results and let the user be able to select one?
 
 
 Map:
@@ -35,8 +37,8 @@ Map:
 
 Side bar:
 ---------
-- Make it an expandable list?
-- Make it possible to hide and show?
+--- Make it an expandable list?
+--- Make it possible to hide and show?
 - List all info of a selected orgUnit
     - Including info of its children?
 

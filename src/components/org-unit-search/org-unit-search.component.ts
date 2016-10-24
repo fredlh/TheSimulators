@@ -29,7 +29,7 @@ export class OrgUnitSearchComponent implements OnInit {
     }
 
     advancedSearch(): void {
-        $("#advancedSearchDiv").toggle("show");
+        $("#advancedSearchDiv").slideToggle("fast");
     }
 
     search(term: string, level: string, maxLevel: string): void {

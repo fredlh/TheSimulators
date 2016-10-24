@@ -4,7 +4,7 @@ import { OrgUnit }  from "../../core/org-unit";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
-import { OrgUnitUpdate} from "../../core/org-unit-update.interface";
+import { SideBarInterface } from "../../core/side-bar.interface";
 
 declare var $: any;
 
@@ -14,7 +14,7 @@ declare var $: any;
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent implements OrgUnitUpdate {
+export class SideBarComponent implements SideBarInterface {
     private orgUnits: OrgUnit[] = null;
     private collapsList1: string[] = [];
     private collapsList2: string[] = [];
@@ -23,7 +23,7 @@ export class SideBarComponent implements OrgUnitUpdate {
 
     constructor(private orgUnitService: OrgUnitService) {}
 
-    onOrgUnitGet(orgUnits: OrgUnit[]): void {
+    onSearch(orgUnits: OrgUnit[]): void {
         this.orgUnits = orgUnits;
         console.log("Side bar - received new orgUnits: " + this.orgUnits);
         if (this.orgUnits === undefined || this.orgUnits === null || this.orgUnits.length === 0) {
@@ -32,9 +32,24 @@ export class SideBarComponent implements OrgUnitUpdate {
             this.toggleSideBar(true);
         }
     }
+    onMapClick(orgUnitId: string) {
+        // TODO: User has clicked on an orgUnit at the map
+        // - scroll to the clicked on in the sidebar
+        // - "click" on it (expand it)
+        console.log("Side bar: " + "noticed a map click with id " + orgUnitId);
+    }
+
+    sideBarClicked() {
+        console.log("Side bar clicked: ");
+        //this.orgUnitService.callOnSideBarClick(orgUnitId);
+        //$("#sideBar").each(function( index ) {
+        // console.log(index + ": " + $(this).text() );
+        //});
+    }
+
 
     ngOnInit(): void {
-        this.orgUnitService.registerOrgUnitUpdateListener(this);
+        this.orgUnitService.registerSideBar(this);
 
         for (let i = 0; i < 1000; i++) {
             this.collapsList1.push("collapse" + i);
@@ -46,7 +61,6 @@ export class SideBarComponent implements OrgUnitUpdate {
         console.log("\nBefore:");
         console.log("show = " + show);
         console.log("sideBarVisible = " + this.sideBarVisible);
-        
         
         if (show === undefined) {
             $("#sideBar").toggle("show");
@@ -65,7 +79,6 @@ export class SideBarComponent implements OrgUnitUpdate {
         console.log("\nAfter:");
         console.log("show = " + show);
         console.log("sideBarVisible = " + this.sideBarVisible);
-        
     }
 
 }

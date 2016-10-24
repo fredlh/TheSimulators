@@ -8,12 +8,12 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <a data-toggle="collapse" href="{{collapsList2[myIndex]}}">
-                                <h4 class="panel-title">{{orgUnit.displayName}}</h4>
+                                <h4 class="panel-title" (click)="sideBarClicked()">{{orgUnit.displayName}}</h4>
                             </a>
                         </div>
                         <div id={{collapsList1[myIndex]}} class="panel-collapse collapse">
                             <div class="panel-body">
-                                <ul class = "collapsibleList">
+                                <ul class="collapsibleList">
                                     <li>ID: {{orgUnit.id}}</li>
                                     <li>Level: {{orgUnit.level}}</li>
                                     <li>Coordinates: {{orgUnit.coordinates}}</li>

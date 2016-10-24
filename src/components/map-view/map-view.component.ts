@@ -5,7 +5,7 @@ import {MapService} from "../../services/map.service";
 import {GeocodingService} from "../../services/geocoding.service";
 import {Location} from "../../core/location.class";
 
-import { DrawAble } from "../../core/draw-able.interface";
+import { MapViewInterface } from "../../core/map-view.interface";
 
 import { OrgUnit } from "../../core/org-unit";
 
@@ -17,7 +17,7 @@ import { OrgUnitService } from "../../services/org-unit.service";
     styles: [ require<any>("./map-view.component.less") ]
 })
 
-export class MapViewComponent implements OnInit, DrawAble {
+export class MapViewComponent implements OnInit, MapViewInterface {
 
     private orgUnits: OrgUnit[];
     private level1: L.GeoJSON[] = [];
@@ -76,10 +76,17 @@ export class MapViewComponent implements OnInit, DrawAble {
 
     ngAfterViewInit(): void {
         this.markerComponent.Initialize();
-        this.orgUnitService.registerDrawAbleComponent(this);
+        this.orgUnitService.registerMapView(this);
     }
 
-    addPolygons(orgUnits: OrgUnit[]) {
+    onSearch(orgUnits: OrgUnit[]): void {
+        this.addPolygons(orgUnits);
+    }
+    onSideBarClick(orgUnitId: string): void {
+
+    }
+
+    private addPolygons(orgUnits: OrgUnit[]) {
         this.orgUnits = orgUnits;
         let map = this.map;
 
@@ -189,6 +196,7 @@ export class MapViewComponent implements OnInit, DrawAble {
 
                         this.setStyle(function(feature) {
                             ms.selectedPolygon = feature.properties.id;
+                            ms.orgUnitService.callOnMapClick(feature.properties.id);
                         });
 
                         for (let p of ms.level1) {
