@@ -50,12 +50,13 @@ export class OrgUnitService {
         });
     }
 
-    search(term = "", level = "", maxLevel = ""): OrgUnit[] {
-        if (term.trim() === "") {
+    search(term = "", level = "", maxLevel = "", searchEmpty = "No"): OrgUnit[] {
+        if (searchEmpty === "No" && term.trim() === "") {
             return undefined;
         }
 
-        let searchUrl = "&query=" + term;
+        let searchUrl = "";
+        if (searchEmpty === "No") searchUrl += "&query=" + term;
         if (level !== "") searchUrl += "&level=" + level;
         if (maxLevel !== "") searchUrl += "&maxLevel=" + maxLevel;
 

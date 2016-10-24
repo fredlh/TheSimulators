@@ -7,7 +7,7 @@
                 
                 <div *ngFor="let orgUnit of orgUnits; let myIndex = index">
                     <div id={{orgUnit.id}}>
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" id="testDiv">
                             <div class="panel-heading">
                                 <a data-toggle="collapse" href="{{collapsList2[myIndex]}}">
                                     <h4 class="panel-title" (click)="sideBarClicked(orgUnit.id)">{{orgUnit.displayName}}</h4>
