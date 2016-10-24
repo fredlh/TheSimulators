@@ -32,12 +32,11 @@ export class OrgUnitSearchComponent implements OnInit {
         $("#advancedSearchDiv").slideToggle("fast");
     }
 
-    search(term: string, level: string, maxLevel: string, searchEmpty): void {
+    search(term: string, level: string, maxLevel): void {
         let lvl = level === "All" ? "" : level;
         let maxLvl = maxLevel === "None" ? "" : maxLevel;
         // console.log("level: " + lvl + " | maxLevel: " + maxLvl);
-        this.orgUnitService.search(term, lvl, maxLvl, searchEmpty);
-        console.log(searchEmpty);
+        this.orgUnitService.search(term, lvl, maxLvl);
     }
 
     ngOnInit(): void {
@@ -46,5 +45,9 @@ export class OrgUnitSearchComponent implements OnInit {
 
     gotoDetail(orgUnit: OrgUnit) {
         console.log("gotoDetail(): " + orgUnit);
+    }
+
+    getAllOrgUnits(): void {
+        this.orgUnitService.getAllOrgUnits();
     }
 }

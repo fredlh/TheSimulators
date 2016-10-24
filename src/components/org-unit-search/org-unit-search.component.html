@@ -3,7 +3,7 @@
         <form id="searchForm">
             <input type="text" class="form-control" #searchBox id="search-box" placeholder="Search for an origanisation unit ...">
             <input type="submit" value="Search" id="search-button" class="btn btn-primary" 
-                  (click)="search(searchBox.value, level.value, maxLevel.value, searchEmpty.value)">
+                  (click)="search(searchBox.value, level.value, maxLevel.value)">
         </form>
         <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Options</button>
     </div>
@@ -11,13 +11,6 @@
     <div id="advancedSearchDiv" style="display: none;">
         <div class="form-group row">
             <form id="advancedSearchForm">
-                <label id="labelText" class="col-sm-2 col-form-label-lg">Empty</label>
-                <div class="col-xs-10">
-                    <select class="form-control" id="exampleSelect1" #searchEmpty>
-                        <option>No</option>
-                        <option>Yes</option>
-                    </select>
-                </div>
                 <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
                 <div class="col-xs-10">
                     <select class="form-control" id="exampleSelect1" #level>
@@ -38,6 +31,8 @@
                         <option>4</option>
                     </select>
                 </div>
+                <input type="submit" value="Get all org units" id="empty-search-button" class="btn btn-primary" 
+                  (click)="getAllOrgUnits()">
             </form>
         </div>
     </div>

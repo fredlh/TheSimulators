@@ -50,13 +50,12 @@ export class OrgUnitService {
         });
     }
 
-    search(term = "", level = "", maxLevel = "", searchEmpty = "No"): OrgUnit[] {
-        if (searchEmpty === "No" && term.trim() === "") {
+    search(term = "", level = "", maxLevel = ""): OrgUnit[] {
+        if (term.trim() === "") {
             return undefined;
         }
 
-        let searchUrl = "";
-        if (searchEmpty === "No") searchUrl += "&query=" + term;
+        let searchUrl = "&query=" + term;
         if (level !== "") searchUrl += "&level=" + level;
         if (maxLevel !== "") searchUrl += "&maxLevel=" + maxLevel;
 
@@ -65,6 +64,13 @@ export class OrgUnitService {
             this.callOnSearch();
         });
        return this.orgUnits;
+    }
+
+    getAllOrgUnits(): void {
+        this.getOrgUnits("").subscribe(res => {
+            this.orgUnits = res.organisationUnits;
+            this.callOnSearch();
+        });
     }
 
     private handleError(error: any): any {
