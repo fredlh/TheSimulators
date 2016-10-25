@@ -52,7 +52,7 @@ export class OrgUnitService {
 
     getOrgUnit(orgUnitId: string): any {
         let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnitId}?includeChildren=true`;
-        console.log("Requesting org units from api: " + apiUrl);
+        console.log("Requesting org unit with id from api: " + apiUrl);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));
         return Observable.create(observer => {
           this.http
@@ -90,17 +90,13 @@ export class OrgUnitService {
 
     // Returns an array with the parent at index 0
     // and all its children afterwards
-    getOrgUnitAndChildren(orgUnitID: string): OrgUnit[] {
-        let tmpOrgUnits = [];
-
+    getOrgUnitAndChildren(orgUnitID: string): void {
         this.getOrgUnit(orgUnitID).subscribe(res => {
-            for (let orgUnit of res.organisationUnits) {
-                tmpOrgUnits.push(orgUnit);
-                console.log(orgUnit.id);
-            }
+            this.orgUnits = res.organisationUnits;
+            this.mapView.draw(this.orgUnits);
+            this.sideBar.updateList(this.orgUnits);
         });
-
-        return tmpOrgUnits;
+        return;
     }
 
     private handleError(error: any): any {
@@ -108,16 +104,23 @@ export class OrgUnitService {
     }
 
     private callOnSearch(): void {
-        this.sideBar.onSearch(this.orgUnits);
+        this.sideBar.updateList(this.orgUnits);
         this.mapView.draw(this.orgUnits);
     }
 
-    callOnMapClick(orgUnitId: string): void {
-        this.sideBar.onMapClick(orgUnitId);
-        this.mapView.draw(this.getOrgUnitAndChildren(orgUnitId));
+    callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
+        if (doubleClick) {
+            this.sideBar.onMapClick(orgUnitId);
+            this.getOrgUnitAndChildren(orgUnitId);
+        } else {
+            this.sideBar.onMapClick(orgUnitId);
+        }
+        
     }
 
     callOnSideBarClick(orgUnitId: string): void {
         this.mapView.onSideBarClick(orgUnitId);
+        this.sideBar.onMapClick(orgUnitId);
+        this.getOrgUnitAndChildren(orgUnitId);        
     }
 }

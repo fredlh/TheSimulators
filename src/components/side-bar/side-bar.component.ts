@@ -23,7 +23,7 @@ export class SideBarComponent implements SideBarInterface {
 
     constructor(private orgUnitService: OrgUnitService) {}
 
-    onSearch(orgUnits: OrgUnit[]): void {
+    updateList(orgUnits: OrgUnit[]): void {
         this.collapsList1 = [];
         this.collapsList2 = [];
         for (let i = 0; i < orgUnits.length; i++) {
@@ -33,7 +33,7 @@ export class SideBarComponent implements SideBarInterface {
 
         this.orgUnits = orgUnits;
 
-        console.log("Side bar - received new orgUnits: " + this.orgUnits);
+        console.log("Side bar - received new orgUnits");
         if (this.orgUnits === undefined || this.orgUnits === null || this.orgUnits.length === 0) {
             this.toggleSideBar(false);
         } else {
@@ -61,10 +61,6 @@ export class SideBarComponent implements SideBarInterface {
     }
 
     toggleSideBar(show?: Boolean): void {
-        console.log("\nBefore:");
-        console.log("show = " + show);
-        console.log("sideBarVisible = " + this.sideBarVisible);
-
         if (show === undefined) {
             $("#sideBar").toggle("show");
             this.sideBarVisible = !this.sideBarVisible;
@@ -78,10 +74,6 @@ export class SideBarComponent implements SideBarInterface {
             $("#sideBar").toggle("show");
             this.sideBarVisible = !this.sideBarVisible;
         }
-
-        console.log("\nAfter:");
-        console.log("show = " + show);
-        console.log("sideBarVisible = " + this.sideBarVisible);
     }
 
 }
