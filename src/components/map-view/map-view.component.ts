@@ -96,7 +96,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     onSideBarClick(orgUnitId: string): void {
         // Set selected
-        this.selectedPolygon = orgUnitId;
+
+        if (this.selectedPolygon === orgUnitId) {
+            this.selectedPolygon = "noneSelected";
+        
+        } else {
+            this.selectedPolygon = orgUnitId;
+        }
 
         // Tell all polygons to check
         // The one selected will trigger a fly-to
