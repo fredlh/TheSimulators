@@ -32,7 +32,7 @@ export class OrgUnitSearchComponent implements OnInit {
     advancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;
         let top = this.advancedSearchVisible ? "255px" : "120px";
-        let height = this.advancedSearchVisible ? "715px" : "850px";
+        let height = this.advancedSearchVisible ? "685px" : "820px";
         let animateSpeed = 200;
 
         $("#sideBar").animate({
