@@ -79,7 +79,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.orgUnitService.registerMapView(this);
     }
 
-    draw(orgUnits: OrgUnit[], doubleClick: boolean): void {
+    draw(orgUnits: OrgUnit[], maxLevelReached: boolean): void {
 
         // Need to clear all data?
 
@@ -91,7 +91,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         console.log("JALLLAAA: " + orgUnits);
 
-        this.addPolygons(orgUnits, doubleClick);
+        this.addPolygons(orgUnits, maxLevelReached);
     }
 
     onSideBarClick(orgUnitId: string): void {
@@ -117,7 +117,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
-    private addPolygons(orgUnits: OrgUnit[], doubleClick: boolean) {
+    private addPolygons(orgUnits: OrgUnit[], maxLevelReached: boolean) {
         this.orgUnits = orgUnits;
         let map = this.map;
 
@@ -263,9 +263,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         //     ms.orgUnitService.callOnMapClick(feature.properties.id);
                         // });
 
-                        if (level === 3 && doubleClick) {
-                            return;
-                        } else {
+                        if (!(maxLevelReached)) {
                             ms.selectedPolygon = id;
                             ms.orgUnitService.callOnMapClick(id, true);
 
