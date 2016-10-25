@@ -93,8 +93,16 @@ export class OrgUnitService {
     getOrgUnitAndChildren(orgUnitID: string): void {
         this.getOrgUnit(orgUnitID).subscribe(res => {
             this.orgUnits = res.organisationUnits;
-            this.mapView.draw(this.orgUnits);
+
+            if (this.orgUnits[0].level === 3) {
+                this.mapView.draw(this.orgUnits, true);
+                
+            } else {
+                this.mapView.draw(this.orgUnits, false);
+            }
+
             this.sideBar.updateList(this.orgUnits);
+
         });
         return;
     }
@@ -105,7 +113,7 @@ export class OrgUnitService {
 
     private callOnSearch(): void {
         this.sideBar.updateList(this.orgUnits);
-        this.mapView.draw(this.orgUnits);
+        this.mapView.draw(this.orgUnits, false);
     }
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
