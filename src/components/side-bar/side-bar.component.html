@@ -15,6 +15,9 @@
                             </div>
                             <div id={{collapsList1[myIndex]}} class="panel-collapse collapse">
                                 <div class="panel-body">
+                                    <button id="#zoomToChildrenButton" class="btn btn-info" (click)="zoomToChildren(orgUnit.id)">Children</button>
+                                    <button id="#editOrgUnitButton" class="btn btn-info" (click)="editOrgUnit(orgUnit.id)">Edit</button>
+                                    <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
                                     <ul>
                                         <li>ID: {{orgUnit.id}}</li>
                                         <li>Level: {{orgUnit.level}}</li>

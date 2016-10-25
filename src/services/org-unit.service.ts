@@ -108,7 +108,7 @@ export class OrgUnitService {
     }
 
     private handleError(error: any): any {
-        console.error("An error occured", error);
+        console.error("ERROR: An error occured", error);
     }
 
     private callOnSearch(): void {
@@ -117,7 +117,6 @@ export class OrgUnitService {
     }
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
-        console.log("heeewewe");
         if (doubleClick) {
             this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
             this.getOrgUnitAndChildren(orgUnitId);

@@ -73,4 +73,17 @@ export class SideBarComponent implements SideBarInterface {
         }
     }
 
+    zoomToChildren(orgUnitId: string) {
+        console.log("Zoom to: " + orgUnitId);
+        this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
+    }
+
+    editOrgUnit(orgUnitId: string) {
+        console.log("Edit: " + orgUnitId);
+    }
+
+    deleteOrgUnit(orgUnitId: string) {
+        console.log("Delete: " + orgUnitId);
+    }
+
 }
