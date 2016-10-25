@@ -91,6 +91,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.level3 = [];
         this.level4 = [];
 
+        this.selectedPolygon = "";
+
         this.addPolygons(orgUnits, maxLevelReached);
     }
 
