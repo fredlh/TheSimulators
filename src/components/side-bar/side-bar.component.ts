@@ -6,6 +6,9 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
 
+import { AccordionModule } from "ng2-accordion";
+
+
 declare var $: any;
 
 @Component({
@@ -20,6 +23,7 @@ export class SideBarComponent implements SideBarInterface {
     private collapsList2: string[] = [];
 
     private sideBarVisible = true;
+    private hideSidebarClick = false;
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -42,14 +46,26 @@ export class SideBarComponent implements SideBarInterface {
     }
 
     expandAndScrollToOrgUnit(orgUnitId: string) {
+        console.log("i should scholl");
         let innerDiv = "#" + orgUnitId + " a";
         let parentDiv = "#sideBar";
+
+        this.hideSidebarClick = true;
+
         $(innerDiv)[0].click();
-        $(parentDiv).scrollTop($(parentDiv).scrollTop() + $(innerDiv).position().top - 50);
+        setTimeout(function() {
+            $(parentDiv).scrollTop($(parentDiv).scrollTop() + $(innerDiv).position().top - 50);
+        }, 50);
     }
 
     sideBarClicked(orgUnitId: string) {
-        this.orgUnitService.callOnSideBarClick(orgUnitId);
+        console.log("tesewewe");
+
+        if (!(this.hideSidebarClick)) {
+            this.orgUnitService.callOnSideBarClick(orgUnitId);
+        }
+
+        this.hideSidebarClick = false;
     }
 
 

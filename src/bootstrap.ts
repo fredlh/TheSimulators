@@ -16,8 +16,10 @@ import {MapService} from "./services/map.service";
 import {GeocodingService} from "./services/geocoding.service";
 import {OrgUnitService} from "./services/org-unit.service";
 
+import { AccordionModule } from "ng2-accordion";
+
 @NgModule({
-    imports: [HttpModule, FormsModule, BrowserModule],
+    imports: [HttpModule, FormsModule, BrowserModule, AccordionModule],
     bootstrap: [AppComponent],
     declarations: [
         AppComponent,

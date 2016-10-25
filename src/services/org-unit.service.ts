@@ -118,7 +118,7 @@ export class OrgUnitService {
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
         if (doubleClick) {
-            this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
+            //this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
             this.getOrgUnitAndChildren(orgUnitId);
         } else {
             this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
@@ -128,6 +128,6 @@ export class OrgUnitService {
 
     callOnSideBarClick(orgUnitId: string): void {
         this.mapView.onSideBarClick(orgUnitId);
-        this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
+        //this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
     }
 }

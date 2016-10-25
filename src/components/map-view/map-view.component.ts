@@ -96,6 +96,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     onSideBarClick(orgUnitId: string): void {
         // Set selected
+        console.log("sidebar click received on map with id " + orgUnitId);
 
         if (this.selectedPolygon === orgUnitId) {
             this.selectedPolygon = "noneSelected";
@@ -245,7 +246,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                         map.clicked = map.clicked + 1;
                         setTimeout(function() {
-                            if (map.clicked === 1) {
+                            if (map.clicked === 1 && ms.selectedPolygon !== id) {
                                 ms.selectedPolygon = id;
                                 ms.orgUnitService.callOnMapClick(id, false);
 
@@ -280,7 +281,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         map.clicked = 0;
 
                         if (!(maxLevelReached)) {
-                            ms.selectedPolygon = id;
+                            ms.selectedPolygon = "";
                             ms.orgUnitService.callOnMapClick(id, true);
 
                             for (let p of ms.level1) {

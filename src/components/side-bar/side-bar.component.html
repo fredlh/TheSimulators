@@ -1,6 +1,9 @@
 <button id="toggleSideBar" class="btn btn-info" (click)="toggleSideBar()">Toggle</button>
 <div id="sideBar">
+    
     <h3 style="text-align: center;">Search results </h3>
+    
+    <!--
     <div id="notaccordion" *ngIf="orgUnits !== undefined">
         <div class="container">
             <div class="panel-group" id="accordion"> 
@@ -30,4 +33,37 @@
             </div>
         </div>
     </div>
+    -->
+
+
+    <div *ngIf="orgUnits !== undefined">
+        <accordion>
+            <div *ngFor="let orgUnit of orgUnits; let myIndex = index">
+                <div id={{orgUnit.id}}>
+                    <accordion-group style="cursor: pointer;">
+                        <accordion-heading (click)="sideBarClicked(orgUnit.id)">
+                            {{orgUnit.displayName}}
+                        </accordion-heading>
+                        <span style="cursor: auto;">
+                            <button *ngIf="orgUnit.level === 4" id="#zoomToChildrenButton" class="btn btn-info disabled">Children</button>
+                            <button *ngIf="orgUnit.level !== 4" id="#zoomToChildrenButton" class="btn btn-info" (click)="zoomToChildren(orgUnit.id)">Children</button>
+                            <button id="#editOrgUnitButton" class="btn btn-info" (click)="editOrgUnit(orgUnit.id)">Edit</button>
+                            <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
+                            <ul>
+                                <li>ID: {{orgUnit.id}}</li>
+                                <li>Level: {{orgUnit.level}}</li>
+                                <li>Coordinates: {{orgUnit.coordinates}}</li>
+                            </ul>
+                        </span>
+                    </accordion-group>
+                </div>
+            </div>
+        </accordion>
+    </div>
+
+
+    
 </div>
+
+
+
