@@ -263,7 +263,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         //     ms.orgUnitService.callOnMapClick(feature.properties.id);
                         // });
 
-                        if (level !== 3 && doubleClick) {
+                        if (level === 3 && doubleClick) {
+                            return;
+                        } else {
                             ms.selectedPolygon = id;
                             ms.orgUnitService.callOnMapClick(id, true);
 
