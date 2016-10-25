@@ -91,8 +91,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.level3 = [];
         this.level4 = [];
 
-        console.log("JALLLAAA: " + orgUnits);
-
         this.addPolygons(orgUnits, maxLevelReached);
     }
 
@@ -122,6 +120,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private addPolygons(orgUnits: OrgUnit[], maxLevelReached: boolean) {
         this.orgUnits = orgUnits;
         let map = this.map;
+        let allCoords = [];
 
         const ms = this;
 
@@ -329,6 +328,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     }
                     */
 
+                    allCoords.push(tempGeo.getBounds());
                     polygons.push(tempGeo);
 
                 } else {
@@ -355,6 +355,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                     markerCoordinate.push(Number(individualNumbers[1]));
                     markerCoordinate.push(Number(individualNumbers[0]));
+
+                    allCoords.push(markerCoordinate);
 
                     // Set up marker information
                     let markOptions = ({
@@ -405,5 +407,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         ms.layer2.addTo(ms.map);
         ms.layer3.addTo(ms.map);
         ms.layer4.addTo(ms.map);
+
+        map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
     }
 }
