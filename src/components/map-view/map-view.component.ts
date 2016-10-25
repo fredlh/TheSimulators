@@ -236,24 +236,29 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         //     ms.orgUnitService.callOnMapClick(feature.properties.id);
                         // });
 
-                        ms.selectedPolygon = id;
-                        ms.orgUnitService.callOnMapClick(id, false);
+                        map.clicked = map.clicked + 1;
+                        setTimeout(function() {
+                            if (map.clicked === 1) {
+                                ms.selectedPolygon = id;
+                                ms.orgUnitService.callOnMapClick(id, false);
 
-                        for (let p of ms.level1) {
-                            p.fire("selectedChanged");
-                        }
+                                for (let p of ms.level1) {
+                                    p.fire("selectedChanged");
+                                }
 
-                        for (let p of ms.level2) {
-                            p.fire("selectedChanged");
-                        }
+                                for (let p of ms.level2) {
+                                    p.fire("selectedChanged");
+                                }
 
-                        for (let p of ms.level3) {
-                            p.fire("selectedChanged");
-                        }
+                                for (let p of ms.level3) {
+                                    p.fire("selectedChanged");
+                                }
 
-                        for (let p of ms.level4) {
-                            p.fire("selectedChanged");
-                        }
+                                for (let p of ms.level4) {
+                                    p.fire("selectedChanged");
+                                }
+                            }
+                        }, 250);
                     })
                     .addEventListener("dblclick", function(e) {
                         // map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
@@ -262,6 +267,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         //     ms.selectedPolygon = feature.properties.id;
                         //     ms.orgUnitService.callOnMapClick(feature.properties.id);
                         // });
+
+                        map.clicked = 0;
 
                         if (!(maxLevelReached)) {
                             ms.selectedPolygon = id;
