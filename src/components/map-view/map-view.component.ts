@@ -89,6 +89,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.level3 = [];
         this.level4 = [];
 
+        console.log("JALLLAAA: " + orgUnits);
+
         this.addPolygons(orgUnits);
     }
 
@@ -234,7 +236,34 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         // });
 
                         ms.selectedPolygon = id;
-                        ms.orgUnitService.callOnMapClick(id);
+                        ms.orgUnitService.callOnMapClick(id, false);
+
+                        for (let p of ms.level1) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of ms.level2) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of ms.level3) {
+                            p.fire("selectedChanged");
+                        }
+
+                        for (let p of ms.level4) {
+                            p.fire("selectedChanged");
+                        }
+                    })
+                    .addEventListener("dblclick", function(e) {
+                        // map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+
+                        // this.setStyle(function(feature) {
+                        //     ms.selectedPolygon = feature.properties.id;
+                        //     ms.orgUnitService.callOnMapClick(feature.properties.id);
+                        // });
+
+                        ms.selectedPolygon = id;
+                        ms.orgUnitService.callOnMapClick(id, true);
 
                         for (let p of ms.level1) {
                             p.fire("selectedChanged");
