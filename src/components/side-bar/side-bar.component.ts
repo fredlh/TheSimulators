@@ -47,7 +47,8 @@ export class SideBarComponent implements SideBarInterface {
 
     expandAndScrollToOrgUnit(orgUnitId: string) {
         console.log("i should scholl");
-        let innerDiv = "#" + orgUnitId + " a";
+        let innerDiv = "#" + orgUnitId + " h4";
+        console.log($(innerDiv).html());
         let parentDiv = "#sideBar";
 
         this.hideSidebarClick = true;
