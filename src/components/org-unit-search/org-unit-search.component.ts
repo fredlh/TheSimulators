@@ -18,6 +18,7 @@ declare var $: any;
 export class OrgUnitSearchComponent implements OnInit {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
+    private advancedSearchVisible = false;
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -29,22 +30,30 @@ export class OrgUnitSearchComponent implements OnInit {
     }
 
     advancedSearch(): void {
+        this.advancedSearchVisible = !this.advancedSearchVisible;
+        let top = this.advancedSearchVisible ? "255px" : "120px";
+        let height = this.advancedSearchVisible ? "715px" : "850px";
+        let animateSpeed = 200;
+
+        $("#sideBar").animate({
+            top: top,
+            height: height
+        }, animateSpeed);
+        $("#toggleSideBar").animate({
+            top: top
+        }, animateSpeed);
+        
         $("#advancedSearchDiv").slideToggle("fast");
     }
 
     search(term: string, level: string, maxLevel): void {
         let lvl = level === "All" ? "" : level;
         let maxLvl = maxLevel === "None" ? "" : maxLevel;
-        // console.log("level: " + lvl + " | maxLevel: " + maxLvl);
         this.orgUnitService.search(term, lvl, maxLvl);
     }
 
     ngOnInit(): void {
         // TODO: Auto search on key-press, rather than a button?
-    }
-
-    gotoDetail(orgUnit: OrgUnit) {
-        console.log("gotoDetail(): " + orgUnit);
     }
 
     getAllOrgUnits(): void {
