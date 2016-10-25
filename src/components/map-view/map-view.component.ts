@@ -79,7 +79,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.orgUnitService.registerMapView(this);
     }
 
-    draw(orgUnits: OrgUnit[]): void {
+    draw(orgUnits: OrgUnit[], doubleClick: boolean): void {
 
         // Need to clear all data?
 
@@ -91,7 +91,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         console.log("JALLLAAA: " + orgUnits);
 
-        this.addPolygons(orgUnits);
+        this.addPolygons(orgUnits, doubleClick);
     }
 
     onSideBarClick(orgUnitId: string): void {
@@ -117,7 +117,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
-    private addPolygons(orgUnits: OrgUnit[]) {
+    private addPolygons(orgUnits: OrgUnit[], doubleClick: boolean) {
         this.orgUnits = orgUnits;
         let map = this.map;
 
@@ -196,6 +196,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     }
 
                     let id = org.id;
+                    let level = org.level;
 
                     // Push the polygon into an array for easy access later
                     let tempGeo = L.geoJSON(poly, {
@@ -262,23 +263,25 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         //     ms.orgUnitService.callOnMapClick(feature.properties.id);
                         // });
 
-                        ms.selectedPolygon = id;
-                        ms.orgUnitService.callOnMapClick(id, true);
+                        if (level !== 3 && doubleClick) {
+                            ms.selectedPolygon = id;
+                            ms.orgUnitService.callOnMapClick(id, true);
 
-                        for (let p of ms.level1) {
-                            p.fire("selectedChanged");
-                        }
+                            for (let p of ms.level1) {
+                                p.fire("selectedChanged");
+                            }
 
-                        for (let p of ms.level2) {
-                            p.fire("selectedChanged");
-                        }
+                            for (let p of ms.level2) {
+                                p.fire("selectedChanged");
+                            }
 
-                        for (let p of ms.level3) {
-                            p.fire("selectedChanged");
-                        }
+                            for (let p of ms.level3) {
+                                p.fire("selectedChanged");
+                            }
 
-                        for (let p of ms.level4) {
-                            p.fire("selectedChanged");
+                            for (let p of ms.level4) {
+                                p.fire("selectedChanged");
+                            }
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
