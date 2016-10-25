@@ -72,6 +72,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.layer2.addTo(this.map);
         this.layer3.addTo(this.map);
         this.layer4.addTo(this.map);
+
+        map.clicked = 0;
     }
 
     ngAfterViewInit(): void {
@@ -258,6 +260,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                     p.fire("selectedChanged");
                                 }
                             }
+
+                            map.clicked = 0;
                         }, 250);
                     })
                     .addEventListener("dblclick", function(e) {
