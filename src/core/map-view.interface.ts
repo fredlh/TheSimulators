@@ -1,6 +1,6 @@
 import { OrgUnit } from "./org-unit";
 
 export interface MapViewInterface {
-    onSearch(orgUnits: OrgUnit[]);
+    draw(orgUnits: OrgUnit[]);
     onSideBarClick(orgUnitId: string);
 }

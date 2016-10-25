@@ -79,7 +79,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.orgUnitService.registerMapView(this);
     }
 
-    onSearch(orgUnits: OrgUnit[]): void {
+    draw(orgUnits: OrgUnit[]): void {
 
         // Need to clear all data?
 

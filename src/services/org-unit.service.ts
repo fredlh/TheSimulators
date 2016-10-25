@@ -50,6 +50,21 @@ export class OrgUnitService {
         });
     }
 
+    getOrgUnit(orgUnitId: string): any {
+        let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnitId}?includeChildren=true`;
+        console.log("Requesting org units from api: " + apiUrl);
+        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
+        return Observable.create(observer => {
+          this.http
+            .get(apiUrl, {headers: this.headers})
+            .map(res => res.json())
+            .subscribe((data) => {
+             observer.next(data);
+             observer.complete();
+          });
+        });
+    }
+
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {
         if (term.trim() === "") {
             return undefined;
@@ -73,17 +88,33 @@ export class OrgUnitService {
         });
     }
 
+    // Returns an array with the parent at index 0
+    // and all its children afterwards
+    getOrgUnitAndChildren(orgUnitID: string): OrgUnit[] {
+        let tmpOrgUnits = [];
+
+        this.getOrgUnit(orgUnitID).subscribe(res => {
+            for (let orgUnit of res.organisationUnits) {
+                tmpOrgUnits.push(orgUnit);
+                console.log(orgUnit.id);
+            }
+        });
+
+        return tmpOrgUnits;
+    }
+
     private handleError(error: any): any {
         console.error("An error occured", error);
     }
 
     private callOnSearch(): void {
         this.sideBar.onSearch(this.orgUnits);
-        this.mapView.onSearch(this.orgUnits);
+        this.mapView.draw(this.orgUnits);
     }
 
     callOnMapClick(orgUnitId: string): void {
         this.sideBar.onMapClick(orgUnitId);
+        this.mapView.draw(this.getOrgUnitAndChildren(orgUnitId));
     }
 
     callOnSideBarClick(orgUnitId: string): void {
