@@ -352,7 +352,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     let tempMark = L.marker(markerlatlng, markOptions)
                     .addEventListener("click", function(e) {
                         ms.selectedPolygon = id;
-                        ms.orgUnitService.callOnMapClick(id);
+                        ms.orgUnitService.callOnMapClick(id, false);
 
                         for (let p of ms.level1) {
                             p.fire("selectedChanged");
