@@ -117,18 +117,18 @@ export class OrgUnitService {
     }
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
+        console.log("heeewewe");
         if (doubleClick) {
-            this.sideBar.onMapClick(orgUnitId);
+            this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
             this.getOrgUnitAndChildren(orgUnitId);
         } else {
-            this.sideBar.onMapClick(orgUnitId);
+            this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
         }
         
     }
 
     callOnSideBarClick(orgUnitId: string): void {
         this.mapView.onSideBarClick(orgUnitId);
-        this.sideBar.onMapClick(orgUnitId);
-        this.getOrgUnitAndChildren(orgUnitId);        
+        this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
     }
 }
