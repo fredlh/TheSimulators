@@ -6,9 +6,6 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
 
-import { AccordionModule } from "ng2-accordion";
-
-
 declare var $: any;
 
 @Component({
@@ -45,28 +42,37 @@ export class SideBarComponent implements SideBarInterface {
         }
     }
 
-    expandAndScrollToOrgUnit(orgUnitId: string) {
-        console.log("i should scholl");
+    scrollToOrgUnit(orgUnitId: string) {
+        /*
         let innerDiv = "#" + orgUnitId + " h4";
-        console.log($(innerDiv).html());
         let parentDiv = "#sideBar";
 
-        this.hideSidebarClick = true;
-
-        $(innerDiv)[0].click();
         setTimeout(function() {
-            $(parentDiv).scrollTop($(parentDiv).scrollTop() + $(innerDiv).position().top - 50);
-        }, 50);
+            console.log($(innerDiv).position());
+            $(parentDiv).scrollTop(0);
+            console.log("PARENT: " + parentDiv + " | INNER: " + innerDiv)
+        }, 2000);
+        */
+        $("#sideBar").scrollTop(0);
+        console.log("OFFSET: " + $("#" + orgUnitId + " h4").offset().top);
+        setTimeout(function() {
+            $('#sideBar').animate({
+                scrollTop: $("#" + orgUnitId + " h4").offset().top - 170
+            }, 50);
+        }, 200)
+        
+            
+       
     }
 
     sideBarClicked(orgUnitId: string) {
-        console.log("tesewewe");
-
+        /*
         if (!(this.hideSidebarClick)) {
             this.orgUnitService.callOnSideBarClick(orgUnitId);
         }
 
         this.hideSidebarClick = false;
+        */
     }
 
 
@@ -90,8 +96,8 @@ export class SideBarComponent implements SideBarInterface {
         }
     }
 
-    zoomToChildren(orgUnitId: string) {
-        console.log("Zoom to: " + orgUnitId);
+    getChildren(orgUnitId: string) {
+        //console.log("Zoom to: " + orgUnitId);
         this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
     }
 

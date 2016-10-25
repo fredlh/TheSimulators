@@ -40,13 +40,13 @@
         <accordion>
             <div *ngFor="let orgUnit of orgUnits; let myIndex = index">
                 <div id={{orgUnit.id}}>
-                    <accordion-group style="cursor: pointer;">
-                        <accordion-heading (click)="sideBarClicked(orgUnit.id)">
+                    <accordion-group orgUnitId={{orgUnit.id}}>
+                        <accordion-heading>
                             {{orgUnit.displayName}}
                         </accordion-heading>
                         <span style="cursor: auto;">
                             <button *ngIf="orgUnit.level === 4" id="#zoomToChildrenButton" class="btn btn-info disabled">Children</button>
-                            <button *ngIf="orgUnit.level !== 4" id="#zoomToChildrenButton" class="btn btn-info" (click)="zoomToChildren(orgUnit.id)">Children</button>
+                            <button *ngIf="orgUnit.level !== 4" id="#zoomToChildrenButton" class="btn btn-info" (click)="getChildren(orgUnit.id)">Children</button>
                             <button id="#editOrgUnitButton" class="btn btn-info" (click)="editOrgUnit(orgUnit.id)">Edit</button>
                             <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
                             <ul>

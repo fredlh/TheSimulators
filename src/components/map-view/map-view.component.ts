@@ -94,16 +94,14 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.addPolygons(orgUnits, maxLevelReached);
     }
 
+    deselectMap(): void {
+        this.onSideBarClick("");
+    }
+
     onSideBarClick(orgUnitId: string): void {
         // Set selected
-        console.log("sidebar click received on map with id " + orgUnitId);
-
-        if (this.selectedPolygon === orgUnitId) {
-            this.selectedPolygon = "noneSelected";
+        this.selectedPolygon = orgUnitId;
         
-        } else {
-            this.selectedPolygon = orgUnitId;
-        }
 
         // Tell all polygons to check
         // The one selected will trigger a fly-to

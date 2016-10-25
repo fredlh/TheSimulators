@@ -12,6 +12,8 @@ import { OrgUnit }  from "../core/org-unit";
 import { SideBarInterface } from "../core/side-bar.interface";
 import { MapViewInterface }      from "../core/map-view.interface";
 
+import { AccordionComponent } from "../components/accordion/accordion.component";
+
 
 @Injectable()
 export class OrgUnitService {
@@ -24,6 +26,7 @@ export class OrgUnitService {
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
+    private accordion: AccordionComponent;
 
     constructor(private http: Http) {}
 
@@ -33,6 +36,14 @@ export class OrgUnitService {
 
     registerMapView(mapView: MapViewInterface) {
         this.mapView = mapView;
+    }
+
+    registerAccordion(accordion: AccordionComponent) {
+        this.accordion = accordion;
+    }
+
+    toggleSideBar(orgUnitId: string) {
+        this.accordion.toggleSideBar(orgUnitId);
     }
 
     getOrgUnits(query: string): any {
@@ -121,7 +132,8 @@ export class OrgUnitService {
             //this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
             this.getOrgUnitAndChildren(orgUnitId);
         } else {
-            this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
+            this.toggleSideBar(orgUnitId);
+            this.sideBar.scrollToOrgUnit(orgUnitId);
         }
         
     }
@@ -129,5 +141,9 @@ export class OrgUnitService {
     callOnSideBarClick(orgUnitId: string): void {
         this.mapView.onSideBarClick(orgUnitId);
         //this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
+    }
+
+    deselectMap(): void {
+        this.mapView.deselectMap();
     }
 }

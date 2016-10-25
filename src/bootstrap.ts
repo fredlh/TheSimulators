@@ -1,4 +1,5 @@
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import {CommonModule} from "@angular/common";
 import {HttpModule} from "@angular/http";
 import {NgModule} from "@angular/core";
 import {FormsModule}   from "@angular/forms";
@@ -16,10 +17,13 @@ import {MapService} from "./services/map.service";
 import {GeocodingService} from "./services/geocoding.service";
 import {OrgUnitService} from "./services/org-unit.service";
 
-import { AccordionModule } from "ng2-accordion";
+import { AccordionComponent} from "./components/accordion/accordion.component";
+import { AccordionGroupComponent} from "./components/accordion/accordion-group.component";
+import { AccordionToggleComponent} from "./components/accordion/accordion-toggle.component";
+import { AccordionHeadingComponent} from "./components/accordion/accordion-heading.component";
 
 @NgModule({
-    imports: [HttpModule, FormsModule, BrowserModule, AccordionModule],
+    imports: [HttpModule, FormsModule, BrowserModule, CommonModule],
     bootstrap: [AppComponent],
     declarations: [
         AppComponent,
@@ -28,13 +32,23 @@ import { AccordionModule } from "ng2-accordion";
         MapViewComponent,
         NavBarComponent,
         OrgUnitSearchComponent,
-        SideBarComponent
+        SideBarComponent,
+        AccordionComponent,
+        AccordionGroupComponent,
+        AccordionToggleComponent,
+        AccordionHeadingComponent
     ],
     providers: [
         MapService,
         GeocodingService,
         OrgUnitService
     ],
+    exports: [
+        AccordionComponent,
+        AccordionGroupComponent,
+        AccordionToggleComponent,
+        AccordionHeadingComponent
+    ]
 })
 
 export class AppModule {}
