@@ -60,6 +60,7 @@ export class OrgUnitSearchComponent implements OnInit {
         }
         else if (level === prvns) {
         level = "2";
+        maxLevel = this.getMaxLevel(maxLevel);
         let lvl = level === "All" ? "" : level;
         let maxLvl = maxLevel === "None" ? "" : maxLevel;
         this.orgUnitService.search(term, lvl, maxLvl);
@@ -73,15 +74,12 @@ export class OrgUnitSearchComponent implements OnInit {
         else if (level === unit) 
         {
         level = "4";
+        maxLevel = this.getMaxLevel(maxLevel);
         let lvl = level === "All" ? "" : level;
         let maxLvl = maxLevel === "None" ? "" : maxLevel;
         this.orgUnitService.search(term, lvl, maxLvl);
         }
 
-       /* else { let lvl = level === "All" ? "" : level;
-        let maxLvl = maxLevel === "None" ? "" : maxLevel;
-        this.orgUnitService.search(term, lvl, maxLvl);
-        }*/
     }
 
     ngOnInit(): void {
@@ -90,6 +88,15 @@ export class OrgUnitSearchComponent implements OnInit {
 
     getAllOrgUnits(): void {
         this.orgUnitService.getAllOrgUnits();
+    }
+    getMaxLevel(maxLevel): void {
+        if (maxLevel === "Provence"){
+        maxLevel = "2";
+
+        }
+        else if (maxLevel === "Unit"){
+        maxLevel = "4";
+        }
     }
 }
 // git commit -a -m "en eller annen beskjed"
