@@ -20,6 +20,8 @@ import { OrgUnitService } from "../../services/org-unit.service";
 export class MapViewComponent implements OnInit, MapViewInterface {
 
     private orgUnits: OrgUnit[];
+
+    /*
     private level1: L.GeoJSON[] = [];
     private level2: L.GeoJSON[] = [];
     private level3: L.GeoJSON[] = [];
@@ -29,6 +31,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private layer2;
     private layer3;
     private layer4;
+    */
+
+    private levels: L.GeoJSON[][] = [[], [], [], []];
+    private layers = [];
 
     private map;
 
@@ -63,6 +69,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 err => console.error(err)
             );
 
+        /*
         this.layer1 = L.layerGroup([]);
         this.layer2 = L.layerGroup([]);
         this.layer3 = L.layerGroup([]);
@@ -72,6 +79,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.layer2.addTo(this.map);
         this.layer3.addTo(this.map);
         this.layer4.addTo(this.map);
+        */
 
         map.clicked = 0;
     }
@@ -86,10 +94,14 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         // Need to clear all data?
 
         // ATM reseting when new search is received
+        /*
         this.level1 = [];
         this.level2 = [];
         this.level3 = [];
         this.level4 = [];
+        */
+
+        this.levels = [[], [], [], []];
 
         this.selectedPolygon = "";
 
@@ -107,6 +119,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         // Tell all polygons to check
         // The one selected will trigger a fly-to
+        this.fireSelectedChanged();
+
+        /*
         for (let p of this.level1) {
             p.fire("selectedChanged");
         }
@@ -121,6 +136,45 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         for (let p of this.level4) {
             p.fire("selectedChanged");
+        }
+        */
+    }
+
+    private parsePolygonCoordinates(coordinatesAsString: string): any {
+        let bracketsRemoved = coordinatesAsString.slice(4, coordinatesAsString.length - 4); // Remove brackets on each end (1)
+        let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
+
+        let parsedCoordinates = [];
+
+        // For each subfigure within the figure
+        for (let subfig of subfigures) {
+
+            let subfigureBuildup = [];
+
+            let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
+
+            // For each x,y tupple within the subfigure
+            for (let tuppel of individualTuppels) {
+                let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
+
+                let tuppelBuildup = [];
+                tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
+                tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
+
+                subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
+            }
+
+            parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
+        }
+
+        return parsedCoordinates;
+    }
+
+    private fireSelectedChanged(): void {
+        for (let l of this.levels) {
+            for (let p of l) {
+                p.fire("selectedChanged");
+            }
         }
     }
 
@@ -137,13 +191,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         //      Should probably limit to one "category" at a time,
         //      easily done by limiting to a single "level" at a time
 
-        // Remove layers to not create duplicates when they are added
-        // back towards the end of the function
-        ms.layer1.remove();
-        ms.layer2.remove();
-        ms.layer3.remove();
-        ms.layer4.remove();
-
         // For each orgUnit in the argument array
         for (let org of orgUnits) {
 
@@ -155,6 +202,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 // Check if coordinate indicate a polygon (and not a single point --- marker)
                 if (org.coordinates[1] === "[") {
 
+                    /*
                     let bracketsRemoved = org.coordinates.slice(4, org.coordinates.length - 4); // Remove brackets on each end (1)
                     let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
 
@@ -180,6 +228,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                         parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
                     }
+                    */
 
                     // Set up polygon information
                     let poly = ({
@@ -187,10 +236,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         "properties": {"id": org.id, "name": org.displayName, "defaultColor": "black", "highlightColor": "blue", "selectedColor": "red", "weight": "1"},
                         "geometry": {
                             "type": "Polygon",
-                            "coordinates": parsedCoordinates
+                            "coordinates": ms.parsePolygonCoordinates(org.coordinates)
                         }
                     });
 
+                    /*
                     let polygons;
 
                     if (org.level === 1) {
@@ -202,14 +252,14 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     } else { // Assuming only 4 levels
                         polygons = ms.level4;
                     }
+                    let level = org.level;
+                    */
 
                     let id = org.id;
-                    let level = org.level;
 
                     // Push the polygon into an array for easy access later
                     let tempGeo = L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
-                            // layer.bindPopup(feature.properties.id + "<br>" + feature.properties.name);
                             layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
@@ -249,7 +299,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             if (map.clicked === 1 && ms.selectedPolygon !== id) {
                                 ms.selectedPolygon = id;
                                 ms.orgUnitService.callOnMapClick(id, false);
+                                ms.fireSelectedChanged();
 
+                                /*
                                 for (let p of ms.level1) {
                                     p.fire("selectedChanged");
                                 }
@@ -265,6 +317,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 for (let p of ms.level4) {
                                     p.fire("selectedChanged");
                                 }
+                                */
                             }
 
                             map.clicked = 0;
@@ -284,6 +337,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             ms.selectedPolygon = "";
                             ms.orgUnitService.callOnMapClick(id, true);
 
+                            // This may be unneeded as a doubleclick will either
+                            // result in nothing or a complete redraw
+                            ms.fireSelectedChanged();
+                            /*
                             for (let p of ms.level1) {
                                 p.fire("selectedChanged");
                             }
@@ -299,6 +356,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             for (let p of ms.level4) {
                                 p.fire("selectedChanged");
                             }
+                            */
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
@@ -336,11 +394,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     */
 
                     allCoords.push(tempGeo.getBounds());
-                    polygons.push(tempGeo);
+                    ms.levels[org.level - 1].push(tempGeo);
 
                 } else {
                     // Markers for single point locations
 
+                    /*
                     // Coordinates indicate marker
                     let markers;
 
@@ -353,7 +412,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     } else { // Assuming only 4 levels
                         markers = ms.level4;
                     }
+                    */
 
+                    let level: any = ms.levels[org.level - 1]; // Hack to force L.Markers into array
+
+                    // Markers are parsed in-function because of the low complexity
                     let bracketsRemoved = org.coordinates.slice(1, org.coordinates.length - 1);
                     let markerCoordinate = [];
 
@@ -376,7 +439,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     .addEventListener("click", function(e) {
                         ms.selectedPolygon = id;
                         ms.orgUnitService.callOnMapClick(id, false);
+                        ms.fireSelectedChanged();
 
+                        /*
                         for (let p of ms.level1) {
                             p.fire("selectedChanged");
                         }
@@ -392,6 +457,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         for (let p of ms.level4) {
                             p.fire("selectedChanged");
                         }
+                        */
                     })
                     .addEventListener("selectedChanged", function(e) {
                         if (id === ms.selectedPolygon) {
@@ -400,10 +466,32 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         }
                     });
 
-                    markers.push(tempMark);
+                    level.push(tempMark);
                 }
             }
         }
+
+        // Remove layers to not create duplicates when they are added
+        // back towards the end of the function
+        for (let l of ms.layers) {
+            l.remove();
+        }
+        
+        ms.layers = [];
+        ms.layers.push(L.layerGroup(ms.levels[0]));
+        ms.layers.push(L.layerGroup(ms.levels[1]));
+        ms.layers.push(L.layerGroup(ms.levels[2]));
+        ms.layers.push(L.layerGroup(ms.levels[3]));
+        
+        for (let l of ms.layers) {
+            l.addTo(ms.map);
+        }
+
+        /*
+        ms.layer1.remove();
+        ms.layer2.remove();
+        ms.layer3.remove();
+        ms.layer4.remove();
 
         ms.layer1 = L.layerGroup(ms.level1);
         ms.layer2 = L.layerGroup(ms.level2);
@@ -414,7 +502,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         ms.layer2.addTo(ms.map);
         ms.layer3.addTo(ms.map);
         ms.layer4.addTo(ms.map);
+        */
 
+        // Will later be called or not based on settings
         map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
     }
 }
