@@ -54,6 +54,8 @@ export class OrgUnitSearchComponent implements OnInit {
 
         if (level === country) {
         level = "1";
+        maxLevel = this.getMaxLevel(maxLevel);
+
         let lvl = level === "All" ? "" : level;
         let maxLvl = maxLevel === "None" ? "" : maxLevel;
         this.orgUnitService.search(term, lvl, maxLvl);
@@ -67,6 +69,8 @@ export class OrgUnitSearchComponent implements OnInit {
         }
         else if (level === dist) {
         level = "3";
+        maxLevel = this.getMaxLevel(maxLevel);
+
         let lvl = level === "All" ? "" : level;
         let maxLvl = maxLevel === "None" ? "" : maxLevel;
         this.orgUnitService.search(term, lvl, maxLvl);
@@ -90,14 +94,22 @@ export class OrgUnitSearchComponent implements OnInit {
         this.orgUnitService.getAllOrgUnits();
     }
     getMaxLevel(maxLevel): void {
-        if (maxLevel === "Provence"){
+        if (maxLevel === "Country"){
+        maxLevel = "1";
+
+        }
+        else if (maxLevel === "Provence"){
         maxLevel = "2";
+
+        }
+        if (maxLevel === "District"){
+        maxLevel = "3";
 
         }
         else if (maxLevel === "Unit"){
         maxLevel = "4";
         }
-    }
+        
 }
 // git commit -a -m "en eller annen beskjed"
 // git push -u origin map_version
