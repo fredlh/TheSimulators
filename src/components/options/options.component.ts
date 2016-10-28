@@ -22,6 +22,7 @@ export class OptionsComponent {
     // Auto zoom
     private static AUTO_ZOOM_ON_SEARCH = 0;
     private static AUTO_ZOOM_ON_GET_CHILDREN = 1;
+    private static AUTO_ZOOM_ON_SELECT = 2;
 
     private static mapOptions: MapOptions[] = [
         {color: "red", hoverColor: "blue", borderColor: "green", borderHoverColor: "black", borderWeight: "1", borderHoverWeight: "2"},
@@ -30,7 +31,7 @@ export class OptionsComponent {
         {color: "red", hoverColor: "blue", borderColor: "green", borderHoverColor: "black", borderWeight: "1", borderHoverWeight: "2"}
     ];
 
-    private static zoomOptions = [true, true];
+    private static zoomOptions = [true, true, true];
 
     private self = OptionsComponent;
 
@@ -40,6 +41,10 @@ export class OptionsComponent {
 
     public static getAutoZoomOnGetChildren(): boolean {
         return this.zoomOptions[this.AUTO_ZOOM_ON_GET_CHILDREN];
+    }
+
+    public static getAutoZoomOnSelect(): boolean {
+        return this.zoomOptions[this.AUTO_ZOOM_ON_SELECT];
     }
 
     public static getMapOptions(level?: number): MapOptions | MapOptions[] {
