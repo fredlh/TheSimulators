@@ -106,10 +106,10 @@ export class OrgUnitService {
             this.orgUnits = res.organisationUnits;
 
             if (this.orgUnits[0].level === 3) {
-                this.mapView.draw(this.orgUnits, true);
+                this.mapView.draw(this.orgUnits, true, true);
                 
             } else {
-                this.mapView.draw(this.orgUnits, false);
+                this.mapView.draw(this.orgUnits, false, true);
             }
 
             this.sideBar.updateList(this.orgUnits);
@@ -124,7 +124,7 @@ export class OrgUnitService {
 
     private callOnSearch(): void {
         this.sideBar.updateList(this.orgUnits);
-        this.mapView.draw(this.orgUnits, false);
+        this.mapView.draw(this.orgUnits, false, true);
     }
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
