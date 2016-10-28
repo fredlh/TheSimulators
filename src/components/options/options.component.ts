@@ -2,13 +2,19 @@ import { Component } from "@angular/core";
 
 declare var $: any;
 
-interface MapOptions {
+export interface MapOptions {
+    fillColor: string;
+    fillHoverColor: string;
+    fillSelectedColor: string;
     color: string;
     hoverColor: string;
-    borderColor: string;
-    borderHoverColor: string;
+    selectedColor: string;
     borderWeight: string;
     borderHoverWeight: string;
+    borderSelectedWeight: string;
+    opacity: string;
+    hoverOpacity: string;
+    selectedOpacity: string;
 }
 
 @Component({
@@ -24,11 +30,11 @@ export class OptionsComponent {
     private static AUTO_ZOOM_ON_GET_CHILDREN = 1;
     private static AUTO_ZOOM_ON_SELECT = 2;
 
-    private static mapOptions: MapOptions[] = [
-        {color: "red", hoverColor: "blue", borderColor: "green", borderHoverColor: "black", borderWeight: "1", borderHoverWeight: "2"},
-        {color: "red", hoverColor: "blue", borderColor: "green", borderHoverColor: "black", borderWeight: "1", borderHoverWeight: "2"},
-        {color: "red", hoverColor: "blue", borderColor: "green", borderHoverColor: "black", borderWeight: "1", borderHoverWeight: "2"},
-        {color: "red", hoverColor: "blue", borderColor: "green", borderHoverColor: "black", borderWeight: "1", borderHoverWeight: "2"}
+    private static mapOptions = [
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"},
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"},
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"},
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"}
     ];
 
     private static zoomOptions = [true, true, true];
@@ -47,12 +53,8 @@ export class OptionsComponent {
         return this.zoomOptions[this.AUTO_ZOOM_ON_SELECT];
     }
 
-    public static getMapOptions(level?: number): MapOptions | MapOptions[] {
-        if (level >= 0 && level <= 4) {
-            return this.mapOptions[level];
-        } else {
-            return this.mapOptions;
-        }
+    public static getMapOptions(): MapOptions[] {
+        return this.mapOptions;
     }
 
     toggleOptionsWindow(): void {

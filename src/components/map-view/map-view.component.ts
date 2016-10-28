@@ -11,7 +11,7 @@ import { OrgUnit } from "../../core/org-unit";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
-import { OptionsComponent } from "../options/options.component";
+import { OptionsComponent, MapOptions } from "../options/options.component";
 
 @Component({
     selector: "map-view",
@@ -25,12 +25,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private layers = [];
     private selectedPolygon;
 
+    private mapOptions: MapOptions[];
+    private autoZoomOnSearch: boolean;
+    private autoZoomOnGetChildren: boolean;
+    private autoZoomOnSelect: boolean;
+
     private map;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
-    constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {
-    }
+    constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {}
 
     ngOnInit(): void {
         this.map = L.map("map", {
@@ -62,6 +66,18 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     ngAfterViewInit(): void {
         this.markerComponent.Initialize();
         this.orgUnitService.registerMapView(this);
+
+        // Used to set default values on initialization
+        this.onMapOptionsSave();
+    }
+
+    onMapOptionsSave(): void {
+        this.mapOptions = OptionsComponent.getMapOptions();
+        this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
+        this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
+        this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
+
+        // Fire changed options event
     }
 
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
@@ -92,7 +108,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         for (let subfig of subfigures) {
 
             let subfigureBuildup = [];
-
             let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
 
             // For each x,y tupple within the subfigure
@@ -124,17 +139,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         // this.orgUnits = orgUnits;
         let map = this.map;
         let allCoords = [];
-
         const ms = this;
-
-        // OBS: At this time all polygons are created on the map
-        //      This means that polygons may be put on top of others,
-        //      making the polygons below impossible to reach
-        //      Should probably limit to one "category" at a time,
-        //      easily done by limiting to a single "level" at a time
 
         // For each orgUnit in the argument array
         for (let org of orgUnits) {
+
+            let levelIndex = org.level - 1;
+            let id = org.id;
 
             // Check if orgUnit contains coordinates
             if (org.coordinates !== undefined) {
@@ -146,14 +157,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     // Set up polygon information
                     let poly = ({
                         "type": "Feature",
-                        "properties": {"id": org.id, "name": org.displayName, "defaultColor": "black", "highlightColor": "blue", "selectedColor": "red", "weight": "1"},
+                        "properties": {"id": org.id, "name": org.displayName},
                         "geometry": {
                             "type": "Polygon",
                             "coordinates": ms.parsePolygonCoordinates(org.coordinates)
                         }
                     });
-
-                    let id = org.id;
 
                     // Push the polygon into an array for easy access later
                     let tempGeo = L.geoJSON(poly, {
@@ -161,15 +170,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
-                            return {color: feature.properties.defaultColor};
+                            return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, opacity: +ms.mapOptions[levelIndex].opacity};
                         }
                     })
                     .addEventListener("mouseover", function(e) {
                         this.setStyle(function(feature) {
-                            if (ms.selectedPolygon === feature.properties.id) {
-                                return {fillColor: feature.properties.selectedColor};
-                            } else {
-                                return {fillColor: feature.properties.highlightColor};
+                            if (ms.selectedPolygon !== feature.properties.id) {
+                                return {color: ms.mapOptions[levelIndex].hoverColor, fillColor: ms.mapOptions[levelIndex].fillHoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, opacity: +ms.mapOptions[levelIndex].hoverOpacity};
                             }
                         });
 
@@ -177,10 +184,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     })
                     .addEventListener("mouseout", function(e) {
                         this.setStyle(function(feature) {
-                            if (ms.selectedPolygon === feature.properties.id) {
-                                return {fillColor: feature.properties.selectedColor};
-                            } else {
-                                return {fillColor: feature.properties.defaultColor};
+                            
+                            if (ms.selectedPolygon !== feature.properties.id) {
+                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, opacity: +ms.mapOptions[levelIndex].opacity};
                             }
                         });
                     })
@@ -210,37 +216,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
 
-                                if (OptionsComponent.getAutoZoomOnSelect()) {
+                                if (ms.autoZoomOnSelect) {
                                     map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
                                 }
-                                return {fillColor: feature.properties.selectedColor};
+                                return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, opacity: +ms.mapOptions[levelIndex].selectedOpacity};
 
                             } else {
-                                return {fillColor: feature.properties.defaultColor};
+                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, opacity: +ms.mapOptions[levelIndex].opacity};
                             }
                         });
                     });
-
-                    // Only add polygon if it isn't already added
-
-                    // ATM this is not needed as all data is wiped for each search
-                    /*
-                    let notFound = true;
-                    for (let p of polygons) {
-                        let pId;
-                        p.setStyle(function(feature) {
-                            pId = feature.properties.id;
-                        });
-
-                        if (pId === org.id) {
-                            notFound = false;
-                        }
-                    }
-
-                    if (notFound) {
-                        polygons.push(tempGeo);
-                    }
-                    */
 
                     allCoords.push(tempGeo.getBounds());
                     ms.levels[org.level - 1].push(tempGeo);
@@ -275,7 +260,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         ms.fireSelectedChanged();
                     })
                     .addEventListener("selectedChanged", function(e) { 
-                        if (id === ms.selectedPolygon && OptionsComponent.getAutoZoomOnSelect()) {
+                        if (id === ms.selectedPolygon && ms.autoZoomOnSelect) {
                             let coords = this.getLatLng();
                             map.flyTo([coords.lat, coords.lng - 0.0004], 18);
                         }
@@ -302,12 +287,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             l.addTo(ms.map);
         }
 
-        // Will later be called or not based on settings
-        if (allCoords.length !== 0 && ((OptionsComponent.getAutoZoomOnSearch() && newSearch) || (OptionsComponent.getAutoZoomOnGetChildren() && !newSearch))) {
-            map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+        if (allCoords.length !== 0 && ((ms.autoZoomOnSearch && newSearch) || (ms.autoZoomOnGetChildren && !newSearch))) {
+            map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]});
         }
-
-        console.log("getAutoZoomSearch: " + OptionsComponent.getAutoZoomOnSearch() + " getAutoZoomChildren: " + OptionsComponent.getAutoZoomOnGetChildren());
-        console.log("OptionsComponent.getMapOptions:" + OptionsComponent.getMapOptions()[0]);
     }
 }

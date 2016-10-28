@@ -4,4 +4,5 @@ export interface MapViewInterface {
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean);
     onSideBarClick(orgUnitId: string);
     deselectMap();
+    onMapOptionsSave();
 }
