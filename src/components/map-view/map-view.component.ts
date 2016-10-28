@@ -170,13 +170,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
-                            return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, opacity: +ms.mapOptions[levelIndex].opacity};
+                            return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                         }
                     })
                     .addEventListener("mouseover", function(e) {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon !== feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].hoverColor, fillColor: ms.mapOptions[levelIndex].fillHoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, opacity: +ms.mapOptions[levelIndex].hoverOpacity};
+                                return {color: ms.mapOptions[levelIndex].hoverColor, fillColor: ms.mapOptions[levelIndex].fillHoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
                             }
                         });
 
@@ -186,7 +186,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         this.setStyle(function(feature) {
                             
                             if (ms.selectedPolygon !== feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, opacity: +ms.mapOptions[levelIndex].opacity};
+                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
                     })
@@ -219,10 +219,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 if (ms.autoZoomOnSelect) {
                                     map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
                                 }
-                                return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, opacity: +ms.mapOptions[levelIndex].selectedOpacity};
+                                return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
 
                             } else {
-                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, opacity: +ms.mapOptions[levelIndex].opacity};
+                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
                     });

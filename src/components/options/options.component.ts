@@ -9,12 +9,15 @@ export interface MapOptions {
     color: string;
     hoverColor: string;
     selectedColor: string;
-    borderWeight: string;
-    borderHoverWeight: string;
-    borderSelectedWeight: string;
     opacity: string;
     hoverOpacity: string;
     selectedOpacity: string;
+    borderWeight: string;
+    borderHoverWeight: string;
+    borderSelectedWeight: string;
+    borderOpacity: string;
+    borderHoverOpacity: string;
+    borderSelectedOpacity: string;
 }
 
 @Component({
@@ -31,10 +34,10 @@ export class OptionsComponent {
     private static AUTO_ZOOM_ON_SELECT = 2;
 
     private static mapOptions = [
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"},
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"},
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"},
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", opacity: "0.5", hoverOpacity: "0.5", selectedOpacity: "0.5"}
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"},
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"},
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"},
+        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"}
     ];
 
     private static zoomOptions = [true, true, true];
