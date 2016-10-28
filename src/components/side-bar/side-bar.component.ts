@@ -101,6 +101,10 @@ export class SideBarComponent implements SideBarInterface {
         this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
     }
 
+    goToPreviousOrgUnits(): void {
+        this.orgUnitService.returnToLastStackFrame();
+    }
+
     editOrgUnit(orgUnitId: string) {
         console.log("Edit: " + orgUnitId);
     }

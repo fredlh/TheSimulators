@@ -23,6 +23,7 @@ export class OrgUnitService {
     private headers = new Headers({"Content-Type": "application/json"});
 
     private orgUnits: OrgUnit[];
+    private orgUnitStack: OrgUnit[][] = [];
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
@@ -47,6 +48,8 @@ export class OrgUnitService {
     }
 
     getOrgUnits(query: string): any {
+        this.orgUnitStack = [];
+
         let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${query}`;
         console.log("Requesting org units from api: " + apiUrl);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));
@@ -103,6 +106,7 @@ export class OrgUnitService {
     // and all its children afterwards
     getOrgUnitAndChildren(orgUnitID: string): void {
         this.getOrgUnit(orgUnitID).subscribe(res => {
+            this.orgUnitStack.push(this.orgUnits);
             this.orgUnits = res.organisationUnits;
 
             if (this.orgUnits[0].level === 3) {
@@ -116,6 +120,23 @@ export class OrgUnitService {
 
         });
         return;
+    }
+
+    returnToLastStackFrame(): void {
+        let r = this.getPreviousStackFrame();
+
+        if (r !== undefined) {
+            this.orgUnits = r;
+
+            this.mapView.draw(this.orgUnits, false, false);
+            this.sideBar.updateList(this.orgUnits);
+        }
+    }
+
+    // Returns the last set of OrgUnits in the orgUnitStack
+    // May return undefined
+    private getPreviousStackFrame(): OrgUnit[] {
+        return this.orgUnitStack.pop();
     }
 
     private handleError(error: any): any {
