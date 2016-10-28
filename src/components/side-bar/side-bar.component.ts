@@ -56,7 +56,7 @@ export class SideBarComponent implements SideBarInterface {
         $("#sideBar").scrollTop(0);
         console.log("OFFSET: " + $("#" + orgUnitId + " h4").offset().top);
         setTimeout(function() {
-            $('#sideBar').animate({
+            $("#sideBar").animate({
                 scrollTop: $("#" + orgUnitId + " h4").offset().top - 170
             }, 50);
         }, 200)

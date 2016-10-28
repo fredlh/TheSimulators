@@ -12,6 +12,7 @@ import {MapViewComponent } from "./components/map-view/map-view.component";
 import {NavBarComponent} from "./components/nav-bar/nav-bar.component";
 import {OrgUnitSearchComponent} from "./components/org-unit-search/org-unit-search.component";
 import {SideBarComponent} from "./components/side-bar/side-bar.component";
+import {OptionsComponent} from "./components/options/options.component";
 
 import {MapService} from "./services/map.service";
 import {GeocodingService} from "./services/geocoding.service";
@@ -36,7 +37,8 @@ import { AccordionHeadingComponent} from "./components/accordion/accordion-headi
         AccordionComponent,
         AccordionGroupComponent,
         AccordionToggleComponent,
-        AccordionHeadingComponent
+        AccordionHeadingComponent,
+        OptionsComponent
     ],
     providers: [
         MapService,

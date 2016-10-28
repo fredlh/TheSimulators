@@ -505,6 +505,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         */
 
         // Will later be called or not based on settings
-        map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+        if (allCoords.length != 0) {
+            map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+        }
     }
 }

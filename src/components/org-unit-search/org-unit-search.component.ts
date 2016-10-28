@@ -7,6 +7,8 @@ import { OrgUnit }              from "../../core/org-unit";
 
 import { OrgUnitService }       from "../../services/org-unit.service";
 
+import { Constants }            from "../../constants/constants";
+
 declare var $: any;
 
 @Component({
@@ -19,6 +21,8 @@ export class OrgUnitSearchComponent implements OnInit {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
     private advancedSearchVisible = false;
+    private levelToNameMap: String[] = Constants.nameToLevelMapping;
+    private constants = Constants;
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -47,47 +51,7 @@ export class OrgUnitSearchComponent implements OnInit {
     }
 
     search(term: string, level: string, maxLevel): void {
-        /*
-        let prvns = "Provence";
-        let dist = "District";
-        let country = "Country";
-        let unit = "Unit";
-
-        if (level === country) {
-        level = "1";
-        maxLevel = this.getMaxLevel(maxLevel);
-
-        let lvl = level === "All" ? "" : level;
-        let maxLvl = maxLevel === "None" ? "" : maxLevel;
-        this.orgUnitService.search(term, lvl, maxLvl);
-        }
-        else if (level === prvns) {
-        level = "2";
-        maxLevel = this.getMaxLevel(maxLevel);
-        let lvl = level === "All" ? "" : level;
-        let maxLvl = maxLevel === "None" ? "" : maxLevel;
-        this.orgUnitService.search(term, lvl, maxLvl);
-        }
-        else if (level === dist) {
-        level = "3";
-        maxLevel = this.getMaxLevel(maxLevel);
-        */
-
-        let lvl = level === "All" ? "" : level;
-        let maxLvl = maxLevel === "None" ? "" : maxLevel;
-        this.orgUnitService.search(term, lvl, maxLvl);
-
-        /*
-        }
-        else if (level === unit) 
-        {
-        level = "4";
-        maxLevel = this.getMaxLevel(maxLevel);
-        let lvl = level === "All" ? "" : level;
-        let maxLvl = maxLevel === "None" ? "" : maxLevel;
-        this.orgUnitService.search(term, lvl, maxLvl);
-        }
-        */
+        this.orgUnitService.search(term, level, maxLevel);
     }
 
     ngOnInit(): void {
