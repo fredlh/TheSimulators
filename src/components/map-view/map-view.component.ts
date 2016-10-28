@@ -11,6 +11,8 @@ import { OrgUnit } from "../../core/org-unit";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
+import { OptionsComponent } from "../options/options.component";
+
 @Component({
     selector: "map-view",
     template: require<any>("./map-view.component.html"),
@@ -18,27 +20,12 @@ import { OrgUnitService } from "../../services/org-unit.service";
 })
 
 export class MapViewComponent implements OnInit, MapViewInterface {
-
-    private orgUnits: OrgUnit[];
-
-    /*
-    private level1: L.GeoJSON[] = [];
-    private level2: L.GeoJSON[] = [];
-    private level3: L.GeoJSON[] = [];
-    private level4: L.GeoJSON[] = [];
-
-    private layer1;
-    private layer2;
-    private layer3;
-    private layer4;
-    */
-
+    // private orgUnits: OrgUnit[];
     private levels: L.GeoJSON[][] = [[], [], [], []];
     private layers = [];
+    private selectedPolygon;
 
     private map;
-
-    private selectedPolygon;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -69,18 +56,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 err => console.error(err)
             );
 
-        /*
-        this.layer1 = L.layerGroup([]);
-        this.layer2 = L.layerGroup([]);
-        this.layer3 = L.layerGroup([]);
-        this.layer4 = L.layerGroup([]);
-
-        this.layer1.addTo(this.map);
-        this.layer2.addTo(this.map);
-        this.layer3.addTo(this.map);
-        this.layer4.addTo(this.map);
-        */
-
         map.clicked = 0;
     }
 
@@ -89,23 +64,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.orgUnitService.registerMapView(this);
     }
 
-    draw(orgUnits: OrgUnit[], maxLevelReached: boolean): void {
-
-        // Need to clear all data?
-
-        // ATM reseting when new search is received
-        /*
-        this.level1 = [];
-        this.level2 = [];
-        this.level3 = [];
-        this.level4 = [];
-        */
-
+    draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
         this.levels = [[], [], [], []];
-
         this.selectedPolygon = "";
-
-        this.addPolygons(orgUnits, maxLevelReached);
+        this.addPolygons(orgUnits, maxLevelReached, onSearch);
     }
 
     deselectMap(): void {
@@ -115,29 +77,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     onSideBarClick(orgUnitId: string): void {
         // Set selected
         this.selectedPolygon = orgUnitId;
-        
 
-        // Tell all polygons to check
-        // The one selected will trigger a fly-to
+        // Tell all polygons to check, could also result in a fly to depending on settings
         this.fireSelectedChanged();
-
-        /*
-        for (let p of this.level1) {
-            p.fire("selectedChanged");
-        }
-
-        for (let p of this.level2) {
-            p.fire("selectedChanged");
-        }
-
-        for (let p of this.level3) {
-            p.fire("selectedChanged");
-        }
-
-        for (let p of this.level4) {
-            p.fire("selectedChanged");
-        }
-        */
     }
 
     private parsePolygonCoordinates(coordinatesAsString: string): any {
@@ -178,8 +120,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
-    private addPolygons(orgUnits: OrgUnit[], maxLevelReached: boolean) {
-        this.orgUnits = orgUnits;
+    private addPolygons(orgUnits: OrgUnit[], maxLevelReached: boolean, newSearch: boolean) {
+        // this.orgUnits = orgUnits;
         let map = this.map;
         let allCoords = [];
 
@@ -201,35 +143,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                 // Check if coordinate indicate a polygon (and not a single point --- marker)
                 if (org.coordinates[1] === "[") {
-
-                    /*
-                    let bracketsRemoved = org.coordinates.slice(4, org.coordinates.length - 4); // Remove brackets on each end (1)
-                    let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
-
-                    let parsedCoordinates = [];
-
-                    // For each subfigure within the figure
-                    for (let subfig of subfigures) {
-
-                        let subfigureBuildup = [];
-
-                        let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
-
-                        // For each x,y tupple within the subfigure
-                        for (let tuppel of individualTuppels) {
-                            let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
-
-                            let tuppelBuildup = [];
-                            tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
-                            tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
-
-                            subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
-                        }
-
-                        parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
-                    }
-                    */
-
                     // Set up polygon information
                     let poly = ({
                         "type": "Feature",
@@ -239,21 +152,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             "coordinates": ms.parsePolygonCoordinates(org.coordinates)
                         }
                     });
-
-                    /*
-                    let polygons;
-
-                    if (org.level === 1) {
-                        polygons = ms.level1;
-                    } else if (org.level === 2) {
-                        polygons = ms.level2;
-                    } else if (org.level === 3) {
-                        polygons = ms.level3;
-                    } else { // Assuming only 4 levels
-                        polygons = ms.level4;
-                    }
-                    let level = org.level;
-                    */
 
                     let id = org.id;
 
@@ -287,83 +185,34 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         });
                     })
                     .addEventListener("click", function(e) {
-                        // map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
-
-                        // this.setStyle(function(feature) {
-                        //     ms.selectedPolygon = feature.properties.id;
-                        //     ms.orgUnitService.callOnMapClick(feature.properties.id);
-                        // });
-
                         map.clicked = map.clicked + 1;
                         setTimeout(function() {
                             if (map.clicked === 1 && ms.selectedPolygon !== id) {
                                 ms.selectedPolygon = id;
                                 ms.orgUnitService.callOnMapClick(id, false);
                                 ms.fireSelectedChanged();
-
-                                /*
-                                for (let p of ms.level1) {
-                                    p.fire("selectedChanged");
-                                }
-
-                                for (let p of ms.level2) {
-                                    p.fire("selectedChanged");
-                                }
-
-                                for (let p of ms.level3) {
-                                    p.fire("selectedChanged");
-                                }
-
-                                for (let p of ms.level4) {
-                                    p.fire("selectedChanged");
-                                }
-                                */
                             }
 
                             map.clicked = 0;
                         }, 250);
                     })
                     .addEventListener("dblclick", function(e) {
-                        // map.flyToBounds(this.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
-
-                        // this.setStyle(function(feature) {
-                        //     ms.selectedPolygon = feature.properties.id;
-                        //     ms.orgUnitService.callOnMapClick(feature.properties.id);
-                        // });
-
                         map.clicked = 0;
 
                         if (!(maxLevelReached)) {
                             ms.selectedPolygon = "";
                             ms.orgUnitService.callOnMapClick(id, true);
-
-                            // This may be unneeded as a doubleclick will either
-                            // result in nothing or a complete redraw
                             ms.fireSelectedChanged();
-                            /*
-                            for (let p of ms.level1) {
-                                p.fire("selectedChanged");
-                            }
-
-                            for (let p of ms.level2) {
-                                p.fire("selectedChanged");
-                            }
-
-                            for (let p of ms.level3) {
-                                p.fire("selectedChanged");
-                            }
-
-                            for (let p of ms.level4) {
-                                p.fire("selectedChanged");
-                            }
-                            */
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
                         let geo = this;
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
-                                map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
+
+                                if (OptionsComponent.getAutoZoomOnSelect()) {
+                                    map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
+                                }
                                 return {fillColor: feature.properties.selectedColor};
 
                             } else {
@@ -398,22 +247,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                 } else {
                     // Markers for single point locations
-
-                    /*
-                    // Coordinates indicate marker
-                    let markers;
-
-                    if (org.level === 1) {
-                        markers = ms.level1;
-                    } else if (org.level === 2) {
-                        markers = ms.level2;
-                    } else if (org.level === 3) {
-                        markers = ms.level3;
-                    } else { // Assuming only 4 levels
-                        markers = ms.level4;
-                    }
-                    */
-
                     let level: any = ms.levels[org.level - 1]; // Hack to force L.Markers into array
 
                     // Markers are parsed in-function because of the low complexity
@@ -440,27 +273,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         ms.selectedPolygon = id;
                         ms.orgUnitService.callOnMapClick(id, false);
                         ms.fireSelectedChanged();
-
-                        /*
-                        for (let p of ms.level1) {
-                            p.fire("selectedChanged");
-                        }
-
-                        for (let p of ms.level2) {
-                            p.fire("selectedChanged");
-                        }
-
-                        for (let p of ms.level3) {
-                            p.fire("selectedChanged");
-                        }
-
-                        for (let p of ms.level4) {
-                            p.fire("selectedChanged");
-                        }
-                        */
                     })
-                    .addEventListener("selectedChanged", function(e) {
-                        if (id === ms.selectedPolygon) {
+                    .addEventListener("selectedChanged", function(e) { 
+                        if (id === ms.selectedPolygon && OptionsComponent.getAutoZoomOnSelect()) {
                             let coords = this.getLatLng();
                             map.flyTo([coords.lat, coords.lng - 0.0004], 18);
                         }
@@ -487,26 +302,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             l.addTo(ms.map);
         }
 
-        /*
-        ms.layer1.remove();
-        ms.layer2.remove();
-        ms.layer3.remove();
-        ms.layer4.remove();
-
-        ms.layer1 = L.layerGroup(ms.level1);
-        ms.layer2 = L.layerGroup(ms.level2);
-        ms.layer3 = L.layerGroup(ms.level3);
-        ms.layer4 = L.layerGroup(ms.level4);
-
-        ms.layer1.addTo(ms.map);
-        ms.layer2.addTo(ms.map);
-        ms.layer3.addTo(ms.map);
-        ms.layer4.addTo(ms.map);
-        */
-
         // Will later be called or not based on settings
-        if (allCoords.length != 0) {
+        if (allCoords.length !== 0 && ((OptionsComponent.getAutoZoomOnSearch() && newSearch) || (OptionsComponent.getAutoZoomOnGetChildren() && !newSearch))) {
             map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]}); // coords does not agree, so flies to wrong area atm
         }
+
+        console.log("getAutoZoomSearch: " + OptionsComponent.getAutoZoomOnSearch() + " getAutoZoomChildren: " + OptionsComponent.getAutoZoomOnGetChildren());
+        console.log("OptionsComponent.getMapOptions:" + OptionsComponent.getMapOptions()[0]);
     }
 }
