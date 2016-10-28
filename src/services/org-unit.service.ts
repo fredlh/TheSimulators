@@ -123,14 +123,18 @@ export class OrgUnitService {
     }
 
     returnToLastStackFrame(): void {
-        let r = this.getPreviousStackFrame();
+        let retValue = this.getPreviousStackFrame();
 
-        if (r !== undefined) {
-            this.orgUnits = r;
+        if (retValue !== undefined) {
+            this.orgUnits = retValue;
 
             this.mapView.draw(this.orgUnits, false, false);
             this.sideBar.updateList(this.orgUnits);
         }
+    }
+
+    hasPreviousStackFrame(): boolean {
+        return (this.orgUnitStack.length > 0 ? true : false);
     }
 
     // Returns the last set of OrgUnits in the orgUnitStack

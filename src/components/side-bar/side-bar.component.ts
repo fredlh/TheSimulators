@@ -105,6 +105,10 @@ export class SideBarComponent implements SideBarInterface {
         this.orgUnitService.returnToLastStackFrame();
     }
 
+    hasPreviousStackFrame(): boolean {
+        return this.orgUnitService.hasPreviousStackFrame();
+    }
+
     editOrgUnit(orgUnitId: string) {
         console.log("Edit: " + orgUnitId);
     }
