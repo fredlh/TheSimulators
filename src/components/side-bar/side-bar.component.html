@@ -2,7 +2,9 @@
 <div id="sideBar">
     
     <h3 style="text-align: center;">Search results </h3>
-    <button *ngIf="hasPreviousStackFrame()" id="#goToPreviousOrgUnitsButton" class="btn btn-primary btn-sm btn-block" (click)="goToPreviousOrgUnits()">Go back</button>
+    <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
+    </button>
     
     <!--
     <div id="notaccordion" *ngIf="orgUnits !== undefined">
