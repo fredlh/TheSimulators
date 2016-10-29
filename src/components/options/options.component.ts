@@ -59,6 +59,7 @@ export class OptionsComponent {
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
 
+    private static defaultOptions = new Options();
     private static tempOptions = new Options();
     private static currentOptions = new Options();
 
@@ -119,6 +120,11 @@ export class OptionsComponent {
         OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.tempOptions));
 
         this.orgUnitService.callOnOptionsSave();
+    }
+
+    onReset(): void {
+        OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.defaultOptions));
+        OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.defaultOptions));
     }
 
     
