@@ -246,9 +246,21 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                     allCoords.push(markerCoordinate);
 
+                    const defaultIcon = require("../../../images/ambulance_green.png");
+                    const highlightIcon = require("../../../images/ambulance_red.png");
+
+                    let defIcon = L.icon({
+                        iconUrl: "../../../images/ambulance_green.png"
+                    });
+
+                    let highIcon = L.icon({
+                        iconUrl: "../../../images/ambulance_red.png"
+                    });
+
                     // Set up marker information
                     let markOptions = ({
-                        "title": org.displayName + " | coords: " + markerCoordinate
+                        "title": org.displayName + " | coords: " + markerCoordinate,
+                        "icon": defIcon
                     });
 
                     let id = org.id;
@@ -261,8 +273,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     })
                     .addEventListener("selectedChanged", function(e) { 
                         if (id === ms.selectedPolygon && ms.autoZoomOnSelect) {
+                            this.setIcon(highIcon);
+
                             let coords = this.getLatLng();
                             map.flyTo([coords.lat, coords.lng - 0.0004], 18);
+                        
+                        } else {
+                            this.setIcon(defIcon);
                         }
                     });
 
