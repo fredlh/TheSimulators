@@ -78,6 +78,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
 
         // Fire changed options event
+        for (let l of this.levels) {
+            for (let p of l) {
+                p.fire("optionsChanged");
+            }
+        }
     }
 
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
@@ -225,6 +230,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
+                    })
+                    .addEventListener("optionsChanged", function(e) {
+                        this.setStyle(function(feature) {
+                            if (ms.selectedPolygon === feature.properties.id) {
+                                return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
+                            
+                            } else {
+                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};     
+                            }
+                        });
                     });
 
                     allCoords.push(tempGeo.getBounds());
@@ -281,6 +296,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         } else {
                             this.setIcon(defIcon);
                         }
+                    })
+                    .addEventListener("optionsChanged", function(e) {
+                        // Don't do anything for markers yet
                     });
 
                     level.push(tempMark);
