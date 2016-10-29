@@ -2,6 +2,8 @@ import { Component } from "@angular/core";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
+import { Constants }            from "../../constants/constants";
+
 declare var $: any;
 
 export interface MapOptions {
@@ -53,6 +55,7 @@ class Options {
 
 
 export class OptionsComponent {
+    private constants = Constants;
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
 

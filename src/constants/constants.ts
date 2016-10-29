@@ -7,6 +7,7 @@ export class Constants {
     public static nameToLevelMapping = [Constants.LEVEL_1, Constants.LEVEL_2, Constants.LEVEL_3, Constants.LEVEL_4];
 
     public static getName(level: number): string {
+        if (level < 1 || level > 4) return "Error: Illegal level value";
         return Constants.nameToLevelMapping[level - 1];
     }
 
