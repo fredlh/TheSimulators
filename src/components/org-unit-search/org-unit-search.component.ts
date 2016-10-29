@@ -26,23 +26,15 @@ export class OrgUnitSearchComponent implements OnInit {
 
     constructor(private orgUnitService: OrgUnitService) {}
 
-    printOrgUnits(orgUnits: OrgUnit[]): void {
-        for (let i = 0; i < orgUnits.length; i++) {
-            console.log("ID: " + orgUnits[i].id);
-            console.log("displayName: " + orgUnits[i].displayName);
-        }
-    }
-
     advancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;
         let top = this.advancedSearchVisible ? "255px" : "120px";
-        let height = this.advancedSearchVisible ? "685px" : "820px";
         let animateSpeed = 200;
 
         $("#sideBar").animate({
             top: top,
-            height: height
         }, animateSpeed);
+        
         $("#toggleSideBar").animate({
             top: top
         }, animateSpeed);

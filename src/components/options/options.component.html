@@ -11,62 +11,549 @@
             <span class="close">x</span>
             <h1>Options</h1>
             <p>Here you can change the fault behaviour of some parts of the application</p>
-
-            <h4>General</h4>
+            <br>
             
-            <h4>Map</h4>
-            <form>
+            <form novalidate>
+                <h3>Zoom Options</h3>
+                <hr>
                 <div class="form-group row">
-                    <div class="col-sm-10">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <div *ngIf="self.zoomOptions[self.AUTO_ZOOM_ON_SEARCH] === false">
-                                    <input  class="form-check-input" type="checkbox" value="{{self.AUTO_ZOOM_ON_SEARCH}}" 
-                                       (change)="self.zoomOptions[$event.target.getAttribute('value')]=$event.target.checked"> Auto zoom on search
-                                </div>
-                                
-                                <div *ngIf="self.zoomOptions[self.AUTO_ZOOM_ON_SEARCH] === true">
-                                    <input class="form-check-input" type="checkbox" value="{{self.AUTO_ZOOM_ON_SEARCH}}" 
-                                       (change)="self.zoomOptions[$event.target.getAttribute('value')]=$event.target.checked"
-                                       checked="checked"> Auto zoom on search
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                     <div class="col-sm-10">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <div *ngIf="self.zoomOptions[self.AUTO_ZOOM_ON_GET_CHILDREN] === false">
-                                    <input  class="form-check-input" type="checkbox" value="{{self.AUTO_ZOOM_ON_GET_CHILDREN}}" 
-                                       (change)="self.zoomOptions[$event.target.getAttribute('value')]=$event.target.checked"> Auto zoom on on getChildren
-                                </div>
-                                
-                                <div *ngIf="self.zoomOptions[self.AUTO_ZOOM_ON_GET_CHILDREN] === true">
-                                    <input class="form-check-input" type="checkbox" value="{{self.AUTO_ZOOM_ON_GET_CHILDREN}}" 
-                                       (change)="self.zoomOptions[$event.target.getAttribute('value')]=$event.target.checked"
-                                       checked="checked"> Auto zoom on on getChildren
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-10">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <div *ngIf="self.zoomOptions[self.AUTO_ZOOM_ON_SELECT] === false">
-                                    <input  class="form-check-input" type="checkbox" value="{{self.AUTO_ZOOM_ON_SELECT}}" 
-                                       (change)="self.zoomOptions[$event.target.getAttribute('value')]=$event.target.checked"> Auto zoom on on select
-                                </div>
-                                
-                                <div *ngIf="self.zoomOptions[self.AUTO_ZOOM_ON_SELECT] === true">
-                                    <input class="form-check-input" type="checkbox" value="{{self.AUTO_ZOOM_ON_SELECT}}" 
-                                       (change)="self.zoomOptions[$event.target.getAttribute('value')]=$event.target.checked"
-                                       checked="checked"> Auto zoom on on select
-                                </div>
-                            </label>
-                        </div>
+                    <label for="example-text-input" class="col-xs-5 col-form-label">Auto zoom on search</label>
+                    <div class="col-xs-7">
+                        <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSearch" name="zoomOnSearchAnswer">
+                            <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
+                        </select>
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-xs-5 col-form-label">Auto zoom when retrieving children</label>
+                    <div class="col-xs-7">
+                        <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnGetChildren" name="zoomOnGetChildrenAnswer">
+                            <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-xs-5 col-form-label">Auto zoom when selecting an org unit</label>
+                    <div class="col-xs-7">
+                        <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSelect" name="zoomOnSelectAnswer">
+                            <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <h3>Map Options</h3>
+                <hr>
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                <h4 class="panel-title">
+                                    Level 1
+                                </h4>
+                            </a>
+                        </div>
+                        <div id="collapse1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].fillColor" name="layer1FillColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].fillHoverColor" name="layer1FillHoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].fillSelectedColor" name="layer1fillSelectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].color" name="layer1color">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].hoverColor" name="layer1hoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].selectedColor" name="layer1selectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].opacity" name="layer1opacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].hoverOpacity" name="layer1hoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].selectedOpacity" name="layer1selectedOpacity">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].borderWeight" name="layer1borderWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].borderHoverWeight" name="layer1borderHoverWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].borderSelectedWeight" name="layer1borderSelectedWeight">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].borderOpacity" name="layer1borderOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].borderHoverOpacity" name="layer1borderHoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[0].borderSelectedOpacity" name="layer1borderSelectedOpacity">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                <h4 class="panel-title">
+                                    Level 2
+                                </h4>
+                            </a>
+                        </div>
+                        <div id="collapse2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].fillColor" name="layer1FillColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].fillHoverColor" name="layer1FillHoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].fillSelectedColor" name="layer1fillSelectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].color" name="layer1color">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].hoverColor" name="layer1hoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].selectedColor" name="layer1selectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].opacity" name="layer1opacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].hoverOpacity" name="layer1hoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].selectedOpacity" name="layer1selectedOpacity">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].borderWeight" name="layer1borderWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].borderHoverWeight" name="layer1borderHoverWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].borderSelectedWeight" name="layer1borderSelectedWeight">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].borderOpacity" name="layer1borderOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].borderHoverOpacity" name="layer1borderHoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[1].borderSelectedOpacity" name="layer1borderSelectedOpacity">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                                <h4 class="panel-title">
+                                    Level 3
+                                </h4>
+                            </a>
+                        </div>
+                        <div id="collapse3" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].fillColor" name="layer1FillColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].fillHoverColor" name="layer1FillHoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].fillSelectedColor" name="layer1fillSelectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].color" name="layer1color">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].hoverColor" name="layer1hoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].selectedColor" name="layer1selectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].opacity" name="layer1opacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].hoverOpacity" name="layer1hoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].selectedOpacity" name="layer1selectedOpacity">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].borderWeight" name="layer1borderWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].borderHoverWeight" name="layer1borderHoverWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].borderSelectedWeight" name="layer1borderSelectedWeight">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].borderOpacity" name="layer1borderOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].borderHoverOpacity" name="layer1borderHoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[2].borderSelectedOpacity" name="layer1borderSelectedOpacity">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                <h4 class="panel-title">
+                                    Level 4
+                                </h4>
+                            </a>
+                        </div>
+                        <div id="collapse4" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].fillColor" name="layer1FillColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].fillHoverColor" name="layer1FillHoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Fill selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].fillSelectedColor" name="layer1fillSelectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].color" name="layer1color">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].hoverColor" name="layer1hoverColor">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected color</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].selectedColor" name="layer1selectedColor">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].opacity" name="layer1opacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].hoverOpacity" name="layer1hoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].selectedOpacity" name="layer1selectedOpacity">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].borderWeight" name="layer1borderWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].borderHoverWeight" name="layer1borderHoverWeight">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected weight</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].borderSelectedWeight" name="layer1borderSelectedWeight">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].borderOpacity" name="layer1borderOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border hover opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].borderHoverOpacity" name="layer1borderHoverOpacity">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-text-input" class="col-xs-5 col-form-label">Border selected opacity</label>
+                                    <div class="col-xs-7">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[3].borderSelectedOpacity" name="layer1borderSelectedOpacity">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+
                 <input type="submit" value="Close" class="btn btn-primary" (click)="onClose()">
+                <input type="submit" value="Save" class="btn btn-primary" (click)="onSave()">
             </form>
                 
         </div>

@@ -1,5 +1,7 @@
 import { Component } from "@angular/core";
 
+import { OrgUnitService } from "../../services/org-unit.service";
+
 declare var $: any;
 
 export interface MapOptions {
@@ -9,15 +11,38 @@ export interface MapOptions {
     color: string;
     hoverColor: string;
     selectedColor: string;
-    opacity: string;
-    hoverOpacity: string;
-    selectedOpacity: string;
-    borderWeight: string;
-    borderHoverWeight: string;
-    borderSelectedWeight: string;
-    borderOpacity: string;
-    borderHoverOpacity: string;
-    borderSelectedOpacity: string;
+    opacity: number;
+    hoverOpacity: number;
+    selectedOpacity: number;
+    borderWeight: number;
+    borderHoverWeight: number;
+    borderSelectedWeight: number;
+    borderOpacity: number;
+    borderHoverOpacity: number;
+    borderSelectedOpacity: number;
+}
+
+class Options {
+    autoZoomOnSearch = "Yes";
+    autoZoomOnGetChildren = "Yes";
+    autoZoomOnSelect = "Yes";
+    mapOptions = [
+        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
+            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
+
+        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
+            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
+
+        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
+            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
+
+        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
+            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0}
+    ];
 }
 
 @Component({
@@ -28,65 +53,72 @@ export interface MapOptions {
 
 
 export class OptionsComponent {
-    // Auto zoom
-    private static AUTO_ZOOM_ON_SEARCH = 0;
-    private static AUTO_ZOOM_ON_GET_CHILDREN = 1;
-    private static AUTO_ZOOM_ON_SELECT = 2;
-
-    private static mapOptions = [
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"},
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"},
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"},
-        {fillColor: "black", fillHoverColor: "blue", fillSelectedColor: "red", color: "black", hoverColor: "black", selectedColor: "black", opacity: "0.2", hoverOpacity: "0.2", selectedOpacity: "0.2", borderWeight: "1", borderHoverWeight: "1", borderSelectedWeight: "1", borderOpacity: "1.0", borderHoverOpacity: "1.0", borderSelectedOpacity: "1.0"}
-    ];
-
-    private static zoomOptions = [true, true, true];
-
     private self = OptionsComponent;
+    private booleanOptions = ["Yes", "No"];
+
+    private static tempOptions = new Options();
+    private static currentOptions = new Options();
+
+    constructor(private orgUnitService: OrgUnitService) {}
 
     public static getAutoZoomOnSearch(): boolean {
-        return this.zoomOptions[this.AUTO_ZOOM_ON_SEARCH];
+        return OptionsComponent.currentOptions.autoZoomOnSearch === "Yes";
     }
 
     public static getAutoZoomOnGetChildren(): boolean {
-        return this.zoomOptions[this.AUTO_ZOOM_ON_GET_CHILDREN];
+        return OptionsComponent.currentOptions.autoZoomOnGetChildren === "Yes";
     }
 
     public static getAutoZoomOnSelect(): boolean {
-        return this.zoomOptions[this.AUTO_ZOOM_ON_SELECT];
+        return OptionsComponent.currentOptions.autoZoomOnSelect === "Yes";
     }
 
     public static getMapOptions(): MapOptions[] {
-        return this.mapOptions;
+        return OptionsComponent.currentOptions.mapOptions;
     }
 
     toggleOptionsWindow(): void {
-        let options = document.getElementById("optionsArea");
-        let btn = document.getElementById("optionsButton");
-        let span = document.getElementsByClassName("close")[0];
+        $("#optionsButton").click(this.onOpen);
+        $(".close").click(this.onClose);
 
-        btn.onclick = function() {
-            options.style.display = "block";
-        };
-
-        span.onclick = function() {
-            options.style.display = "none";
-        };
-
+        
         window.onclick = function(event) {
+            let options = document.getElementById("optionsArea");
             if (event.target === options) {
                 options.style.display = "none";
+                OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.currentOptions));
             }
         };
+    }
+
+    onOpen(): void {
+        document.getElementById("optionsArea").style.display = "block";
+    }
+
+    onOutsideClick(event: MouseEvent): any {
+        let options = document.getElementById("optionsArea");
+        if (event.target === options) {
+            options.style.display = "none";
+        }
     }
 
     onClose(): void {
         let options = document.getElementById("optionsArea");
         options.style.display = "none";
-        console.log("SAVE: " + OptionsComponent.zoomOptions);
+
+        OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.currentOptions));
     }
 
     onSave(zoomOnSearch: boolean): void {
+        let options = document.getElementById("optionsArea");
+        options.style.display = "none";
+
+        OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.tempOptions));
+
+        this.orgUnitService.callOnOptionsSave();
     }
+
+    
+
 
 }

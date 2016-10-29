@@ -171,4 +171,8 @@ export class OrgUnitService {
     deselectMap(): void {
         this.mapView.deselectMap();
     }
+
+    callOnOptionsSave(): void {
+        this.mapView.onMapOptionsSave();
+    }
 }

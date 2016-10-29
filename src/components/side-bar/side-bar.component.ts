@@ -16,22 +16,11 @@ declare var $: any;
 
 export class SideBarComponent implements SideBarInterface {
     private orgUnits: OrgUnit[] = null;
-    private collapsList1: string[] = [];
-    private collapsList2: string[] = [];
-
     private sideBarVisible = true;
-    private hideSidebarClick = false;
 
     constructor(private orgUnitService: OrgUnitService) {}
 
     updateList(orgUnits: OrgUnit[]): void {
-        this.collapsList1 = [];
-        this.collapsList2 = [];
-        for (let i = 0; i < orgUnits.length; i++) {
-            this.collapsList1.push("collapse" + i);
-            this.collapsList2.push("#collapse" + i);
-        }
-
         this.orgUnits = orgUnits;
 
         console.log("Side bar - received new orgUnits");
@@ -43,38 +32,13 @@ export class SideBarComponent implements SideBarInterface {
     }
 
     scrollToOrgUnit(orgUnitId: string) {
-        /*
-        let innerDiv = "#" + orgUnitId + " h4";
-        let parentDiv = "#sideBar";
-
-        setTimeout(function() {
-            console.log($(innerDiv).position());
-            $(parentDiv).scrollTop(0);
-            console.log("PARENT: " + parentDiv + " | INNER: " + innerDiv)
-        }, 2000);
-        */
         $("#sideBar").scrollTop(0);
-        console.log("OFFSET: " + $("#" + orgUnitId + " h4").offset().top);
         setTimeout(function() {
             $("#sideBar").animate({
                 scrollTop: $("#" + orgUnitId + " h4").offset().top - 170
             }, 50);
-        }, 200)
-        
-            
-       
+        }, 200)   
     }
-
-    sideBarClicked(orgUnitId: string) {
-        /*
-        if (!(this.hideSidebarClick)) {
-            this.orgUnitService.callOnSideBarClick(orgUnitId);
-        }
-
-        this.hideSidebarClick = false;
-        */
-    }
-
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
@@ -97,7 +61,6 @@ export class SideBarComponent implements SideBarInterface {
     }
 
     getChildren(orgUnitId: string) {
-        //console.log("Zoom to: " + orgUnitId);
         this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
     }
 

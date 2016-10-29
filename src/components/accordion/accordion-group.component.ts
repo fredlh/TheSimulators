@@ -8,7 +8,7 @@ import {OrgUnitService} from "../../services/org-unit.service";
     selector: "accordion-group",
     template: `
   <div class="panel panel-default" [class.dropup]="isOpened">
-    <div class="panel-heading" role="tab" (click)="checkAndToggle()">
+    <div class="panel-heading" role="tab" (click)="checkAndToggle()" style="cursor: pointer;">
       <h4 class="panel-title">
         <a *ngIf="heading" role="button" data-toggle="collapse" [attr.aria-expanded]="isOpened">
             {{ heading }}
