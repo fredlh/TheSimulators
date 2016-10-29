@@ -57,21 +57,21 @@
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Fill color</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillColor" name="layer1FillColor">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillColor" name="{{index + fillColor}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Fill hover color</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillHoverColor" name="layer1FillHoverColor">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillHoverColor" name="{{index + fillHoverColor}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Fill selected color</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillSelectedColor" name="layer1fillSelectedColor">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillSelectedColor" name="{{index + fillSelectedColor}}">
                                 </div>
                             </div>
                             <hr>
@@ -79,21 +79,21 @@
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Color</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].color" name="layer1color">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].color" name="{{index + color}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Hover color</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverColor" name="layer1hoverColor">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverColor" name="{{index + hoverColor}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Selected color</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedColor" name="layer1selectedColor">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedColor" name="{{index + selectedColor}}">
                                 </div>
                             </div>
                             <hr>
@@ -101,21 +101,21 @@
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Opacity</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="layer1opacity">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="{{index + opacity}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Hover opacity</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="layer1hoverOpacity">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="{{index + hoverOpacity}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Selected opacity</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="layer1selectedOpacity">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="{{index + selectedOpacity}}">
                                 </div>
                             </div>
                             <hr>
@@ -123,21 +123,21 @@
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Border weight</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="layer1borderWeight">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="{{index + borderWeight}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Border hover weight</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="layer1borderHoverWeight">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="{{index + borderHoverWeight}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Border selected weight</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="layer1borderSelectedWeight">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="{{index + borderSelectedWeight}}">
                                 </div>
                             </div>
                             <hr>
@@ -145,21 +145,21 @@
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="layer1borderOpacity">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="{{index + borderOpacity}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Border hover opacity</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="layer1borderHoverOpacity">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="{{index + borderHoverOpacity}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-text-input" class="col-xs-5 col-form-label">Border selected opacity</label>
                                 <div class="col-xs-7">
                                     <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="layer1borderSelectedOpacity">
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{index + borderSelectedOpacity}}">
                                 </div>
                             </div>
 
