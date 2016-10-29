@@ -25,9 +25,13 @@ export class SideBarComponent implements SideBarInterface {
 
         console.log("Side bar - received new orgUnits");
         if (this.orgUnits === undefined || this.orgUnits === null || this.orgUnits.length === 0) {
-            this.toggleSideBar(false);
+            // this.toggleSideBar(false);
+            $("#sideBar").hide();
+            $("#toggleSideBar").hide();
         } else {
-            this.toggleSideBar(true);
+            // this.toggleSideBar(true);
+            $("#sideBar").show();
+            $("#toggleSideBar").show();
         }
     }
 
@@ -42,6 +46,8 @@ export class SideBarComponent implements SideBarInterface {
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
+        $("#sideBar").hide();
+        $("#toggleSideBar").hide();
     }
 
     toggleSideBar(show?: Boolean): void {

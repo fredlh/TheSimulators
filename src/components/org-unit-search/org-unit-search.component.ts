@@ -31,13 +31,17 @@ export class OrgUnitSearchComponent implements OnInit {
         let top = this.advancedSearchVisible ? "255px" : "120px";
         let animateSpeed = 200;
 
-        $("#sideBar").animate({
+        $("#sideBar")
+        .animate({
             top: top,
-        }, animateSpeed);
+        }, animateSpeed)
+        .attr("top", top);
         
-        $("#toggleSideBar").animate({
+        $("#toggleSideBar")
+        .animate({
             top: top
-        }, animateSpeed);
+        }, animateSpeed)
+        .attr("top", top);
         
         $("#advancedSearchDiv").slideToggle("fast");
     }
