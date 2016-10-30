@@ -13,6 +13,9 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { OptionsComponent, MapOptions } from "../options/options.component";
 
+const leafletDraw = require("leaflet-draw");
+
+
 @Component({
     selector: "map-view",
     template: require<any>("./map-view.component.html"),
@@ -31,6 +34,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private autoZoomOnSelect: boolean;
 
     private map;
+
+    
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 

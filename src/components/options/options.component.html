@@ -6,7 +6,7 @@
 
 
 
-<div id="optionsArea" class="options">
+<div id="optionsArea" class="options container-fluid">
         <div class="options-content">
             <span class="close">x</span>
             <h1>Options</h1>
@@ -47,6 +47,7 @@
                 <h3>Map Options</h3>
                 <hr>
 
+                <!--
                 <accordion>
                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index">
                         <accordion-group orgUnitId={{orgUnit}}>
@@ -166,7 +167,25 @@
                         </accordion-group>
                     </div>
                 </accordion>
+                -->
 
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-lg-4 col-form-label"></label>
+
+                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1" style="text-align: center;">
+                        <label>{{orgUnit}}</label>                        
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-lg-4 col-form-label">Border opacity when selected (0.00 - 1.00)</label>
+
+                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                        <input class="form-control" type="number"
+                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{index + borderSelectedOpacity}}">
+                    </div>
+                </div>
 
 
                 <input type="submit" value="Close" class="btn btn-primary" (click)="onClose()">
