@@ -27,6 +27,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private levels: L.GeoJSON[][] = [[], [], [], []];
     private layers = [];
     private selectedPolygon;
+    private maxLevelReached: boolean;
 
     private mapOptions: MapOptions[];
     private autoZoomOnSearch: boolean;
@@ -35,7 +36,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     private map;
 
-    
+    private drawControl: L.Control;
+    private drawnItems = L.featureGroup();
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -51,6 +53,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             layers: [this.mapService.baseMaps.OpenStreetMap]
         });
 
+        this.maxLevelReached = false;
         let map = this.map;
 
         L.control.zoom({ position: "topright" }).addTo(map);
@@ -64,6 +67,72 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 location => map.panTo([8.0, -12.5]).zoomOut(4),
                 err => console.error(err)
             );
+
+        // this.drawnItems = L.featureGroup();
+        this.drawnItems.addTo(this.map);
+        this.map.addControl(new L.Control.Draw({
+            position: "topright",
+            edit: {
+                featureGroup: this.drawnItems,
+                poly: {
+                    allowIntersection: false
+                }
+            },
+            draw: {
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true
+                }
+            }
+        }));
+
+        const ms = this;
+
+        this.map.on("draw:created", function(e: L.DrawEvents.Created) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            ms.drawnItems.addLayer(layer);
+
+            console.log("Bounds: " + JSON.stringify(ms.drawnItems.getBounds(), null, 4));
+            console.log("BBox: " + ms.drawnItems.getBounds().toBBoxString());
+
+            console.log("All (type): " + type);
+            // for(let lay of ms.drawnItems.getLayers()) {
+                if (type === "polygon") {
+                    let geojson = {};
+                    geojson["type"] = "Feature";
+                    geojson["geometry"] = {};
+                    geojson["geometry"]["type"] = "Polygon";
+
+                    // Export coords from layer
+                    var coordinates = [];
+                    let lats = layer.getLatLngs();
+
+                    console.log(lats);
+                    console.log("empty coords: " + coordinates);
+
+                    for (let area of lats) {
+                        for (let point of area) {
+                            coordinates.push([point.lng, point.lat]);
+                        }
+                    }
+
+                    console.log("filled coords: " + coordinates);
+
+                    geojson["geometry"]["coordinates"] = [coordinates];
+
+                    console.log("coords: " + coordinates);
+
+                    console.log(JSON.stringify(geojson));
+                
+                } else {
+                    console.log(layer.getBounds().toBBoxString());
+                }
+            // }
+
+            map.flyToBounds(ms.drawnItems.getBounds(), {paddingTopLeft: [350, 75]})
+        });
 
         map.clicked = 0;
     }
@@ -93,7 +162,18 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
         this.levels = [[], [], [], []];
         this.selectedPolygon = "";
-        this.addPolygons(orgUnits, maxLevelReached, onSearch);
+        this.maxLevelReached = maxLevelReached;
+
+        let doFly = ((this.autoZoomOnSearch && onSearch) || (this.autoZoomOnGetChildren && !onSearch));
+
+        this.addMapElement(orgUnits, maxLevelReached, doFly);
+    }
+
+    drawAdditionalOrgUnits(orgUnits: OrgUnit[]): void {
+        // Should it include max level from something else?
+        // Should it fly to, according to parameter?
+
+        this.addMapElement(orgUnits, this.maxLevelReached, false);
     }
 
     deselectMap(): void {
@@ -145,7 +225,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
-    private addPolygons(orgUnits: OrgUnit[], maxLevelReached: boolean, newSearch: boolean) {
+    private addMapElement(orgUnits: OrgUnit[], maxLevelReached: boolean, doFly: boolean) {
         // this.orgUnits = orgUnits;
         let map = this.map;
         let allCoords = [];
@@ -327,7 +407,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             l.addTo(ms.map);
         }
 
-        if (allCoords.length !== 0 && ((ms.autoZoomOnSearch && newSearch) || (ms.autoZoomOnGetChildren && !newSearch))) {
+        if (allCoords.length !== 0 && doFly) {
             map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]});
         }
     }
