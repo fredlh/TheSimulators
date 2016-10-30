@@ -11,15 +11,15 @@
     <div id="advancedSearchDiv" style="display: none;">
         <div class="form-group row">
             <form id="advancedSearchForm">
-                <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
-                <div class="col-xs-10">
+                <label id="labelText" class="col-sm-4 col-form-label-lg">Level</label>
+                <div class="col-xs-8">
                     <select class="form-control" id="exampleSelect1" #level>
                         <option value="">All</option>
                         <option *ngFor="let item of levelToNameMap; let i = index" value="{{i + 1}}">{{item}}</option>                
                     </select>
                 </div>
-                <label id="labelText" class="col-sm-2 col-form-label-lg">Max level</label>
-                <div class="col-xs-10">
+                <label id="labelText" class="col-sm-4 col-form-label-lg">Max level</label>
+                <div class="col-xs-8">
                     <select class="form-control" id="exampleSelect1" #maxLevel>
                         <option value="">None</option> 
                         <option *ngFor="let item of levelToNameMap; let i = index" value="{{i + 1}}">{{item}}</option>               

@@ -34,15 +34,13 @@ export class OrgUnitSearchComponent implements OnInit {
         $("#sideBar")
         .animate({
             top: top,
-        }, animateSpeed)
-        .attr("top", top);
-        
+        }, animateSpeed);
+
         $("#toggleSideBar")
         .animate({
             top: top
-        }, animateSpeed)
-        .attr("top", top);
-        
+        }, animateSpeed);
+
         $("#advancedSearchDiv").slideToggle("fast");
     }
 

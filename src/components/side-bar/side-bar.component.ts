@@ -16,38 +16,31 @@ declare var $: any;
 
 export class SideBarComponent implements SideBarInterface {
     private orgUnits: OrgUnit[] = null;
-    private sideBarVisible = true;
+    private sideBarVisible = false;
 
     constructor(private orgUnitService: OrgUnitService) {}
 
     updateList(orgUnits: OrgUnit[]): void {
-        this.orgUnits = orgUnits;
-
-        console.log("Side bar - received new orgUnits");
-        if (this.orgUnits === undefined || this.orgUnits === null || this.orgUnits.length === 0) {
-            // this.toggleSideBar(false);
-            $("#sideBar").hide();
-            $("#toggleSideBar").hide();
+        if (orgUnits.length === 0) {
+            this.orgUnits = null;
         } else {
-            // this.toggleSideBar(true);
-            $("#sideBar").show();
-            $("#toggleSideBar").show();
+            this.orgUnits = orgUnits;
         }
+
+        this.toggleSideBar(true);
+        $("#toggleSideBar").show();
     }
 
     scrollToOrgUnit(orgUnitId: string) {
-        $("#sideBar").scrollTop(0);
         setTimeout(function() {
             $("#sideBar").animate({
-                scrollTop: $("#" + orgUnitId + " h4").offset().top - 170
-            }, 50);
-        }, 200)   
+                scrollTop: $("#" + orgUnitId).position().top + $("#sideBar").scrollTop() - 40
+            }, 500);
+        }, 100);
     }
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
-        $("#sideBar").hide();
-        $("#toggleSideBar").hide();
     }
 
     toggleSideBar(show?: Boolean): void {
@@ -85,5 +78,4 @@ export class SideBarComponent implements SideBarInterface {
     deleteOrgUnit(orgUnitId: string) {
         console.log("Delete: " + orgUnitId);
     }
-
 }

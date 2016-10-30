@@ -189,7 +189,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     })
                     .addEventListener("mouseout", function(e) {
                         this.setStyle(function(feature) {
-                            
+
                             if (ms.selectedPolygon !== feature.properties.id) {
                                 return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
@@ -235,9 +235,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
                                 return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
-                            
+
                             } else {
-                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};     
+                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
                     });
@@ -286,13 +286,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         ms.orgUnitService.callOnMapClick(id, false);
                         ms.fireSelectedChanged();
                     })
-                    .addEventListener("selectedChanged", function(e) { 
+                    .addEventListener("selectedChanged", function(e) {
                         if (id === ms.selectedPolygon && ms.autoZoomOnSelect) {
                             this.setIcon(highIcon);
 
                             let coords = this.getLatLng();
                             map.flyTo([coords.lat, coords.lng - 0.0004], 18);
-                        
+
                         } else {
                             this.setIcon(defIcon);
                         }
@@ -311,13 +311,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         for (let l of ms.layers) {
             l.remove();
         }
-        
+
         ms.layers = [];
         ms.layers.push(L.layerGroup(ms.levels[0]));
         ms.layers.push(L.layerGroup(ms.levels[1]));
         ms.layers.push(L.layerGroup(ms.levels[2]));
         ms.layers.push(L.layerGroup(ms.levels[3]));
-        
+
         for (let l of ms.layers) {
             l.addTo(ms.map);
         }
