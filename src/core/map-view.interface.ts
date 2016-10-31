@@ -8,6 +8,6 @@ export interface MapViewInterface {
     onMapOptionsSave();
     addNewPolygon();
     finishedAddNewPolygon();
-    previewCoordinates(coords: number[][][]);
+    previewCoordinates(coords: number[][][][]);
 
 }
