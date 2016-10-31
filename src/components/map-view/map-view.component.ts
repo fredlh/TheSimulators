@@ -27,6 +27,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private levels: L.GeoJSON[][] = [[], [], [], []];
     private layers = [];
     private selectedPolygon;
+    private editId;
     private maxLevelReached: boolean;
 
     private mapOptions: MapOptions[];
@@ -124,46 +125,85 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
-    addNewPolygon(): void {
+    addNewPolygon(orgUnitId): void {
+        if (orgUnitId === "") {
+            // New org unit
+            this.loadEditPolygon([]);
+        } else {
+            this.editId = orgUnitId;
+
+            for (let l of this.levels) {
+                for (let p of l) {
+                    p.fire("editLayer");
+                }
+            }
+        }
+    }
+
+    private loadEditPolygon(existingData): void {
         // this.drawnItems = L.featureGroup();
+
+        // console.log(JSON.stringify(existingData));
+
+        this.drawnItems.clearLayers();
+
+        const ms = this;
+
+        if (existingData[0][0].length > 0) {
+        // if (latlngs.length > 0) {
+           
+            let swappedcoords = [];
+            //for (let i of existingData) {
+            //    let innerI = [];
+                for (let j of existingData) {
+                    let innerJ = [];
+                    for (let k of j) {
+                        let innerK = [];
+                        innerK.push(k[1]);
+                        innerK.push(k[0]);
+                        innerJ.push(innerK);
+                    }
+            //        innerI.push(innerJ);
+            //    }
+                swappedcoords.push(innerJ);
+            }
+            
+            // let swappedcoords = L.GeoJSON.coordsToLatLng(existingData[0]);
+
+            console.log("existingData: " + JSON.stringify(existingData));
+            console.log("swapped: " + JSON.stringify(swappedcoords));
+            for (let i of swappedcoords) {
+            
+                // this.drawnItems.addLayer(L.polygon(i, {
+                this.drawnItems.addLayer(L.polygon(swappedcoords, {
+                    // showArea: false,
+                    color: "#f06eaa",
+                    weight: 4,
+                    opacity: 0.5,
+                    fill: true,
+                    fillColor: null,
+                    fillOpacity: 0.2,
+                    // clickable: true
+                }));
+            }
+        }
+        
         this.drawnItems.addTo(this.map);
         this.drawControl.addTo(this.map);
-
-        // const ms = this;
     }
 
     finishedAddNewPolygon(): number[][][][] {
-        this.drawControl.remove();
-        this.drawnItems.remove();
-
         var coordinates = [];
         for(let lay of this.drawnItems.getLayers()) {
-        // if (type === "polygon") {
-
             let subfigure = [];
-            /*
-            let geojson = {};
-            geojson["type"] = "Feature";
-            geojson["geometry"] = {};
-            geojson["geometry"]["type"] = "Polygon";
-            */
+
             // Export coords from layer
             let lats = lay.getLatLngs();
-
-            console.log(lats);
-            // console.log("empty coords: " + coordinates);
-
             for (let area of lats) {
                 for (let point of area) {
                     subfigure.push([point.lng, point.lat]);
                 }
             }
-
-            // geojson["geometry"]["coordinates"] = [coordinates];
-
-            // console.log("coords: " + coordinates);
-
-            // console.log(JSON.stringify(geojson));
 
             let pack1 = [];
             let pack2 = [];
@@ -172,6 +212,9 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             pack2.push(pack1);
             coordinates.push(pack1);
         }
+
+        this.drawControl.remove();
+        this.drawnItems.remove();
 
         return coordinates;
     }
@@ -346,10 +389,20 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
+                    })
+                    .addEventListener("editLayer", function(e) {
+                        if (id === ms.editId) {
+                            // This layer is to be edited
+                            console.log("fire event for editLayer received and found id");
+
+                            this.setStyle(function(feature) {
+                                ms.loadEditPolygon(feature.geometry.coordinates);
+                            });
+                        }
                     });
 
                     allCoords.push(tempGeo.getBounds());
-                    ms.levels[org.level - 1].push(tempGeo);
+                    ms.levels[levelIndex].push(tempGeo);
 
                 } else {
                     // Markers for single point locations
@@ -405,6 +458,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     })
                     .addEventListener("optionsChanged", function(e) {
                         // Don't do anything for markers yet
+                    })
+                    .addEventListener("editLayer", function(e) {
+                        if (id === ms.editId) {
+                            // This layer is to be edited
+                        }
                     });
 
                     level.push(tempMark);

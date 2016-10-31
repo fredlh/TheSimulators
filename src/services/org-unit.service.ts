@@ -81,14 +81,14 @@ export class OrgUnitService {
 
     // Test functions
     callAddNewPolygon(): void {
-        this.mapView.addNewPolygon();
+        this.mapView.addNewPolygon("fdc6uOvgoji");
     }
 
     callFinishedAddNewPolygon(): void {
-        let ret = this.mapView.finishedAddNewPolygon();
+        let retData = this.mapView.finishedAddNewPolygon();
 
         console.log("returned to service:");
-        console.log(JSON.stringify(ret));
+        console.log(JSON.stringify(retData));
     }
 
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {
