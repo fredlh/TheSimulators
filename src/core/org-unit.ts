@@ -5,9 +5,10 @@ export class OrgUnit {
     level: number;
     created: Date;
     openingDate: Date;
-    dimensionItem: String;
-    dimensionItemType: String;
+    dimensionItem: string;
+    dimensionItemType: string;
     children: OrgUnit[];
     users: OrgUnit[];
     coordinates;
+    parent;
 }

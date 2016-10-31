@@ -1,0 +1,75 @@
+<div id="addOrgUnitButton">
+    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="openAddOrgUnitForm()">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true" style="padding-right: 7px;"></span>Add org unit
+    </button>
+</div>
+
+
+<div id="addOrgUnitArea" class="add-org-unit container-fluid">
+        <div class="add-org-unit-content">
+            <span class="add-org-unit-close">x</span>
+            <h1>Add an organisation unit</h1>
+            <p>Here you can add an organisation unit</p>
+            <p>Enter data in the fields, draw the org unit, and click save</p>
+            <br>
+            
+            <form (ngSubmit)="onSubmit()" #optionsForm="ngForm">
+                
+                <div class="form-group row">
+                    <label class="col-lg-2 col-form-label">Name</label>
+                    <div class="col-lg-10">
+                        <input class="form-control" type="text" required
+                            [(ngModel)]="orgUnit.displayName" name="displayName">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 col-form-label">ID</label>
+                    <div class="col-lg-10">
+                        <input class="form-control" type="text" required
+                            [(ngModel)]="orgUnit.id" name="id">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 col-form-label">Level</label>
+                    <div class="col-lg-10">
+                        <input class="form-control" type="number" min="0" max="4" required
+                            [(ngModel)]="orgUnit.level" name="level">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 col-form-label">Coordinates</label>
+                    <div class="col-lg-7">
+                        <input class="form-control" type="text" readonly
+                            [(ngModel)]="orgUnit.coordinates" name="coordinates">
+                    </div>
+                    <div class="col-lg-3">
+                        <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnit()">
+                            Draw org unit
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-2 col-form-label">Parent ID</label>
+                    <div class="col-lg-10">
+                        <input class="form-control" type="text" required
+                            [(ngModel)]="orgUnit.parent" name="parent">
+                    </div>
+                </div>
+
+
+
+                
+
+
+                <input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
+                <input type="reset" value="Reset to default options" class="btn btn-primary">
+                <input style="float: right;" type="submit" value="Add org unit" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+    
+            </form>
+                
+        </div>
+    </div>
