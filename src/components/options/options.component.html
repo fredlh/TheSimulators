@@ -17,7 +17,7 @@
                 <h3>Zoom Options</h3>
                 <hr>
                 <div class="form-group row">
-                    <label for="example-text-input" class="col-xs-5 col-form-label">Auto zoom on search</label>
+                    <label class="col-xs-5 col-form-label">Auto zoom on search</label>
                     <div class="col-xs-7">
                         <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSearch" name="zoomOnSearchAnswer">
                             <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="example-text-input" class="col-xs-5 col-form-label">Auto zoom when retrieving children</label>
+                    <label class="col-xs-5 col-form-label">Auto zoom when retrieving children</label>
                     <div class="col-xs-7">
                         <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnGetChildren" name="zoomOnGetChildrenAnswer">
                             <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="example-text-input" class="col-xs-5 col-form-label">Auto zoom when selecting an org unit</label>
+                    <label class="col-xs-5 col-form-label">Auto zoom when selecting an org unit</label>
                     <div class="col-xs-7">
                         <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSelect" name="zoomOnSelectAnswer">
                             <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
@@ -44,176 +44,242 @@
                 </div>
 
 
+                <br>
+                <br>
                 <h3>Map Options</h3>
                 <hr>
 
-                <!--
-                <accordion>
-                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index">
-                        <accordion-group orgUnitId={{orgUnit}}>
-                            <accordion-heading> {{orgUnit}} </accordion-heading>
 
-         
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Default Fill color</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillColor" name="{{index + fillColor}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Fill color when hovering</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillHoverColor" name="{{index + fillHoverColor}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Fill color when selected</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].fillSelectedColor" name="{{index + fillSelectedColor}}">
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Default border color</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].color" name="{{index + color}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Border color when hovering</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverColor" name="{{index + hoverColor}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Border color when selected</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedColor" name="{{index + selectedColor}}">
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Default fill opacity (0.00 - 1.00)</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="{{index + opacity}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Fill opacity when hovering (0.00 - 1.00)</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="{{index + hoverOpacity}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Fill opacity when selected (0.00 - 1.00)</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="{{index + selectedOpacity}}">
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Default border width</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="{{index + borderWeight}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Border width when hovering</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="{{index + borderHoverWeight}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Border width when selected</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="{{index + borderSelectedWeight}}">
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Default border opacity (0.00 - 1.00)</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="{{index + borderOpacity}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity when hovering (0.00 - 1.00)</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="{{index + borderHoverOpacity}}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="example-text-input" class="col-xs-5 col-form-label">Border opacity when selected (0.00 - 1.00)</label>
-                                <div class="col-xs-7">
-                                    <input class="form-control" type="number"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{index + borderSelectedOpacity}}">
-                                </div>
-                            </div>
-
-                        </accordion-group>
-                    </div>
-                </accordion>
-                -->
-
-
-
-                <!--
                 <div class="form-group row">
-                    <label for="example-text-input" class="col-lg-4 col-form-label"></label>
+                    <label class="col-lg-4 col-form-label"></label>
 
-                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1" style="text-align: center;">
+                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1" style="text-align: left;">
                         <label>{{orgUnit}}</label>                        
                     </div>
                 </div>
-                <hr>
 
-                <div class="form-group row">
-                    <label for="example-text-input" class="col-lg-4 col-form-label">Border opacity when selected (0.00 - 1.00)</label>
+                <!-- COLOR -->
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" href="#collapse1">
+                                <h4 class="panel-title">Color</h4>
+                            </a>
+                        </div>
+                        <div id="collapse1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <!-- CONTENT START -->
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Default</label>
 
-                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                        <input class="form-control" type="number"
-                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{index + borderSelectedOpacity}}">
-                    </div>
-                </div>
-                -->
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="color"
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].color" name="{{myIndex + (constants.getNumOrgUnits() * 1)}}">
+                                    </div>
+                                </div>
 
-                <div class="form-group row">
-                    <label for="123" class="col-xs-5 col-form-label">fillSelectedColor</label>
-                    <div class="col-xs-7">
-                        <input class="form-control" type="color"
-                            [(ngModel)]="self.tempOptions.mapOptions[0].fillSelectedColor" name="{{index + fillSelectedColor}}">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Hover</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverColor" name="{{myIndex + (constants.getNumOrgUnits() * 2)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Selected</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedColor" name="{{myIndex + (constants.getNumOrgUnits() * 3)}}">
+                                    </div>
+                                </div>
+                                <!-- CONTENT END -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 
-                <div class="form-group row">
-                    <label for="321" class="col-xs-5 col-form-label">fillColor</label>
-                    <div class="col-xs-7">
-                        <input class="form-control" type="color"
-                            [(ngModel)]="self.tempOptions.mapOptions[0].fillColor" name="{{index + fillColor}}">
+                <!-- BORDER COLOR -->
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" href="#collapse2">
+                                <h4 class="panel-title">Border color</h4>
+                            </a>
+                        </div>
+                        <div id="collapse2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <!-- CONTENT START -->
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Default</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="color"
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderColor" name="{{myIndex + (constants.getNumOrgUnits() * 4)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Hover</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverColor" name="{{myIndex + (constants.getNumOrgUnits() * 5)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Selected</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="color"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedColor" name="{{myIndex + (constants.getNumOrgUnits() * 6)}}">
+                                    </div>
+                                </div>
+                                <!-- CONTENT END -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnGetChildren" name="zoomOnGetChildrenAnswer">
-                    <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
-                </select>
-                
 
 
+                <!-- OPACITY -->
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" href="#collapse3">
+                                <h4 class="panel-title">Opacity</h4>
+                            </a>
+                        </div>
+                        <div id="collapse3" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <!-- CONTENT START -->
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Default</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="{{myIndex + (constants.getNumOrgUnits() * 7)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Hover</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 8)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Selected</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 9)}}">
+                                    </div>
+                                </div>
+                                <!-- CONTENT END -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- BORDER OPACITY -->
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" href="#collapse4">
+                                <h4 class="panel-title">Border opacity</h4>
+                            </a>
+                        </div>
+                        <div id="collapse4" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <!-- CONTENT START -->
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Default</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 10)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Hover</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 11)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Selected</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 12)}}">
+                                    </div>
+                                </div>
+                                <!-- CONTENT END -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- BORDER WEIGHT -->
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a data-toggle="collapse" href="#collapse5">
+                                <h4 class="panel-title">Border weight</h4>
+                            </a>
+                        </div>
+                        <div id="collapse5" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <!-- CONTENT START -->
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Default</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="{{myIndex + (constants.getNumOrgUnits() * 13)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Hover</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="{{myIndex + (constants.getNumOrgUnits() * 14)}}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Selected</label>
+
+                                    <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
+                                        <input class="form-control" type="number"
+                                                [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="{{myIndex + (constants.getNumOrgUnits() * 15)}}">
+                                    </div>
+                                </div>
+                                <!-- CONTENT END -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <input type="submit" value="Close" class="btn btn-primary" (click)="onClose()">

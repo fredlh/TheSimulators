@@ -6,6 +6,8 @@ export class Constants {
 
     public static nameToLevelMapping = [Constants.LEVEL_1, Constants.LEVEL_2, Constants.LEVEL_3, Constants.LEVEL_4];
 
+    private static indexModifier = -1;
+
     public static getName(level: number): string {
         if (level < 1 || level > 4) return "Error: Illegal level value";
         return Constants.nameToLevelMapping[level - 1];
@@ -18,5 +20,14 @@ export class Constants {
         }
 
         return -1;
+    }
+
+    public static getNumOrgUnits(): number {
+        return Constants.nameToLevelMapping.length;
+    }
+
+    public static getUniqueIndex(): number {
+        Constants.indexModifier++;
+        return Constants.getNumOrgUnits() * Constants.indexModifier
     }
 }

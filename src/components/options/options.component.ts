@@ -7,12 +7,12 @@ import { Constants }            from "../../constants/constants";
 declare var $: any;
 
 export interface MapOptions {
-    fillColor: string;
-    fillHoverColor: string;
-    fillSelectedColor: string;
     color: string;
     hoverColor: string;
     selectedColor: string;
+    borderColor: string;
+    borderHoverColor: string;
+    borderSelectedColor: string;
     opacity: number;
     hoverOpacity: number;
     selectedOpacity: number;
@@ -29,19 +29,19 @@ class Options {
     autoZoomOnGetChildren = "Yes";
     autoZoomOnSelect = "Yes";
     mapOptions = [
-        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
             opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
             borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
 
-        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
             opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
             borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
 
-        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
             opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
             borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
 
-        {fillColor: "#000000", fillHoverColor: "#1E90FF", fillSelectedColor: "#DC143C", color: "#000000", hoverColor: "#000000", selectedColor: "#000000",
+        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
             opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
             borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0}
     ];
@@ -62,6 +62,8 @@ export class OptionsComponent {
     private static defaultOptions = new Options();
     private static tempOptions = new Options();
     private static currentOptions = new Options();
+
+    private unqiueIndexModifier = -1;
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -126,8 +128,5 @@ export class OptionsComponent {
         OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.defaultOptions));
         OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.defaultOptions));
     }
-
-    
-
 
 }
