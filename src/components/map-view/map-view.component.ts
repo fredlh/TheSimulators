@@ -36,7 +36,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     private map;
 
-    private drawControl: L.Control;
+    private drawControl; // : L.Control;
     private drawnItems = L.featureGroup();
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
@@ -68,9 +68,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 err => console.error(err)
             );
 
-        // this.drawnItems = L.featureGroup();
-        this.drawnItems.addTo(this.map);
-        this.map.addControl(new L.Control.Draw({
+        this.drawControl = new L.Control.Draw({
+        // this.map.addControl(new L.Control.Draw({
             position: "topright",
             edit: {
                 featureGroup: this.drawnItems,
@@ -82,56 +81,22 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 polygon: {
                     allowIntersection: false,
                     showArea: true
-                }
+                },
+                circle: false,
+                rectangle: false,
+                polyline: false,
+                marker: false
             }
-        }));
+        });
 
         const ms = this;
-
         this.map.on("draw:created", function(e: L.DrawEvents.Created) {
             var type = e.layerType,
                 layer = e.layer;
 
             ms.drawnItems.addLayer(layer);
 
-            console.log("Bounds: " + JSON.stringify(ms.drawnItems.getBounds(), null, 4));
-            console.log("BBox: " + ms.drawnItems.getBounds().toBBoxString());
-
-            console.log("All (type): " + type);
-            // for(let lay of ms.drawnItems.getLayers()) {
-                if (type === "polygon") {
-                    let geojson = {};
-                    geojson["type"] = "Feature";
-                    geojson["geometry"] = {};
-                    geojson["geometry"]["type"] = "Polygon";
-
-                    // Export coords from layer
-                    var coordinates = [];
-                    let lats = layer.getLatLngs();
-
-                    console.log(lats);
-                    console.log("empty coords: " + coordinates);
-
-                    for (let area of lats) {
-                        for (let point of area) {
-                            coordinates.push([point.lng, point.lat]);
-                        }
-                    }
-
-                    console.log("filled coords: " + coordinates);
-
-                    geojson["geometry"]["coordinates"] = [coordinates];
-
-                    console.log("coords: " + coordinates);
-
-                    console.log(JSON.stringify(geojson));
-                
-                } else {
-                    console.log(layer.getBounds().toBBoxString());
-                }
-            // }
-
-            map.flyToBounds(ms.drawnItems.getBounds(), {paddingTopLeft: [350, 75]})
+            // map.flyToBounds(ms.drawnItems.getBounds(), {paddingTopLeft: [350, 75]})
         });
 
         map.clicked = 0;
@@ -159,6 +124,58 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
+    addNewPolygon(): void {
+        // this.drawnItems = L.featureGroup();
+        this.drawnItems.addTo(this.map);
+        this.drawControl.addTo(this.map);
+
+        // const ms = this;
+    }
+
+    finishedAddNewPolygon(): number[][][][] {
+        this.drawControl.remove();
+        this.drawnItems.remove();
+
+        var coordinates = [];
+        for(let lay of this.drawnItems.getLayers()) {
+        // if (type === "polygon") {
+
+            let subfigure = [];
+            /*
+            let geojson = {};
+            geojson["type"] = "Feature";
+            geojson["geometry"] = {};
+            geojson["geometry"]["type"] = "Polygon";
+            */
+            // Export coords from layer
+            let lats = lay.getLatLngs();
+
+            console.log(lats);
+            // console.log("empty coords: " + coordinates);
+
+            for (let area of lats) {
+                for (let point of area) {
+                    subfigure.push([point.lng, point.lat]);
+                }
+            }
+
+            // geojson["geometry"]["coordinates"] = [coordinates];
+
+            // console.log("coords: " + coordinates);
+
+            // console.log(JSON.stringify(geojson));
+
+            let pack1 = [];
+            let pack2 = [];
+
+            pack1.push(subfigure);
+            pack2.push(pack1);
+            coordinates.push(pack1);
+        }
+
+        return coordinates;
+    }
+
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
         this.levels = [[], [], [], []];
         this.selectedPolygon = "";
@@ -174,6 +191,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         // Should it fly to, according to parameter?
 
         this.addMapElement(orgUnits, this.maxLevelReached, false);
+    }
+
+    previewCoordinates(coords: number[][][][]): void {
+        // Make polygon in seperate layer and display on map
     }
 
     deselectMap(): void {
@@ -260,13 +281,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
-                            return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
+                            return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                         }
                     })
                     .addEventListener("mouseover", function(e) {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon !== feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].hoverColor, fillColor: ms.mapOptions[levelIndex].fillHoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
+                                return {color: ms.mapOptions[levelIndex].borderHoverColor, fillColor: ms.mapOptions[levelIndex].hoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
                             }
                         });
 
@@ -276,7 +297,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         this.setStyle(function(feature) {
 
                             if (ms.selectedPolygon !== feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
+                                return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
                     })
@@ -309,20 +330,20 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 if (ms.autoZoomOnSelect) {
                                     map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
                                 }
-                                return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
+                                return {color: ms.mapOptions[levelIndex].borderSelectedColor, fillColor: ms.mapOptions[levelIndex].selectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
 
                             } else {
-                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
+                                return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
                     })
                     .addEventListener("optionsChanged", function(e) {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].selectedColor, fillColor: ms.mapOptions[levelIndex].fillSelectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
+                                return {color: ms.mapOptions[levelIndex].borderSelectedColor, fillColor: ms.mapOptions[levelIndex].selectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
 
                             } else {
-                                return {color: ms.mapOptions[levelIndex].color, fillColor: ms.mapOptions[levelIndex].fillColor, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
+                                return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             }
                         });
                     });

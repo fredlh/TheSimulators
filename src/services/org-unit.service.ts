@@ -79,6 +79,18 @@ export class OrgUnitService {
         });
     }
 
+    // Test functions
+    callAddNewPolygon(): void {
+        this.mapView.addNewPolygon();
+    }
+
+    callFinishedAddNewPolygon(): void {
+        let ret = this.mapView.finishedAddNewPolygon();
+
+        console.log("returned to service:");
+        console.log(JSON.stringify(ret));
+    }
+
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {
         if (term.trim() === "") {
             return undefined;

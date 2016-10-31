@@ -78,4 +78,13 @@ export class SideBarComponent implements SideBarInterface {
     deleteOrgUnit(orgUnitId: string) {
         console.log("Delete: " + orgUnitId);
     }
+
+    // Test functions
+    callAddNewPolygon(): void {
+        this.orgUnitService.callAddNewPolygon();
+    }
+
+    callFinishedAddNewPolygon(): void {
+        this.orgUnitService.callFinishedAddNewPolygon();
+    }
 }
