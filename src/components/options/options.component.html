@@ -13,7 +13,7 @@
             <p>Here you can change the fault behaviour of some parts of the application</p>
             <br>
             
-            <form novalidate>
+            <form (ngSubmit)="onSave()" #optionsForm="ngForm">
                 <h3>Zoom Options</h3>
                 <hr>
                 <div class="form-group row">
@@ -162,7 +162,7 @@
                                     <label class="col-lg-4 col-form-label">Default</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                             [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="{{myIndex + (constants.getNumOrgUnits() * 7)}}">
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
                                     <label class="col-lg-4 col-form-label">Hover</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                                 [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 8)}}">
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@
                                     <label class="col-lg-4 col-form-label">Selected</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                                 [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 9)}}">
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@
                                     <label class="col-lg-4 col-form-label">Default</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                             [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 10)}}">
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@
                                     <label class="col-lg-4 col-form-label">Hover</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                                 [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 11)}}">
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@
                                     <label class="col-lg-4 col-form-label">Selected</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                                 [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{myIndex + (constants.getNumOrgUnits() * 12)}}">
                                     </div>
                                 </div>
@@ -253,7 +253,7 @@
                                     <label class="col-lg-4 col-form-label">Default</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                             [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="{{myIndex + (constants.getNumOrgUnits() * 13)}}">
                                     </div>
                                 </div>
@@ -262,7 +262,7 @@
                                     <label class="col-lg-4 col-form-label">Hover</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                                 [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="{{myIndex + (constants.getNumOrgUnits() * 14)}}">
                                     </div>
                                 </div>
@@ -271,7 +271,7 @@
                                     <label class="col-lg-4 col-form-label">Selected</label>
 
                                     <div *ngFor="let orgUnit of constants.nameToLevelMapping; let myIndex = index" class="col-lg-1 col-lg-offset-1">
-                                        <input class="form-control" type="number"
+                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
                                                 [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="{{myIndex + (constants.getNumOrgUnits() * 15)}}">
                                     </div>
                                 </div>
@@ -282,9 +282,10 @@
                 </div>
 
 
-                <input type="submit" value="Close" class="btn btn-primary" (click)="onClose()">
-                <input type="submit" value="Save" class="btn btn-primary" (click)="onSave()">
-                <input type="submit" value="Reset to default options" class="btn btn-primary" (click)="onReset()">
+                <input type="button" value="Close" class="btn btn-primary" (click)="onClose()">
+                <input type="button" value="Reset to default options" class="btn btn-primary" (click)="onReset()">
+                <input style="float: right;" type="submit" value="Save" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+    
             </form>
                 
         </div>
