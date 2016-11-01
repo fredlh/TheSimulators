@@ -46,6 +46,7 @@ export class OrgUnitService {
     toggleSideBar(orgUnitId: string) {
         this.accordion.toggleSideBar(orgUnitId);
     }
+// https://play.dhis2.org/demo/api/organisationUnits.json?fields=:all
 
     getOrgUnits(query: string): any {
         this.orgUnitStack = [];
