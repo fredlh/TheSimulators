@@ -190,7 +190,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.previousDrawnItems = [];
         for (let l of this.drawnItems.getLayers()) {
 
-            this.previousDrawnItems.push(new L.Polygon(l.getLatLngs(), {
+            this.previousDrawnItems.push(L.polygon(l.getLatLngs(), {
                     color: "#f06eaa",
                     weight: 4,
                     opacity: 0.5,
@@ -210,7 +210,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             this.previousDrawnItems = [];
             for(let lay of this.drawnItems.getLayers()) {
 
-                this.previousDrawnItems.push(new L.Polygon(JSON.parse(JSON.stringify(lay.getLatLngs())), {
+                this.previousDrawnItems.push(L.polygon(JSON.parse(JSON.stringify(lay.getLatLngs())), {
                     color: "#f06eaa",
                     weight: 4,
                     opacity: 0.5,
@@ -240,7 +240,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
             this.drawnItems.clearLayers();
             for (let prevLay of this.previousDrawnItems) {
-                this.drawnItems.addLayer(new L.Polygon(JSON.parse(JSON.stringify(prevLay.getLatLngs())), {
+                this.drawnItems.addLayer(L.polygon(JSON.parse(JSON.stringify(prevLay.getLatLngs())), {
                     color: "#f06eaa",
                     weight: 4,
                     opacity: 0.5,
