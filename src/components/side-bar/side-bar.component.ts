@@ -79,6 +79,15 @@ export class SideBarComponent implements SideBarInterface {
         console.log("Delete: " + orgUnitId);
     }
 
+    hideSideBar(): void {
+        $("#sideBar").hide();
+        $("#toggleSideBar").hide();
+    }
+
+    showSideBar(): void {
+        this.toggleSideBar();
+    }
+
     // Test functions
     callAddNewPolygon(): void {
         this.orgUnitService.callAddNewPolygon();

@@ -2,6 +2,12 @@ import { Component, OnInit } from "@angular/core";
 
 import {OrgUnit} from "../../core/org-unit";
 
+import {Constants} from "../../constants/constants";
+
+import {OrgUnitService} from "../../services/org-unit.service";
+
+declare var $: any;
+
 @Component({
     selector: "add-org-unit",
     template: require<any>("./add-org-unit.component.html"),
@@ -12,6 +18,9 @@ export class AddOrgUnitComponent implements OnInit {
 
     private orgUnit: OrgUnit = new OrgUnit();
     private self = this;
+    private constants = Constants;
+
+    constructor(private orgUnitService: OrgUnitService) {}
 
     openAddOrgUnitForm(): void {
         $("#addOrgUnitButton").click(this.onOpen);
@@ -28,7 +37,7 @@ export class AddOrgUnitComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.orgUnit.coordinates = "[1]";        
+              
     }   
 
     onOpen(): void {
@@ -36,15 +45,32 @@ export class AddOrgUnitComponent implements OnInit {
     }
 
     onSubmit(): void {
-        console.log(this.orgUnit);
+        document.getElementById("addOrgUnitArea").style.display = "none";
+        
     }
 
     onCancel(): void {
-        let options = document.getElementById("addOrgUnitArea").style.display = "none";
+        document.getElementById("addOrgUnitArea").style.display = "none";
         this.orgUnit = new OrgUnit();
     }
 
+    closePanel(): void {
+        document.getElementById("addOrgUnitArea").style.display = "none";
+    }
+
     drawOrgUnit(): void {
-        console.log("DRAW");
+        this.closePanel();
+        $("#drawOrgUnitPanelArea").slideToggle("fast");
+        this.orgUnitService.callAddNewPolygon();
+    }
+
+    saveDrawnOrgUnit(): void {
+        $("#drawOrgUnitPanelArea").slideToggle("fast");
+        this.onOpen();
+    }
+
+    cancelDrawnOrgUnit(): void {
+        $("#drawOrgUnitPanelArea").slideToggle("fast");
+        this.onOpen();
     }
 }
