@@ -39,8 +39,66 @@
         </accordion>
     </div>
 
-
 </div>
 
 
 
+<div id="editOrgUnitArea" class="edit-org-unit container-fluid">
+    <div class="edit-org-unit-content">
+        <span class="edit-org-unit-close">x</span>
+        <h1>Edit an organisation unit</h1>
+        <p>Here you can edit an organisation unit</p>
+        <p>Enter data in the fields, draw the org unit, and click save</p>
+        <br>
+        
+        <form (ngSubmit)="onSubmit()" #optionsForm="ngForm">
+                
+            <div class="form-group row">
+                <label class="col-lg-2 col-form-label">Name</label>
+                <div class="col-lg-10">
+                    <input class="form-control" type="text" required
+                        [(ngModel)]="selectedOrgUnit.displayName" name="displayName">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-lg-2 col-form-label">Coordinates</label>
+                <div class="col-lg-7">
+                    <textarea class="form-control" rows="4" readonly
+                        [(ngModel)]="selectedOrgUnit.coordinates" name="coordinates"></textarea>
+                </div>
+                <div class="col-lg-3" *ngIf="selectedOrgUnit.level !== 4">
+                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
+                        Draw org unit
+                    </button>
+                </div>
+                <span style="padding: 7px;"></span>
+                <div class="col-lg-3" *ngIf="selectedOrgUnit.level === 4">
+                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitMarker()">
+                        Set marker
+                    </button>
+                </div>
+            </div>
+
+             <div class="form-group row">
+                 <label class="col-lg-2 col-form-label">Parent ID</label>
+                 <div class="col-lg-10">
+                     <input class="form-control" type="text" required
+                         [(ngModel)]="selectedOrgUnit.parent.id" name="parent">
+                 </div>
+             </div>
+
+
+            <input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
+            <input style="float: right;" type="submit" value="Save org unit" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+        </form>
+    </div>
+</div>
+
+
+<div id="editOrgUnitPanelArea" style="display: none;">
+    <p>Here you can draw an organisation unit by using the options at the right</p>
+    <p>Draw the org unit, and either hit Save or Cancel</p>
+    <button id="saveDrawnOrgUnitButton" class="btn btn-info" (click)="saveDrawnOrgUnit()">Save</button>
+    <button id="cancelDrawnOrgUnitButton" class="btn btn-info" (click)="cancelDrawnOrgUnit()">Cancel</button>
+</div>

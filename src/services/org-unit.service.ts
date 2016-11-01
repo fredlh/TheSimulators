@@ -185,7 +185,7 @@ export class OrgUnitService {
     }
 
     hideSideBar(): void {
-        this.sideBar.hideSideBar();
+        this.sideBar.closeSideBar();
     }
 
     showSideBar(): void {

@@ -1,3 +1,7 @@
+class Parent {
+    id: string;
+}
+
 export class OrgUnit {
     id: string;
     displayName: string;
@@ -10,5 +14,9 @@ export class OrgUnit {
     children: OrgUnit[];
     users: OrgUnit[];
     coordinates;
-    parent;
+    parent: Parent;
+
+    constructor() {
+        this.parent = new Parent();
+    }
 }
