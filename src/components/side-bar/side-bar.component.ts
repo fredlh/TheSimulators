@@ -44,6 +44,8 @@ export class SideBarComponent implements SideBarInterface, OnInit {
 
         this.toggleSideBar(true);
         $("#toggleSideBar").show();
+        this.filterApplied = false;
+        $("filterArea").hide();
     }
 
     scrollToOrgUnit(orgUnitId: string) {
@@ -137,8 +139,10 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     }
 
     showSideBar(): void {
-        $("#sideBar").show();
-        $("#toggleSideBar").show();
+        if (this.sideBarVisible) {
+            $("#sideBar").show();
+            $("#toggleSideBar").show();
+        }
 
         if (this.filterAreaVisible) {
             $("#filterArea").show();

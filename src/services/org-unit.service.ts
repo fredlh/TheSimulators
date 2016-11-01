@@ -24,6 +24,7 @@ export class OrgUnitService {
 
     private orgUnits: OrgUnit[];
     private orgUnitStack: OrgUnit[][] = [];
+    private filteredOrgUnitStack: OrgUnit[][] = [];
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
