@@ -42,35 +42,51 @@ export class AddOrgUnitComponent implements OnInit {
 
     onOpen(): void {
         document.getElementById("addOrgUnitArea").style.display = "block";
+        //this.orgUnitService.hideSideBar();
     }
 
     onSubmit(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
+        //this.orgUnitService.showSideBar();
         
     }
 
     onCancel(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
         this.orgUnit = new OrgUnit();
+
+        //this.orgUnitService.showSideBar();
     }
 
     closePanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
+        //this.orgUnitService.showSideBar();
     }
 
-    drawOrgUnit(): void {
+    drawOrgUnitPolygon(): void {
         this.closePanel();
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.callAddNewPolygon();
+        this.orgUnitService.startEditMode("");
+    }
+
+    drawOrgUnitMarker(): void {
+
     }
 
     saveDrawnOrgUnit(): void {
+        this.orgUnit.coordinates = this.orgUnitService.endEditMode(true);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.onOpen();
+
+        //this.orgUnitService.showSideBar();
     }
 
     cancelDrawnOrgUnit(): void {
+        this.orgUnitService.endEditMode(false);
+
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.onOpen();
+
+        //this.orgUnitService.showSideBar();
     }
 }

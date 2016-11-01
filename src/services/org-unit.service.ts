@@ -183,4 +183,12 @@ export class OrgUnitService {
     callOnOptionsSave(): void {
         this.mapView.onMapOptionsSave();
     }
+
+    hideSideBar(): void {
+        this.sideBar.hideSideBar();
+    }
+
+    showSideBar(): void {
+        this.sideBar.showSideBar();
+    }
 }

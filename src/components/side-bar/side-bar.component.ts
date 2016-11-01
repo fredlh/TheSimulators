@@ -87,13 +87,4 @@ export class SideBarComponent implements SideBarInterface {
     showSideBar(): void {
         this.toggleSideBar();
     }
-
-    // Test functions
-    callAddNewPolygon(): void {
-        this.orgUnitService.callAddNewPolygon();
-    }
-
-    callFinishedAddNewPolygon(): void {
-        this.orgUnitService.callFinishedAddNewPolygon();
-    }
 }

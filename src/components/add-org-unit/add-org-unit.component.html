@@ -26,12 +26,18 @@
             <div class="form-group row">
                 <label class="col-lg-2 col-form-label">Coordinates</label>
                 <div class="col-lg-7">
-                    <input class="form-control" type="text" readonly
-                        [(ngModel)]="orgUnit.coordinates" name="coordinates">
+                    <textarea class="form-control" rows="4" readonly
+                        [(ngModel)]="orgUnit.coordinates" name="coordinates"></textarea>
                 </div>
                 <div class="col-lg-3">
-                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnit()">
+                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
                         Draw org unit
+                    </button>
+                </div>
+                <span style="padding: 7px;"></span>
+                <div class="col-lg-3">
+                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitMarker()">
+                        Set marker
                     </button>
                 </div>
             </div>
@@ -46,7 +52,6 @@
 
 
             <input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
-            <input type="reset" value="Reset to default options" class="btn btn-primary">
             <input style="float: right;" type="submit" value="Add org unit" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
         </form>
     </div>
