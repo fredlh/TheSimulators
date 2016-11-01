@@ -6,6 +6,8 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
 
+import { Constants} from "../../constants/constants";
+
 declare var $: any;
 
 @Component({
@@ -16,7 +18,11 @@ declare var $: any;
 
 export class SideBarComponent implements SideBarInterface, OnInit {
     private orgUnits: OrgUnit[] = null;
+    private displayedOrgUnits = null;
     private sideBarVisible = false;
+    private levelToNameMap: String[] = Constants.nameToLevelMapping;
+
+    private filterApplied:boolean = false;
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
 
@@ -27,6 +33,11 @@ export class SideBarComponent implements SideBarInterface, OnInit {
             this.orgUnits = null;
         } else {
             this.orgUnits = orgUnits;
+        }
+
+        this.displayedOrgUnits = [];
+        for (let o of this.orgUnits) {
+            this.displayedOrgUnits.push(JSON.parse(JSON.stringify(o)));
         }
 
         this.toggleSideBar(true);
@@ -160,5 +171,64 @@ export class SideBarComponent implements SideBarInterface, OnInit {
             if (o.id === orgUnitId) return o;
         }
         return null;
+    }
+
+
+
+
+    toggleFilter(): void {
+        $("#filterArea").slideToggle("fast");
+    }
+
+    applyFilter(name: string, nameFilter: string, level: string): void {
+        console.log("name: " + name + " | filter: " + nameFilter + " | level: " + level);
+
+        this.displayedOrgUnits = this.orgUnits.filter(function(orgUnit){
+            if (nameFilter === "startsWith" && orgUnit.displayName.startsWith(name)) {
+                if (level !== "All") {
+                    if (+level === orgUnit.level) return true;
+                    else return false;
+                } else {
+                    return true;
+                }
+            }
+
+            else if (nameFilter === "endsWith" && orgUnit.displayName.endsWith(name)) {
+                if (level !== "All") {
+                    if (+level === orgUnit.level) return true;
+                    else return false;
+                } else {
+                    return true;
+                }
+            }
+
+            else if (nameFilter === "includes" && orgUnit.displayName.includes(name)) {
+                if (level !== "All") {
+                    if (+level === orgUnit.level) return true;
+                    else return false;
+                } else {
+                    return true;
+                }
+            }
+
+            else if (nameFilter === "equals" && orgUnit.displayName === name) {
+                if (level !== "All") {
+                    if (+level === orgUnit.level) return true;
+                    else return false;
+                } else {
+                    return true;
+                }
+            }
+        });
+
+        this.filterApplied = true;
+    }
+
+    clearFilter(): void {
+        this.displayedOrgUnits = [];
+        for (let o of this.orgUnits) {
+            this.displayedOrgUnits.push(JSON.parse(JSON.stringify(o)));
+        }
+        this.filterApplied = false;
     }
 }

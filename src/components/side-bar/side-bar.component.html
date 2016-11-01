@@ -2,8 +2,15 @@
     <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
 </button>
 <div id="sideBar" style="display: none;">
+
+    <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
+        Filter
+    </button>
     
+    <br>
     <h3 style="text-align: center;">Search results </h3>
+
+    
 
     <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
@@ -16,7 +23,7 @@
 
     <div *ngIf="orgUnits !== undefined">
         <accordion>
-            <div *ngFor="let orgUnit of orgUnits; let myIndex = index">
+            <div *ngFor="let orgUnit of displayedOrgUnits; let myIndex = index">
                 <div id={{orgUnit.id}}>
                     <accordion-group orgUnitId={{orgUnit.id}}>
                         <accordion-heading>
@@ -101,4 +108,59 @@
     <p>Draw the org unit, and either hit Save or Cancel</p>
     <button id="saveDrawnOrgUnitButton" class="btn btn-info" (click)="saveDrawnOrgUnit()">Save</button>
     <button id="cancelDrawnOrgUnitButton" class="btn btn-info" (click)="cancelDrawnOrgUnit()">Cancel</button>
+</div>
+
+
+<div id="filterArea" style="display: none;">
+    <h2>Filter search results</h2>
+    
+    <form (ngSubmit)="applyFilter(name.value, nameFilter.value, level.value)" #optionsForm="ngForm">
+    
+        <div class="form-group row">
+            <label for="example-text-input" class="col-xs-2 col-form-label">Name: </label>
+            <div class="col-xs-10">
+                <input class="form-control" type="text" #name>
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label for="example-text-input" class="col-sm-2 col-form-label">Filter: </label>
+            <div class="col-xs-10">
+                <select class="form-control" id="exampleSelect1" #nameFilter>
+                    <option value="startsWith">Starts with</option> 
+                    <option value="endsWith">Ends with</option> 
+                    <option value="includes">Includes</option> 
+                    <option value="equals">Equals</option> 
+                </select>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="form-group row">
+            <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
+            <div class="col-xs-10">
+                <select class="form-control" id="exampleSelect1" #level>
+                    <option value="All">All</option> 
+                    <option *ngFor="let item of levelToNameMap; let i = index" value="{{i + 1}}">{{item}}</option>               
+                </select>
+            </div>
+        </div>
+
+        <hr>
+
+        <button *ngIf="filterApplied" type="reset" class="btn btn-danger" (click)="clearFilter()">
+            Clear filter
+        </button>
+
+        <button type="submit" class="btn btn-success">
+            Apply filter
+        </button>
+        
+
+    </form>
+
+
+
 </div>
