@@ -6,8 +6,8 @@ export interface MapViewInterface {
     onSideBarClick(orgUnitId: string);
     deselectMap();
     onMapOptionsSave();
-    addNewPolygon(orgUnitId);
-    finishedAddNewPolygon();
+    startEditMode(orgUnitId: string);
+    endEditMode(saved: boolean);
     previewCoordinates(coords: number[][][][]);
 
 }

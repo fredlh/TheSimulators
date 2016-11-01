@@ -79,16 +79,12 @@ export class OrgUnitService {
         });
     }
 
-    // Test functions
-    callAddNewPolygon(): void {
-        this.mapView.addNewPolygon("fdc6uOvgoji");
+    startEditMode(orgUnitId: string): void {
+        this.mapView.startEditMode(orgUnitId);
     }
 
-    callFinishedAddNewPolygon(): void {
-        let retData = this.mapView.finishedAddNewPolygon();
-
-        console.log("returned to service:");
-        console.log(JSON.stringify(retData));
+    endEditMode(saved: boolean): number[][][][] {
+        return this.mapView.endEditMode(saved);
     }
 
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {

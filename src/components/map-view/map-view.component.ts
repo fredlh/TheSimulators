@@ -29,6 +29,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private selectedPolygon;
     private editId;
     private maxLevelReached: boolean;
+    private allCoords = [];
+    private editDisableLayer;
 
     private mapOptions: MapOptions[];
     private autoZoomOnSearch: boolean;
@@ -39,6 +41,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     private drawControl; // : L.Control;
     private drawnItems = L.featureGroup();
+    private previousDrawnItems = [];
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -71,7 +74,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         this.drawControl = new L.Control.Draw({
         // this.map.addControl(new L.Control.Draw({
-            position: "topright",
+            position: "bottomright",
             edit: {
                 featureGroup: this.drawnItems,
                 poly: {
@@ -125,16 +128,23 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
     }
 
-    addNewPolygon(orgUnitId): void {
-        if (orgUnitId === "") {
-            // New org unit
-            this.loadEditPolygon([]);
+    startEditMode(orgUnitId: string): void {
+        this.editId = orgUnitId;
+        
+        for (let l of this.levels) {
+            for (let p of l) {
+                p.fire("setEditStyle");
+            }
+        }
+
+        if ((this.drawnItems.getLayers().length > 0) || (orgUnitId === "")) {
+            this.drawnItems.addTo(this.map);
+            this.drawControl.addTo(this.map);
         } else {
-            this.editId = orgUnitId;
 
             for (let l of this.levels) {
                 for (let p of l) {
-                    p.fire("editLayer");
+                    p.fire("getEditCoordinates");
                 }
             }
         }
@@ -145,7 +155,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         // console.log(JSON.stringify(existingData));
 
-        this.drawnItems.clearLayers();
+        // this.drawnItems.clearLayers();
 
         const ms = this;
 
@@ -187,31 +197,54 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 }));
             }
         }
+
+        // Create a backup of the editable layers
+        this.previousDrawnItems = [];
+        for (let l of this.drawnItems.getLayers()) {
+            this.previousDrawnItems.push(l);
+        }
         
         this.drawnItems.addTo(this.map);
         this.drawControl.addTo(this.map);
     }
 
-    finishedAddNewPolygon(): number[][][][] {
+    endEditMode(saved: boolean): number[][][][] {
         var coordinates = [];
-        for(let lay of this.drawnItems.getLayers()) {
-            let subfigure = [];
+        if (saved) {
+            this.previousDrawnItems = [];
+            for(let lay of this.drawnItems.getLayers()) {
+                this.previousDrawnItems.push(lay);
+                let subfigure = [];
 
-            // Export coords from layer
-            let lats = lay.getLatLngs();
-            for (let area of lats) {
-                for (let point of area) {
-                    subfigure.push([point.lng, point.lat]);
+                // Export coords from layer
+                let lats = lay.getLatLngs();
+                for (let area of lats) {
+                    for (let point of area) {
+                        subfigure.push([point.lng, point.lat]);
+                    }
                 }
+
+                let pack1 = [];
+                let pack2 = [];
+
+                pack1.push(subfigure);
+                pack2.push(pack1);
+                coordinates.push(pack1);
             }
-
-            let pack1 = [];
-            let pack2 = [];
-
-            pack1.push(subfigure);
-            pack2.push(pack1);
-            coordinates.push(pack1);
         }
+
+        this.drawnItems.clearLayers();
+        for (let lay of this.previousDrawnItems) {
+            this.drawnItems.addLayer(lay);
+        }
+
+        for (let l of this.levels) {
+            for (let p of l) {
+                p.fire("selectedChanged");
+            }
+        }
+
+        this.editId = "";
 
         this.drawControl.remove();
         this.drawnItems.remove();
@@ -292,7 +325,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private addMapElement(orgUnits: OrgUnit[], maxLevelReached: boolean, doFly: boolean) {
         // this.orgUnits = orgUnits;
         let map = this.map;
-        let allCoords = [];
+        this.allCoords = [];
         const ms = this;
 
         // For each orgUnit in the argument array
@@ -390,18 +423,30 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             }
                         });
                     })
-                    .addEventListener("editLayer", function(e) {
-                        if (id === ms.editId) {
-                            // This layer is to be edited
-                            console.log("fire event for editLayer received and found id");
+                    .addEventListener("setEditStyle", function(e) {
+                        let data;
 
-                            this.setStyle(function(feature) {
+                        this.setStyle(function(feature) {
+                            if (id === ms.editId) {
+                                // This layer is to be edited
+                                console.log("fire event for editLayer received and found id");
+                                data = feature.geometry.coordinates;
+
+                                return {color: "black", fillColor: "blue", weight: 0, fillOpacity: 0, opacity: 0};
+                            } else {
+                                return {color: "black", fillColor: "black", weight: 1, fillOpacity: 0.2, opacity: 1};
+                            }
+                        });
+                    })
+                    .addEventListener("getEditCoordinates", function(e) {
+                        this.setStyle(function(feature) {
+                            if (id === ms.editId) {
                                 ms.loadEditPolygon(feature.geometry.coordinates);
-                            });
-                        }
+                            }
+                        });
                     });
 
-                    allCoords.push(tempGeo.getBounds());
+                    ms.allCoords.push(tempGeo.getBounds());
                     ms.levels[levelIndex].push(tempGeo);
 
                 } else {
@@ -418,7 +463,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     markerCoordinate.push(Number(individualNumbers[1]));
                     markerCoordinate.push(Number(individualNumbers[0]));
 
-                    allCoords.push(markerCoordinate);
+                    ms.allCoords.push(markerCoordinate);
 
                     const defaultIcon = require("../../../images/ambulance_green.png");
                     const highlightIcon = require("../../../images/ambulance_red.png");
@@ -486,8 +531,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             l.addTo(ms.map);
         }
 
-        if (allCoords.length !== 0 && doFly) {
-            map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]});
+        if (ms.allCoords.length !== 0 && doFly) {
+            map.flyToBounds(ms.allCoords, {paddingTopLeft: [350, 75]});
         }
     }
 }
