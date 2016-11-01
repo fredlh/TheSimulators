@@ -27,10 +27,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private levels: L.GeoJSON[][] = [[], [], [], []];
     private layers = [];
     private selectedPolygon;
-    private editId;
     private maxLevelReached: boolean;
-    private allCoords = [];
-    private editDisableLayer;
 
     private mapOptions: MapOptions[];
     private autoZoomOnSearch: boolean;
@@ -41,7 +38,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     private drawControl; // : L.Control;
     private drawnItems = L.featureGroup();
+    private editId;
     private previousDrawnItems = [];
+    // private allCoords = [];
+    // private editDisableLayer;
+
+    private eventsEnabled = true;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -130,17 +132,21 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     startEditMode(orgUnitId: string): void {
         this.editId = orgUnitId;
-        
         for (let l of this.levels) {
             for (let p of l) {
                 p.fire("setEditStyle");
             }
         }
 
+        this.eventsEnabled = false;
+
         if ((this.drawnItems.getLayers().length > 0) || (orgUnitId === "")) {
             this.drawnItems.addTo(this.map);
             this.drawControl.addTo(this.map);
+
+            console.log("using already loaded or no previous data");
         } else {
+            console.log("loading data");
 
             for (let l of this.levels) {
                 for (let p of l) {
@@ -151,49 +157,31 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     }
 
     private loadEditPolygon(existingData): void {
-        // this.drawnItems = L.featureGroup();
-
-        // console.log(JSON.stringify(existingData));
-
-        // this.drawnItems.clearLayers();
-
         const ms = this;
 
-        if (existingData[0][0].length > 0) {
-        // if (latlngs.length > 0) {
-           
+        if (existingData[0][0].length > 0) {      
             let swappedcoords = [];
-            //for (let i of existingData) {
-            //    let innerI = [];
-                for (let j of existingData) {
-                    let innerJ = [];
-                    for (let k of j) {
-                        let innerK = [];
-                        innerK.push(k[1]);
-                        innerK.push(k[0]);
-                        innerJ.push(innerK);
-                    }
-            //        innerI.push(innerJ);
-            //    }
+
+            for (let j of existingData) {
+                let innerJ = [];
+                for (let k of j) {
+                    let innerK = [];
+                    innerK.push(k[1]);
+                    innerK.push(k[0]);
+                    innerJ.push(innerK);
+                }
+
                 swappedcoords.push(innerJ);
             }
             
-            // let swappedcoords = L.GeoJSON.coordsToLatLng(existingData[0]);
-
-            console.log("existingData: " + JSON.stringify(existingData));
-            console.log("swapped: " + JSON.stringify(swappedcoords));
             for (let i of swappedcoords) {
-            
-                // this.drawnItems.addLayer(L.polygon(i, {
                 this.drawnItems.addLayer(L.polygon(swappedcoords, {
-                    // showArea: false,
                     color: "#f06eaa",
                     weight: 4,
                     opacity: 0.5,
                     fill: true,
                     fillColor: null,
                     fillOpacity: 0.2,
-                    // clickable: true
                 }));
             }
         }
@@ -201,7 +189,15 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         // Create a backup of the editable layers
         this.previousDrawnItems = [];
         for (let l of this.drawnItems.getLayers()) {
-            this.previousDrawnItems.push(l);
+
+            this.previousDrawnItems.push(new L.Polygon(l.getLatLngs(), {
+                    color: "#f06eaa",
+                    weight: 4,
+                    opacity: 0.5,
+                    fill: true,
+                    fillColor: null,
+                    fillOpacity: 0.2,
+                }));
         }
         
         this.drawnItems.addTo(this.map);
@@ -213,7 +209,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         if (saved) {
             this.previousDrawnItems = [];
             for(let lay of this.drawnItems.getLayers()) {
-                this.previousDrawnItems.push(lay);
+
+                this.previousDrawnItems.push(new L.Polygon(JSON.parse(JSON.stringify(lay.getLatLngs())), {
+                    color: "#f06eaa",
+                    weight: 4,
+                    opacity: 0.5,
+                    fill: true,
+                    fillColor: null,
+                    fillOpacity: 0.2,
+                }));
+
                 let subfigure = [];
 
                 // Export coords from layer
@@ -231,11 +236,19 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 pack2.push(pack1);
                 coordinates.push(pack1);
             }
-        }
+        } else {
 
-        this.drawnItems.clearLayers();
-        for (let lay of this.previousDrawnItems) {
-            this.drawnItems.addLayer(lay);
+            this.drawnItems.clearLayers();
+            for (let prevLay of this.previousDrawnItems) {
+                this.drawnItems.addLayer(new L.Polygon(JSON.parse(JSON.stringify(prevLay.getLatLngs())), {
+                    color: "#f06eaa",
+                    weight: 4,
+                    opacity: 0.5,
+                    fill: true,
+                    fillColor: null,
+                    fillOpacity: 0.2,
+                }));
+            }
         }
 
         for (let l of this.levels) {
@@ -244,7 +257,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             }
         }
 
-        this.editId = "";
+        this.eventsEnabled = true;
+        // this.editId = "";
 
         this.drawControl.remove();
         this.drawnItems.remove();
@@ -325,7 +339,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private addMapElement(orgUnits: OrgUnit[], maxLevelReached: boolean, doFly: boolean) {
         // this.orgUnits = orgUnits;
         let map = this.map;
-        this.allCoords = [];
+        let allCoords = [];
         const ms = this;
 
         // For each orgUnit in the argument array
@@ -361,41 +375,49 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         }
                     })
                     .addEventListener("mouseover", function(e) {
-                        this.setStyle(function(feature) {
-                            if (ms.selectedPolygon !== feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].borderHoverColor, fillColor: ms.mapOptions[levelIndex].hoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
-                            }
-                        });
+                        if (ms.eventsEnabled) {
+                            this.setStyle(function(feature) {
+                                if (ms.selectedPolygon !== feature.properties.id) {
+                                    return {color: ms.mapOptions[levelIndex].borderHoverColor, fillColor: ms.mapOptions[levelIndex].hoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
+                                }
+                            });
 
-                        this.toggleTooltip();
+                            this.toggleTooltip();
+                        }
                     })
                     .addEventListener("mouseout", function(e) {
-                        this.setStyle(function(feature) {
+                        if (ms.eventsEnabled) {
+                            this.setStyle(function(feature) {
 
-                            if (ms.selectedPolygon !== feature.properties.id) {
-                                return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
-                            }
-                        });
+                                if (ms.selectedPolygon !== feature.properties.id) {
+                                    return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
+                                }
+                            });
+                        }
                     })
                     .addEventListener("click", function(e) {
-                        map.clicked = map.clicked + 1;
-                        setTimeout(function() {
-                            if (map.clicked === 1 && ms.selectedPolygon !== id) {
-                                ms.selectedPolygon = id;
-                                ms.orgUnitService.callOnMapClick(id, false);
-                                ms.fireSelectedChanged();
-                            }
+                        if (ms.eventsEnabled) {
+                            map.clicked = map.clicked + 1;
+                            setTimeout(function() {
+                                if (map.clicked === 1 && ms.selectedPolygon !== id) {
+                                    ms.selectedPolygon = id;
+                                    ms.orgUnitService.callOnMapClick(id, false);
+                                    ms.fireSelectedChanged();
+                                }
 
-                            map.clicked = 0;
-                        }, 250);
+                                map.clicked = 0;
+                            }, 250);
+                        }
                     })
                     .addEventListener("dblclick", function(e) {
-                        map.clicked = 0;
+                        if (ms.eventsEnabled) {
+                            map.clicked = 0;
 
-                        if (!(maxLevelReached)) {
-                            ms.selectedPolygon = "";
-                            ms.orgUnitService.callOnMapClick(id, true);
-                            ms.fireSelectedChanged();
+                            if (!(maxLevelReached)) {
+                                ms.selectedPolygon = "";
+                                ms.orgUnitService.callOnMapClick(id, true);
+                                ms.fireSelectedChanged();
+                            }
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
@@ -446,7 +468,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         });
                     });
 
-                    ms.allCoords.push(tempGeo.getBounds());
+                    allCoords.push(tempGeo.getBounds());
                     ms.levels[levelIndex].push(tempGeo);
 
                 } else {
@@ -463,7 +485,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     markerCoordinate.push(Number(individualNumbers[1]));
                     markerCoordinate.push(Number(individualNumbers[0]));
 
-                    ms.allCoords.push(markerCoordinate);
+                    allCoords.push(markerCoordinate);
 
                     const defaultIcon = require("../../../images/ambulance_green.png");
                     const highlightIcon = require("../../../images/ambulance_red.png");
@@ -486,9 +508,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     let markerlatlng = L.latLng(markerCoordinate[0], markerCoordinate[1]);
                     let tempMark = L.marker(markerlatlng, markOptions)
                     .addEventListener("click", function(e) {
-                        ms.selectedPolygon = id;
-                        ms.orgUnitService.callOnMapClick(id, false);
-                        ms.fireSelectedChanged();
+                        if (ms.eventsEnabled) {
+                            ms.selectedPolygon = id;
+                            ms.orgUnitService.callOnMapClick(id, false);
+                            ms.fireSelectedChanged();
+                        }
                     })
                     .addEventListener("selectedChanged", function(e) {
                         if (id === ms.selectedPolygon && ms.autoZoomOnSelect) {
@@ -531,8 +555,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             l.addTo(ms.map);
         }
 
-        if (ms.allCoords.length !== 0 && doFly) {
-            map.flyToBounds(ms.allCoords, {paddingTopLeft: [350, 75]});
+        if (allCoords.length !== 0 && doFly) {
+            map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]});
         }
     }
 }
