@@ -184,7 +184,7 @@ export class OrgUnitService {
         this.mapView.onMapOptionsSave();
     }
 
-    hideSideBar(): void {
+    closeSideBar(): void {
         this.sideBar.closeSideBar();
     }
 
@@ -198,5 +198,6 @@ export class OrgUnitService {
 
     endAddOrEditOrgUnit(): void {
         this.mapView.endEdit();
+        console.log("END EDIT THINGY");
     }
 }

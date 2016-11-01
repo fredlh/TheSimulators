@@ -22,6 +22,8 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     private sideBarVisible = false;
     private levelToNameMap: String[] = Constants.nameToLevelMapping;
 
+    private filterAreaVisible: boolean = false;
+
     private filterApplied:boolean = false;
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
@@ -71,6 +73,13 @@ export class SideBarComponent implements SideBarInterface, OnInit {
             $("#sideBar").toggle("show");
             this.sideBarVisible = !this.sideBarVisible;
         }
+
+        if (!this.sideBarVisible && this.filterAreaVisible) {
+            $("#filterArea").toggle();   
+        } else if (this.sideBarVisible && this.filterAreaVisible) {
+            $("#filterArea").toggle();   
+
+        }
     }
 
     getChildren(orgUnitId: string) {
@@ -86,21 +95,33 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     }
 
     editOrgUnit(orgUnitId: string) {
-        console.log("EDIT ID: " + orgUnitId);
         this.showEditOrgUnitPanel();
         this.closeSideBar();
         
         this.selectedOrgUnit = this.getOrgUnitById(orgUnitId);
 
-        $(".edit-org-unit-close").click(this.onCancel);
-
         let tmpThis = this;
+        
+        $(".edit-org-unit-close").click(function() {
+            document.getElementById("editOrgUnitArea").style.display = "none";
+            $("#sideBar").show();
+            $("#toggleSideBar").show();
+            if (this.filterAreaVisible) {
+                $("#filterArea").show();
+            }
+            tmpThis.orgUnitService.endAddOrEditOrgUnit();
+        });
+
         window.onclick = function(event) {
             let options = document.getElementById("editOrgUnitArea");
             if (event.target === options) {
                 options.style.display = "none";
                 $("#sideBar").show();
                 $("#toggleSideBar").show();
+                if (tmpThis.filterAreaVisible) {
+                    $("#filterArea").show();
+                }
+                tmpThis.orgUnitService.endAddOrEditOrgUnit();
             }
         };
     }
@@ -112,22 +133,32 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     closeSideBar(): void {
         $("#sideBar").hide();
         $("#toggleSideBar").hide();
+        $("#filterArea").hide();
     }
 
     showSideBar(): void {
         $("#sideBar").show();
         $("#toggleSideBar").show();
+
+        if (this.filterAreaVisible) {
+            $("#filterArea").show();
+        }
     }
 
     onSubmit(): void {
         document.getElementById("editOrgUnitArea").style.display = "none";
         this.showSideBar();
+        this.orgUnitService.endAddOrEditOrgUnit();
     }
 
     onCancel(): void {
         document.getElementById("editOrgUnitArea").style.display = "none";
         $("#sideBar").show();
         $("#toggleSideBar").show();
+        if (this.filterAreaVisible) {
+            $("#filterArea").show();
+        }
+        this.orgUnitService.endAddOrEditOrgUnit();
     }
 
     closeEditOrgUnitPanel(): void {
@@ -178,6 +209,7 @@ export class SideBarComponent implements SideBarInterface, OnInit {
 
     toggleFilter(): void {
         $("#filterArea").slideToggle("fast");
+        this.filterAreaVisible = !this.filterAreaVisible;
     }
 
     applyFilter(name: string, nameFilter: string, level: string): void {

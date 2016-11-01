@@ -23,15 +23,27 @@ export class AddOrgUnitComponent implements OnInit {
     constructor(private orgUnitService: OrgUnitService) {}
 
     openAddOrgUnitForm(): void {
-        $("#addOrgUnitButton").click(this.onOpen);
-        $(".add-org-unit-close").click(this.onCancel);
-
         let tmpThis = this;
+        
+        $("#addOrgUnitButton").click(function() {
+            document.getElementById("addOrgUnitArea").style.display = "block";
+            tmpThis.orgUnitService.closeSideBar();
+        });
+
+        $(".add-org-unit-close").click(function() {
+            document.getElementById("addOrgUnitArea").style.display = "none";
+            this.orgUnit = new OrgUnit();
+            tmpThis.orgUnitService.endAddOrEditOrgUnit();
+            tmpThis.orgUnitService.showSideBar();
+        });
+
         window.onclick = function(event) {
             let options = document.getElementById("addOrgUnitArea");
             if (event.target === options) {
                 options.style.display = "none";
                 tmpThis.orgUnit = new OrgUnit();
+                tmpThis.orgUnitService.endAddOrEditOrgUnit();
+                tmpThis.orgUnitService.showSideBar();
             }
         };
     }
@@ -42,25 +54,24 @@ export class AddOrgUnitComponent implements OnInit {
 
     onOpen(): void {
         document.getElementById("addOrgUnitArea").style.display = "block";
-        //this.orgUnitService.hideSideBar();
     }
 
     onSubmit(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
-        //this.orgUnitService.showSideBar();
+        this.orgUnitService.endAddOrEditOrgUnit();
+        this.orgUnitService.showSideBar();
         
     }
 
     onCancel(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
         this.orgUnit = new OrgUnit();
-
-        //this.orgUnitService.showSideBar();
+        this.orgUnitService.endAddOrEditOrgUnit();
+        this.orgUnitService.showSideBar();
     }
 
     closePanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
-        //this.orgUnitService.showSideBar();
     }
 
     drawOrgUnitPolygon(): void {
@@ -77,8 +88,6 @@ export class AddOrgUnitComponent implements OnInit {
         this.orgUnit.coordinates = this.orgUnitService.endEditMode(true);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.onOpen();
-
-        //this.orgUnitService.showSideBar();
     }
 
     cancelDrawnOrgUnit(): void {
@@ -86,7 +95,5 @@ export class AddOrgUnitComponent implements OnInit {
 
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.onOpen();
-
-        //this.orgUnitService.showSideBar();
     }
 }
