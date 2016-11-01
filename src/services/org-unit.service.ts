@@ -195,4 +195,8 @@ export class OrgUnitService {
     onFilter(orgUnits: OrgUnit[]): void {
         this.mapView.draw(orgUnits, false, true);
     }
+
+    endAddOrEditOrgUnit(): void {
+        this.mapView.endEdit();
+    }
 }
