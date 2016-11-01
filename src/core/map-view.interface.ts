@@ -8,6 +8,6 @@ export interface MapViewInterface {
     onMapOptionsSave();
     startEditMode(orgUnitId: string);
     endEditMode(saved: boolean);
+    endEdit();
     previewCoordinates(coords: number[][][][]);
-
 }

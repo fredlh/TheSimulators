@@ -266,6 +266,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         return coordinates;
     }
 
+    endEdit(): void {
+        this.drawnItems.clearLayers();
+        this.previousDrawnItems = [];
+    }
+
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
         this.levels = [[], [], [], []];
         this.selectedPolygon = "";
