@@ -191,4 +191,8 @@ export class OrgUnitService {
     showSideBar(): void {
         this.sideBar.showSideBar();
     }
+
+    onFilter(orgUnits: OrgUnit[]): void {
+        this.mapView.draw(orgUnits, false, true);
+    }
 }

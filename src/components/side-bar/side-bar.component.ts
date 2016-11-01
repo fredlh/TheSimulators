@@ -222,6 +222,7 @@ export class SideBarComponent implements SideBarInterface, OnInit {
         });
 
         this.filterApplied = true;
+        this.orgUnitService.onFilter(this.displayedOrgUnits);
     }
 
     clearFilter(): void {
@@ -230,5 +231,6 @@ export class SideBarComponent implements SideBarInterface, OnInit {
             this.displayedOrgUnits.push(JSON.parse(JSON.stringify(o)));
         }
         this.filterApplied = false;
+        this.orgUnitService.onFilter(this.displayedOrgUnits);
     }
 }
