@@ -84,41 +84,38 @@ export class OptionsComponent {
     }
 
     toggleOptionsWindow(): void {
-        $("#optionsButton").click(this.onOpen);
-        $(".close").click(this.onClose);
+        this.showOptionsPanel();
 
-        
+        let tmpThis = this;
+        $(".close").click(function() {
+            tmpThis.onCancel(tmpThis);
+        });
+
         window.onclick = function(event) {
-            let options = document.getElementById("optionsArea");
-            if (event.target === options) {
-                options.style.display = "none";
-                OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.currentOptions));
+            if (event.target === document.getElementById("optionsArea")) {
+                tmpThis.onCancel(tmpThis);
             }
         };
     }
 
-    onOpen(): void {
+    showOptionsPanel(): void {
         document.getElementById("optionsArea").style.display = "block";
+        this.orgUnitService.hideSideBar();
     }
 
-    onOutsideClick(event: MouseEvent): any {
-        let options = document.getElementById("optionsArea");
-        if (event.target === options) {
-            options.style.display = "none";
-        }
+    hideOptionsPanel(): void {
+        document.getElementById("optionsArea").style.display = "none";
+        this.orgUnitService.unHideSideBar();
     }
 
-    onClose(): void {
-        let options = document.getElementById("optionsArea");
-        options.style.display = "none";
-
+    onCancel(tmpThis = this): void {
+        tmpThis.hideOptionsPanel();
         OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.currentOptions));
     }
 
-    onSave(zoomOnSearch: boolean): void {
-        let options = document.getElementById("optionsArea");
-        options.style.display = "none";
 
+    onSave(zoomOnSearch: boolean): void {
+        this.hideOptionsPanel();
         OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.tempOptions));
 
         this.orgUnitService.callOnOptionsSave();

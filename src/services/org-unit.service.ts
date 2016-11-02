@@ -44,9 +44,6 @@ export class OrgUnitService {
         this.accordion = accordion;
     }
 
-    toggleSideBar(orgUnitId: string) {
-        this.accordion.toggleSideBar(orgUnitId);
-    }
 
     getOrgUnits(query: string): any {
         this.orgUnitStack = [];
@@ -163,10 +160,9 @@ export class OrgUnitService {
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
         if (doubleClick) {
-            //this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
             this.getOrgUnitAndChildren(orgUnitId);
         } else {
-            this.toggleSideBar(orgUnitId);
+            this.accordion.toggleOrgUnitInSideBar(orgUnitId);
             this.sideBar.scrollToOrgUnit(orgUnitId);
         }
         
@@ -174,7 +170,6 @@ export class OrgUnitService {
 
     callOnSideBarClick(orgUnitId: string): void {
         this.mapView.onSideBarClick(orgUnitId);
-        //this.sideBar.expandAndScrollToOrgUnit(orgUnitId);
     }
 
     deselectMap(): void {
@@ -185,12 +180,12 @@ export class OrgUnitService {
         this.mapView.onMapOptionsSave();
     }
 
-    closeSideBar(): void {
-        this.sideBar.closeSideBar();
+    hideSideBar(): void {
+        this.sideBar.hideSideBar();
     }
 
-    showSideBar(): void {
-        this.sideBar.showSideBar();
+    unHideSideBar(): void {
+        this.sideBar.unHideSideBar();
     }
 
     onFilter(orgUnits: OrgUnit[]): void {
@@ -199,6 +194,5 @@ export class OrgUnitService {
 
     endAddOrEditOrgUnit(): void {
         this.mapView.endEdit();
-        console.log("END EDIT THINGY");
     }
 }

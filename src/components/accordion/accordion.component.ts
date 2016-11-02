@@ -43,7 +43,7 @@ export class AccordionComponent implements AfterContentInit {
         });
     }
 
-    toggleSideBar(orgUnitId: string) {
+    toggleOrgUnitInSideBar(orgUnitId: string) {
         this.groups.toArray().forEach(group => {
             if (group.orgUnitId === orgUnitId) {
                 group.toggleOpen();

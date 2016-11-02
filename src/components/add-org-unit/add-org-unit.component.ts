@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 
 import {OrgUnit} from "../../core/org-unit";
 
@@ -14,7 +14,7 @@ declare var $: any;
     styles: [ require<any>("./add-org-unit.component.less") ]
 })
 
-export class AddOrgUnitComponent implements OnInit {
+export class AddOrgUnitComponent {
 
     private orgUnit: OrgUnit = new OrgUnit();
     private self = this;
@@ -23,18 +23,15 @@ export class AddOrgUnitComponent implements OnInit {
     constructor(private orgUnitService: OrgUnitService) {}
 
     openAddOrgUnitForm(): void {
+        this.showAddOrgUnitPanel();
+
         let tmpThis = this;
-        
-        $("#addOrgUnitButton").click(function() {
-            document.getElementById("addOrgUnitArea").style.display = "block";
-            tmpThis.orgUnitService.closeSideBar();
-        });
 
         $(".add-org-unit-close").click(function() {
             document.getElementById("addOrgUnitArea").style.display = "none";
             this.orgUnit = new OrgUnit();
             tmpThis.orgUnitService.endAddOrEditOrgUnit();
-            tmpThis.orgUnitService.showSideBar();
+            tmpThis.orgUnitService.unHideSideBar();
         });
 
         window.onclick = function(event) {
@@ -43,39 +40,38 @@ export class AddOrgUnitComponent implements OnInit {
                 options.style.display = "none";
                 tmpThis.orgUnit = new OrgUnit();
                 tmpThis.orgUnitService.endAddOrEditOrgUnit();
-                tmpThis.orgUnitService.showSideBar();
+                tmpThis.orgUnitService.unHideSideBar();
             }
         };
     }
 
-    ngOnInit(): void {
-              
-    }   
-
-    onOpen(): void {
+    showAddOrgUnitPanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "block";
+        this.orgUnitService.hideSideBar();
     }
 
-    onSubmit(): void {
+    hideAddOrgUnitPanel(unHideSideBar = true): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
+        if (unHideSideBar) {
+            this.orgUnitService.unHideSideBar();
+        }
+    }
+
+    onCancel(tmpThis = this): void {
+        tmpThis.hideAddOrgUnitPanel();
+        this.orgUnit = new OrgUnit();
         this.orgUnitService.endAddOrEditOrgUnit();
-        this.orgUnitService.showSideBar();
+    }
+
+
+    onSubmit(): void {
+        this.hideAddOrgUnitPanel();
+        this.orgUnitService.endAddOrEditOrgUnit();
         
     }
 
-    onCancel(): void {
-        document.getElementById("addOrgUnitArea").style.display = "none";
-        this.orgUnit = new OrgUnit();
-        this.orgUnitService.endAddOrEditOrgUnit();
-        this.orgUnitService.showSideBar();
-    }
-
-    closePanel(): void {
-        document.getElementById("addOrgUnitArea").style.display = "none";
-    }
-
     drawOrgUnitPolygon(): void {
-        this.closePanel();
+        this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.orgUnitService.startEditMode("");
     }
@@ -87,13 +83,13 @@ export class AddOrgUnitComponent implements OnInit {
     saveDrawnOrgUnit(): void {
         this.orgUnit.coordinates = this.orgUnitService.endEditMode(true);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        this.onOpen();
+        this.showAddOrgUnitPanel();
     }
 
     cancelDrawnOrgUnit(): void {
         this.orgUnitService.endEditMode(false);
 
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        this.onOpen();
+        this.showAddOrgUnitPanel();
     }
 }
