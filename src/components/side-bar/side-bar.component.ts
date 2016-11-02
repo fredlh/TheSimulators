@@ -54,7 +54,7 @@ export class SideBarComponent implements SideBarInterface, OnInit {
         }
 
         this.showSideBar();
-        this.clearFilter(true);
+        this.clearFilter(true, false);
     }
 
     // Scrolls to a given orgUnit in the list by id
@@ -295,9 +295,8 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     }
 
     // Clears the filter
-    // If hideFilterArea === true, the filter area is hidden 
     // Called on search or clear filter button clicked
-    clearFilter(hideFilterArea = false): void {
+    clearFilter(hideFilterArea = false, notifyOrgUnitService = true): void {
         this.displayedOrgUnits = [];
 
         for (let o of this.orgUnits) {
@@ -305,12 +304,17 @@ export class SideBarComponent implements SideBarInterface, OnInit {
         }
 
         this.filterApplied = false;
-        this.orgUnitService.onFilter(this.displayedOrgUnits);
+
+        if (notifyOrgUnitService) {
+            this.orgUnitService.onFilter(this.displayedOrgUnits);
+        }
 
         if (hideFilterArea) {
             $("#filterArea").hide();
             this.filterAreaVisible = false;
         }
+
+        $("#filterArea").find("form")[0].reset();
     }
 
 }

@@ -24,7 +24,6 @@ export class OrgUnitService {
 
     private orgUnits: OrgUnit[];
     private orgUnitStack: OrgUnit[][] = [];
-    private filteredOrgUnitStack: OrgUnit[][] = [];
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
@@ -46,8 +45,6 @@ export class OrgUnitService {
 
 
     getOrgUnits(query: string): any {
-        this.orgUnitStack = [];
-
         let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${query}`;
         console.log("Requesting org units from api: " + apiUrl);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));
@@ -94,6 +91,8 @@ export class OrgUnitService {
         if (level !== "") searchUrl += "&level=" + level;
         if (maxLevel !== "") searchUrl += "&maxLevel=" + maxLevel;
 
+        this.orgUnitStack = [];
+
         this.getOrgUnits(searchUrl).subscribe(res => {
             this.orgUnits = res.organisationUnits;
             this.callOnSearch();
@@ -102,6 +101,8 @@ export class OrgUnitService {
     }
 
     getAllOrgUnits(): void {
+        this.orgUnitStack = [];
+
         this.getOrgUnits("").subscribe(res => {
             this.orgUnits = res.organisationUnits;
             this.callOnSearch();

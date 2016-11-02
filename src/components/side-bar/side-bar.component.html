@@ -1,21 +1,23 @@
 <button id="toggleSideBar" class="btn btn-info" (click)="toggleSideBar()" style="display: none;">
     <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
 </button>
+
 <div id="sideBar" style="display: none;">
+
 
     <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
         Filter
     </button>
-    
+        
     <br>
     <h3 style="text-align: center;">Search results </h3>
-
-    
 
     <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
     </button>
 
+
+  
     <div *ngIf="orgUnits === undefined" id="noSearchResults">
         <hr/>  
         <p>No organisation units matched the given search parameters</p>
@@ -46,6 +48,7 @@
         </accordion>
     </div>
 
+   
 </div>
 
 
