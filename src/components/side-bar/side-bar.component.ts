@@ -299,8 +299,10 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     clearFilter(hideFilterArea = false, notifyOrgUnitService = true): void {
         this.displayedOrgUnits = [];
 
-        for (let o of this.orgUnits) {
-            this.displayedOrgUnits.push(JSON.parse(JSON.stringify(o)));
+        if (this.orgUnits !== null) {
+            for (let o of this.orgUnits) {
+                this.displayedOrgUnits.push(JSON.parse(JSON.stringify(o)));
+            }
         }
 
         this.filterApplied = false;

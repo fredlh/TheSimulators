@@ -4,48 +4,50 @@
 
 <div id="sideBar" style="display: none;">
 
+    <div id="topArea">
+        <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
+            Filter
+        </button>
+            
+        <br>
+        <h3 style="text-align: center;">Search results </h3>
 
-    <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
-        Filter
-    </button>
-        
-    <br>
-    <h3 style="text-align: center;">Search results </h3>
-
-    <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
-        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
-    </button>
-
-
-  
-    <div *ngIf="orgUnits === undefined" id="noSearchResults">
-        <hr/>  
-        <p>No organisation units matched the given search parameters</p>
+        <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
+        </button>
     </div>
 
-    <div *ngIf="orgUnits !== undefined">
-        <accordion>
-            <div *ngFor="let orgUnit of displayedOrgUnits; let myIndex = index">
-                <div id={{orgUnit.id}}>
-                    <accordion-group orgUnitId={{orgUnit.id}}>
-                        <accordion-heading>
-                            {{orgUnit.displayName}}
-                        </accordion-heading>
-                        <span style="cursor: auto;">
-                            <button *ngIf="orgUnit.level === 4" id="#zoomToChildrenButton" class="btn btn-info disabled">Children</button>
-                            <button *ngIf="orgUnit.level !== 4" id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
-                            <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
-                            <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
-                            <ul>
-                                <li>ID: {{orgUnit.id}}</li>
-                                <li>Level: {{orgUnit.level}}</li>
-                                <li>Coordinates: {{orgUnit.coordinates}}</li>
-                            </ul>
-                        </span>
-                    </accordion-group>
+    <div id="orgUnitArea">
+        <div *ngIf="orgUnits === undefined" id="noSearchResults">
+            <hr/>  
+            <p>No organisation units matched the given search parameters</p>
+        </div>
+
+        <div *ngIf="orgUnits !== undefined">
+            <accordion>
+                <div *ngFor="let orgUnit of displayedOrgUnits; let myIndex = index">
+                    <div id={{orgUnit.id}}>
+                        <accordion-group orgUnitId={{orgUnit.id}}>
+                            <accordion-heading>
+                                {{orgUnit.displayName}}
+                            </accordion-heading>
+                            <span style="cursor: auto;">
+                                <button *ngIf="orgUnit.level === 4" id="#zoomToChildrenButton" class="btn btn-info disabled">Children</button>
+                                <button *ngIf="orgUnit.level !== 4" id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
+                                <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
+                                <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
+                                <ul>
+                                    <li>ID: {{orgUnit.id}}</li>
+                                    <li>Level: {{orgUnit.level}}</li>
+                                    <li>Coordinates: {{orgUnit.coordinates}}</li>
+                                </ul>
+                            </span>
+                        </accordion-group>
+                    </div>
                 </div>
-            </div>
-        </accordion>
+            </accordion>
+        </div>
+    
     </div>
 
    
