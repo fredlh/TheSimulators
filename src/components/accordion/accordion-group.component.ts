@@ -6,25 +6,8 @@ import {OrgUnitService} from "../../services/org-unit.service";
 
 @Component({
     selector: "accordion-group",
-    template: `
-  <div class="panel panel-default" [class.dropup]="isOpened">
-    <div class="panel-heading" role="tab" (click)="checkAndToggle()" style="cursor: pointer;">
-      <h4 class="panel-title">
-        <a *ngIf="heading" role="button" data-toggle="collapse" [attr.aria-expanded]="isOpened">
-            {{ heading }}
-        </a>
-        <ng-content select="accordion-heading"></ng-content>
-        <div class="caret" [style.display]="accordion.showArrows ? '' : 'none'">
-        </div>
-      </h4>
-    </div>
-    <div *ngIf="isOpened" class="panel-collapse collapse in" role="tabpanel" [attr.aria-labelledby]="heading">
-      <div class="panel-body">
-        <ng-content></ng-content>
-      </div>
-    </div>
-  </div>
-`
+    template: require<any>("./accordion-group.component.html"),
+    styles: [ require<any>("./accordion-group.component.less") ]
 })
 export class AccordionGroupComponent {
 

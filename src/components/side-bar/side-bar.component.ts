@@ -61,8 +61,8 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     // Called when the user has clicked on an orgUnit on the map
     scrollToOrgUnit(orgUnitId: string) {
         setTimeout(function() {
-            $("#sideBar").animate({
-                scrollTop: $("#" + orgUnitId).position().top + $("#sideBar").scrollTop() - 40
+            $("#orgUnitArea").animate({
+                scrollTop: $("#" + orgUnitId).position().top + $("#orgUnitArea").scrollTop() - 40
             }, 500);
         }, 100);
     }
