@@ -1,20 +1,20 @@
-export class Constants {
+export class Globals {
     public static LEVEL_1 = "Country";
     public static LEVEL_2 = "Province";
     public static LEVEL_3 = "District";
     public static LEVEL_4 = "Unit";
 
-    public static nameToLevelMapping = [Constants.LEVEL_1, Constants.LEVEL_2, Constants.LEVEL_3, Constants.LEVEL_4];
+    public static nameToLevelMapping = [Globals.LEVEL_1, Globals.LEVEL_2, Globals.LEVEL_3, Globals.LEVEL_4];
 
-    private static indexModifier = -1;
+    public static IN_EDIT_MODE = false;
 
     public static getName(level: number): string {
         if (level < 1 || level > 4) return "Error: Illegal level value";
-        return Constants.nameToLevelMapping[level - 1];
+        return Globals.nameToLevelMapping[level - 1];
     }
 
     public static getLevel(name: string): number {
-        let map = Constants.nameToLevelMapping;
+        let map = Globals.nameToLevelMapping;
         for (let i = 0; i < map.length; i++) {
             if (map[i] === name) return i;
         }
@@ -23,11 +23,8 @@ export class Constants {
     }
 
     public static getNumOrgUnits(): number {
-        return Constants.nameToLevelMapping.length;
+        return Globals.nameToLevelMapping.length;
     }
 
-    public static getUniqueIndex(): number {
-        Constants.indexModifier++;
-        return Constants.getNumOrgUnits() * Constants.indexModifier
-    }
+ 
 }

@@ -14,6 +14,8 @@ import { MapViewInterface }      from "../core/map-view.interface";
 
 import { AccordionComponent } from "../components/accordion/accordion.component";
 
+import {Globals} from "../globals/globals"
+
 
 @Injectable()
 export class OrgUnitService {
@@ -75,10 +77,12 @@ export class OrgUnitService {
     }
 
     startEditMode(orgUnitId: string): void {
+        Globals.IN_EDIT_MODE = true;
         this.mapView.startEditMode(orgUnitId);
     }
 
     endEditMode(saved: boolean): number[][][][] {
+        Globals.IN_EDIT_MODE = false;
         return this.mapView.endEditMode(saved);
     }
 

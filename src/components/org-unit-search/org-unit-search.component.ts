@@ -7,7 +7,7 @@ import { OrgUnit }              from "../../core/org-unit";
 
 import { OrgUnitService }       from "../../services/org-unit.service";
 
-import { Constants }            from "../../constants/constants";
+import { Globals }            from "../../globals/globals";
 
 declare var $: any;
 
@@ -21,8 +21,7 @@ export class OrgUnitSearchComponent implements OnInit {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
     private advancedSearchVisible = false;
-    private levelToNameMap: String[] = Constants.nameToLevelMapping;
-    private constants = Constants;
+    private levelToNameMap: String[] = Globals.nameToLevelMapping;
 
     constructor(private orgUnitService: OrgUnitService) {}
 

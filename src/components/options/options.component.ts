@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
-import { Constants }            from "../../constants/constants";
+import { Globals }            from "../../globals/globals";
 
 declare var $: any;
 
@@ -55,7 +55,7 @@ class Options {
 
 
 export class OptionsComponent {
-    private constants = Constants;
+    private globals = Globals;
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
 

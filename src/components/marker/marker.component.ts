@@ -1,6 +1,7 @@
 import {Component, OnInit } from "@angular/core";
 import {MapService} from "../../services/map.service";
 import {Map, MouseEvent, Marker} from "leaflet";
+import {Globals} from "../../globals/globals";
 
 @Component({
     selector: "marker",
@@ -9,6 +10,8 @@ import {Map, MouseEvent, Marker} from "leaflet";
 })
 
 export class MarkerComponent implements OnInit {
+    private globals = Globals;
+
     editing: boolean;
     removing: boolean;
     markerCount: number;

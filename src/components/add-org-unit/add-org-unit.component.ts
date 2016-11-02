@@ -2,8 +2,6 @@ import { Component } from "@angular/core";
 
 import {OrgUnit} from "../../core/org-unit";
 
-import {Constants} from "../../constants/constants";
-
 import {OrgUnitService} from "../../services/org-unit.service";
 
 declare var $: any;
@@ -18,7 +16,6 @@ export class AddOrgUnitComponent {
 
     private orgUnit: OrgUnit = new OrgUnit();
     private self = this;
-    private constants = Constants;
 
     constructor(private orgUnitService: OrgUnitService) {}
 

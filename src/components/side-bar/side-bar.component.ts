@@ -6,7 +6,7 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
 
-import { Constants} from "../../constants/constants";
+import { Globals } from "../../globals/globals";
 
 declare var $: any;
 
@@ -19,7 +19,7 @@ declare var $: any;
 export class SideBarComponent implements SideBarInterface, OnInit {
     private orgUnits: OrgUnit[] = null;
     private displayedOrgUnits = null;
-    private levelToNameMap: String[] = Constants.nameToLevelMapping;
+    private levelToNameMap: String[] = Globals.nameToLevelMapping;
 
     private toggleSideBarButtonVisible: boolean = false;
     private sideBarVisible: boolean = false;
