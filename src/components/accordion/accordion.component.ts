@@ -40,6 +40,7 @@ export class AccordionComponent implements AfterContentInit {
     closeAll() {
         this.groups.toArray().forEach(group => {
             group.isOpened = false;
+            $("#" + group.orgUnitId).find(".orgUnitHeader").css({"background-color": ""});
         });
     }
 
@@ -47,6 +48,7 @@ export class AccordionComponent implements AfterContentInit {
         this.groups.toArray().forEach(group => {
             if (group.orgUnitId === orgUnitId) {
                 group.toggleOpen();
+                $("#" + group.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"});
             }
         });
     }

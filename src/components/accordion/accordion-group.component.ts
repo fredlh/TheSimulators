@@ -31,11 +31,6 @@ export class AccordionGroupComponent {
         if (this.toggler)
             return;
 
-        if (!this.isOpened) {
-            this.orgUnitService.callOnSideBarClick(this.orgUnitId);
-        } else {
-            this.orgUnitService.deselectMap();
-        }
         this.toggle();
     }
 
@@ -45,6 +40,13 @@ export class AccordionGroupComponent {
             this.accordion.closeAll();
 
         this.isOpened = !isOpenedBeforeWeChange;
+
+        if (this.isOpened) {
+            this.orgUnitService.callOnSideBarClick(this.orgUnitId);
+            $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"}); 
+        } else {
+            this.orgUnitService.deselectMap();
+        }
     }
 
     toggleOpen() {
