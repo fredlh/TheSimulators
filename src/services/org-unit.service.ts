@@ -64,6 +64,10 @@ export class OrgUnitService {
           });
         });
     }
+    // den skal lagre nye orgUnits på serveren
+    saveOrgUnits():any{
+
+    }
 
     getOrgUnit(orgUnitId: string): any {
         let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnitId}?includeChildren=true`;
