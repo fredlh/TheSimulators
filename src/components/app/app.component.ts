@@ -1,7 +1,10 @@
 	import { Component } from "@angular/core";
+	import { Headers, Http } from '@angular/http';
+
 	import { OrganisationUnit } from "../../services/organisationUnit";
 	import { OrgUnitService }       from "../../services/org-unit.service";
 
+	import 'rxjs/Rx';
 
 	@Component({
 	    selector : "app",
@@ -37,12 +40,11 @@
 
 	        console.log(this.organisationUnit);
 	 	}
-	    newUnit(): void {
-	        console.log(this.model);
-	        this.orgUnitService.saveOrgUnits(this.model)
-	            .subscribe(this.loadList())
-	            .then(this.loadList());
-	    }
+	    saveNewOrgUnits(): void {
+     	this.orgUnitService.saveOrgUnits(this.model)
+            .subscribe((data) => {
+            this.loadList()
+            })
+		}
 
-
-	}
+}

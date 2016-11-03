@@ -6,7 +6,8 @@ import "rxjs/add/operator/toPromise";
 import "rxjs/add/operator/map";
 import "rxjs/Rx";
 
-import { OrganisationUnit } from "./organisationUnit";
+//import { OrganisationUnit } from "./organisationUnit";
+import { OrganisationUnit } from "../services/organisationUnit";
 
 import { OrgUnit }  from "../core/org-unit";
 
@@ -26,10 +27,10 @@ export class OrgUnitService {
     private orgUnits: OrgUnit[];
     private orgUnitStack: OrgUnit[][] = [];
     
-    public organisationUnit = [];
+    /*public organisationUnit = [];
     private organisationUnits;
 
-    model = new OrganisationUnit('', '', '');
+    model = new OrganisationUnit('', '', '');*/
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
@@ -82,19 +83,19 @@ export class OrgUnitService {
         .post(apiUrl, {headers: this.headers})
         .map( res => res.json() )
     }
-    
+    /*
     saveNewOrgUnits(): void {
      this.saveOrgUnits(this.model)
             .subscribe((data) => {
-          //    this.loadList()
-            })
+            this.loadList()
+            }) */
 
         /*  this.getOrgUnits("").subscribe(res => {
             this.orgUnits = res.organisationUnits;
             this.callOnSearch();
         });*/
 
-    }
+    //}
     
 
 
@@ -225,22 +226,5 @@ export class OrgUnitService {
     showSideBar(): void {
         this.sideBar.showSideBar();
     }
-/*
-      loadList(): void {
-       this.getOrgUnits("")
-            .subscribe( res => this.updateList(res.organisationUnits) );
-    }
- 
-     updateList( organisationUnits ): void {
-         console.log(organisationUnits);
-        console.log(organisationUnits.length);
-         this.organisationUnit = [];
-         for(let i = 0; i < organisationUnits.length; i++){
-             console.log(organisationUnits[i]);
-             this.organisationUnit.push(organisationUnits[i]);
-         }
-
-         console.log(this.organisationUnit);
-     }*/
 
 }
