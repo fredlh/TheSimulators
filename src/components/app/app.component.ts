@@ -37,6 +37,12 @@
 
 	        console.log(this.organisationUnit);
 	 	}
-	   
+	    newUnit(): void {
+	        console.log(this.model);
+	        this.orgUnitService.saveOrgUnits(this.model)
+	            .subscribe(this.loadList())
+	            .then(this.loadList());
+	    }
+
 
 	}
