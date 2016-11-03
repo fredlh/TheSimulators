@@ -77,13 +77,13 @@ export class OrgUnitService {
     }
 
     startEditMode(orgUnitId: string, polygon: boolean): boolean {
-        Globals.IN_EDIT_MODE = true;
+        Globals.setInEditMode(polygon);
         return this.mapView.startEditMode(orgUnitId, polygon);
     }
 
     // endEditMode(saved: boolean): number[][][][] {
     endEditMode(saved: boolean): number[] {
-        Globals.IN_EDIT_MODE = false;
+        Globals.endInEditMode();
         return this.mapView.endEditMode(saved);
     }
 
