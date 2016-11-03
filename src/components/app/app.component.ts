@@ -26,6 +26,17 @@
 	            .subscribe( res => this.updateList(res.organisationUnits) );
 	    }
 	 
+	     updateList( organisationUnits ): void {
+	        console.log(organisationUnits);
+	        console.log(organisationUnits.length);
+	        this.organisationUnit = [];
+	        for(let i = 0; i < organisationUnits.length; i++){
+	            console.log(organisationUnits[i]);
+	            this.organisationUnit.push(organisationUnits[i]);
+	         }
 
+	        console.log(this.organisationUnit);
+	 	}
+	   
 
 	}
