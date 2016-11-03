@@ -70,13 +70,19 @@ export class AddOrgUnitComponent {
     drawOrgUnitPolygon(): void {
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.startEditMode("", true);
+        if (!this.orgUnitService.startEditMode("", true)) {
+            $("#drawOrgUnitPanelArea").slideToggle("fast");
+            this.showAddOrgUnitPanel();
+        }
     }
 
     drawOrgUnitMarker(): void {
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.startEditMode("", false);
+        if (!this.orgUnitService.startEditMode("", false)) {
+            $("#drawOrgUnitPanelArea").slideToggle("fast");
+            this.showAddOrgUnitPanel();
+        }
     }
 
     saveDrawnOrgUnit(): void {

@@ -140,7 +140,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.fireEvent("optionsChanged");
     }
 
-    startEditMode(orgUnitId: string, polygon: boolean): void {
+    startEditMode(orgUnitId: string, polygon: boolean): boolean {
+        if (this.drawnItems.getLayers().length > 0) {
+            console.log("inside first");
+            let condition = this.drawnItems.getLayers()[0];
+
+            if ((polygon && condition instanceof L.Marker) || ((!polygon) && condition instanceof L.Polygon)) {
+                return false;
+            }
+        }
+
         this.editId = orgUnitId;
         this.fireEvent("setEditStyle");
         this.eventsEnabled = false;
@@ -166,6 +175,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 this.fireEvent("getMarkerCoordinates");
             }
         }
+
+        return true;
     }
 
     private loadEditMarker(existing): void {

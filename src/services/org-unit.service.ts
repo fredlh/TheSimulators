@@ -76,9 +76,9 @@ export class OrgUnitService {
         });
     }
 
-    startEditMode(orgUnitId: string, polygon: boolean): void {
+    startEditMode(orgUnitId: string, polygon: boolean): boolean {
         Globals.IN_EDIT_MODE = true;
-        this.mapView.startEditMode(orgUnitId, polygon);
+        return this.mapView.startEditMode(orgUnitId, polygon);
     }
 
     // endEditMode(saved: boolean): number[][][][] {
