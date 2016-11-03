@@ -85,8 +85,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 err => console.error(err)
             );
 
+        $("#marker-buttons").hide();
+
         this.drawControl = new L.Control.Draw({
-            position: "bottomright",
+            position: "topright",
             edit: {
                 featureGroup: this.drawnItems,
                 poly: {
@@ -170,6 +172,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         } else {
             this.markerAdd = false;
+            $("#marker-buttons").show();
             
             if (!((this.editOngoing) || (orgUnitId === ""))) {
                 this.editOngoing = true;
@@ -280,6 +283,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     this.previousEditMarker = null;
                 }
             }
+
+            $("#marker-buttons").hide();
         }
 
         this.drawnItems.remove();
