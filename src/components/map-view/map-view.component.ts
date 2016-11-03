@@ -112,17 +112,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         this.map.on("click", (e: MouseEvent) => {
             if (this.markerAdd && this.drawnItems.getLayers().length === 0) {
-                ms.editMarker = L.marker(e.latlng, {
-                    icon: L.icon({
-                        iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
-                        shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
-                    }),
-                    draggable: true
-                })
-                .bindPopup("New marker", {
-                    offset: L.point(12, 6)
-                });
-
+                ms.editMarker = ms.mapService.createEditMarker(e.latlng);
                 ms.drawnItems.addLayer(ms.editMarker);
                 ms.editMarker.openPopup();
                 ms.markerAdd = false;
@@ -182,28 +172,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         const ms = this;
 
         if (existing !== null && existing !== undefined) {
-            this.editMarker = L.marker(existing, {
-                icon: L.icon({
-                    iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
-                    shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
-                }),
-                draggable: true
-            })
-            .bindPopup("New marker", {
-                offset: L.point(12, 6)
-            });
+            this.editMarker = ms.mapService.createEditMarker(existing);
 
             // Create "backup"
-            this.previousEditMarker = L.marker(JSON.parse(JSON.stringify(existing)), {
-                icon: L.icon({
-                    iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
-                    shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
-                }),
-                draggable: true
-            })
-            .bindPopup("New marker", {
-                offset: L.point(12, 6)
-            });
+            this.previousEditMarker = ms.mapService.createEditMarker(existing);
 
             ms.drawnItems.addLayer(ms.editMarker);
             this.editMarker.openPopup();
@@ -232,29 +204,14 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             }
 
             for (let i of swappedcoords) {
-                this.drawnItems.addLayer(L.polygon(swappedcoords, {
-                    color: "#f06eaa",
-                    weight: 4,
-                    opacity: 0.5,
-                    fill: true,
-                    fillColor: null,
-                    fillOpacity: 0.2,
-                }));
+                this.drawnItems.addLayer(this.mapService.createEditPolygon(swappedcoords));
             }
         }
 
         // Create a backup of the editable layers
         this.previousDrawnItems = [];
         for (let l of this.drawnItems.getLayers()) {
-
-            this.previousDrawnItems.push(L.polygon(l.getLatLngs(), {
-                    color: "#f06eaa",
-                    weight: 4,
-                    opacity: 0.5,
-                    fill: true,
-                    fillColor: null,
-                    fillOpacity: 0.2,
-                }));
+            this.previousDrawnItems.push(this.mapService.createEditPolygon(l.getLatLngs()));
         }
 
         this.drawnItems.addTo(this.map);
@@ -267,16 +224,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             if (saved) {
                 this.previousDrawnItems = [];
                 for (let lay of this.drawnItems.getLayers()) {
-
-                    this.previousDrawnItems.push(L.polygon(JSON.parse(JSON.stringify(lay.getLatLngs())), {
-                        color: "#f06eaa",
-                        weight: 4,
-                        opacity: 0.5,
-                        fill: true,
-                        fillColor: null,
-                        fillOpacity: 0.2,
-                    }));
-
+                    this.previousDrawnItems.push(this.mapService.createEditPolygon(lay.getLatLngs()));
                     let subfigure = [];
 
                     // Export coords from layer
@@ -298,14 +246,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                 this.drawnItems.clearLayers();
                 for (let prevLay of this.previousDrawnItems) {
-                    this.drawnItems.addLayer(L.polygon(JSON.parse(JSON.stringify(prevLay.getLatLngs())), {
-                        color: "#f06eaa",
-                        weight: 4,
-                        opacity: 0.5,
-                        fill: true,
-                        fillColor: null,
-                        fillOpacity: 0.2,
-                    }));
+                    this.drawnItems.addLayer(this.mapService.createEditPolygon(prevLay.getLatLngs()));
                 }
             }
 
@@ -316,16 +257,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 // Update "backup" marker
                 if (this.drawnItems.getLayers().length > 0) {
                     let coords = this.editMarker.getLatLng();
-                    this.previousEditMarker = L.marker(JSON.parse(JSON.stringify(coords)), {
-                        icon: L.icon({
-                            iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
-                            shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
-                        }),
-                        draggable: true
-                    })
-                    .bindPopup("New marker", {
-                        offset: L.point(12, 6)
-                    });
+                    this.previousEditMarker = this.mapService.createEditMarker(coords);
 
                     // this.map.remove(this.editMarker);
                     coordinates.push(coords.lng);
@@ -339,17 +271,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 this.drawnItems.clearLayers();
 
                 if (this.previousEditMarker !== null) {
-                    this.editMarker = L.marker(JSON.parse(JSON.stringify(this.previousEditMarker.getLatLng())), {
-                        icon: L.icon({
-                            iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
-                            shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
-                        }),
-                        draggable: true
-                    })
-                    .bindPopup("New marker", {
-                        offset: L.point(12, 6)
-                    });
-
+                    this.editMarker = this.mapService.createEditMarker(this.previousEditMarker.getLatLng());
                     this.drawnItems.addLayer(this.editMarker);
 
                 } else {

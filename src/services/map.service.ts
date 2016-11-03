@@ -56,5 +56,30 @@ export class MapService {
 
         return parsedCoordinates;
     }
+
+    createEditMarker(latlng): any {
+        let coords = JSON.parse(JSON.stringify(latlng));
+        return L.marker(coords, {
+            icon: L.icon({
+                iconUrl: require<any>("../../node_modules/leaflet/dist/images/marker-icon.png"),
+                shadowUrl: require<any>("../../node_modules/leaflet/dist/images/marker-shadow.png")
+            }),
+            draggable: true
+        })
+        .bindPopup("New marker", {
+            offset: L.point(12, 6)
+        });
+    }
+
+    createEditPolygon(latlngs): any {
+        return L.polygon(JSON.parse(JSON.stringify(latlngs)), {
+            color: "#f06eaa",
+            weight: 4,
+            opacity: 0.5,
+            fill: true,
+            fillColor: null,
+            fillOpacity: 0.2,
+        });
+    }
 }
 
