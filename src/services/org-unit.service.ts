@@ -6,7 +6,7 @@ import "rxjs/add/operator/toPromise";
 import "rxjs/add/operator/map";
 import "rxjs/Rx";
 
-import { OrganisationUnit } from "../services/organisationUnit";
+//import { OrganisationUnit } from "../services/organisationUnit";
 
 import { OrgUnit }  from "../core/org-unit";
 
@@ -25,6 +25,12 @@ export class OrgUnitService {
 
     private orgUnits: OrgUnit[];
     private orgUnitStack: OrgUnit[][] = [];
+
+
+    //public organisationUnit = [];
+    //private organisationUnits;
+
+    //model = new OrganisationUnit('', '', '');
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
@@ -68,23 +74,27 @@ export class OrgUnitService {
     }
     // den skal lagre nye orgUnits på serveren
      
-    saveOrgUnits(organisationUnit: string):any{
-     let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${organisationUnit}`;
+    saveOrgUnits(orgUnit: string):any{
+     let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${orgUnit}`;
         console.log("saveorgunits");
-        console.log(JSON.stringify(organisationUnit));
+        console.log(JSON.stringify(orgUnit));
         this.headers.append('Authorization', this.basicAuth);
         return this.http
         .post(apiUrl, {headers: this.headers})
         .map( res => res.json() )
     }
-    /*saveAllOrgUnits(): void{
-    this.saveAllOrgUnits();
-    }*/
-    saveAllOrgUnits(): void {
-     this.saveOrgUnits("").subscribe(res => {
+    
+
+    saveNewOrgUnits(): void {
+         this.saveOrgUnits("").subscribe((data) => {
+            //  this.loadList()
+            this.orgUnits = data.organisationUnits;
+             });
+
+             /* this.getOrgUnits("").subscribe(res => {
             this.orgUnits = res.organisationUnits;
-            // this.callOnSearch();
-        });
+            this.callOnSearch();
+        });*/
 
     }
     
