@@ -76,12 +76,13 @@ export class OrgUnitService {
         });
     }
 
-    startEditMode(orgUnitId: string): void {
+    startEditMode(orgUnitId: string, polygon: boolean): void {
         Globals.IN_EDIT_MODE = true;
-        this.mapView.startEditMode(orgUnitId);
+        this.mapView.startEditMode(orgUnitId, polygon);
     }
 
-    endEditMode(saved: boolean): number[][][][] {
+    // endEditMode(saved: boolean): number[][][][] {
+    endEditMode(saved: boolean): number[] {
         Globals.IN_EDIT_MODE = false;
         return this.mapView.endEditMode(saved);
     }

@@ -204,12 +204,16 @@ export class SideBarComponent implements SideBarInterface, OnInit {
         this.closeEditOrgUnitPanel();
 
         $("#editOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.startEditMode(this.selectedOrgUnit.id);
+        this.orgUnitService.startEditMode(this.selectedOrgUnit.id, true);
     }
 
     // Opens the draw org unit marker menu and closes the rest
     drawOrgUnitMarker(): void {
+        this.hideSideBar();
+        this.closeEditOrgUnitPanel();
 
+        $("#editOrgUnitPanelArea").slideToggle("fast");
+        this.orgUnitService.startEditMode(this.selectedOrgUnit.id, false);
     }
 
     // Saves the drawn org unit

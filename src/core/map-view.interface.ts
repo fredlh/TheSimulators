@@ -6,8 +6,11 @@ export interface MapViewInterface {
     onSideBarClick(orgUnitId: string);
     deselectMap();
     onMapOptionsSave();
-    startEditMode(orgUnitId: string);
+    startEditMode(orgUnitId: string, polygon: boolean);
+    // endEditMode(saved: boolean);
     endEditMode(saved: boolean);
     endEdit();
     previewCoordinates(coords: number[][][][]);
+    toggleAddMarker();
+    removeMarker();
 }

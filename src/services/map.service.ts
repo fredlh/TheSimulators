@@ -27,4 +27,34 @@ export class MapService {
         L.DomEvent.disableClickPropagation(element);
         L.DomEvent.disableScrollPropagation(element);
     };
+
+    parsePolygonCoordinates(coordinatesAsString: string): any {
+        let bracketsRemoved = coordinatesAsString.slice(4, coordinatesAsString.length - 4); // Remove brackets on each end (1)
+        let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
+
+        let parsedCoordinates = [];
+
+        // For each subfigure within the figure
+        for (let subfig of subfigures) {
+
+            let subfigureBuildup = [];
+            let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
+
+            // For each x,y tupple within the subfigure
+            for (let tuppel of individualTuppels) {
+                let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
+
+                let tuppelBuildup = [];
+                tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
+                tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
+
+                subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
+            }
+
+            parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
+        }
+
+        return parsedCoordinates;
+    }
 }
+

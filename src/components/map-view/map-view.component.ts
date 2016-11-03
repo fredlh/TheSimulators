@@ -13,6 +13,8 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { OptionsComponent, MapOptions } from "../options/options.component";
 
+import { MouseEvent } from "leaflet";
+
 const leafletDraw = require("leaflet-draw");
 
 
@@ -40,10 +42,14 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private drawnItems = L.featureGroup();
     private editId;
     private previousDrawnItems = [];
-    // private allCoords = [];
-    // private editDisableLayer;
 
     private eventsEnabled = true;
+
+    private editTypePolygon: boolean;
+    private markerAdd: boolean = false;
+    private editOngoing: boolean = false;
+    private editMarker = null;
+    private previousEditMarker = null;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
@@ -75,7 +81,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             );
 
         this.drawControl = new L.Control.Draw({
-        // this.map.addControl(new L.Control.Draw({
             position: "bottomright",
             edit: {
                 featureGroup: this.drawnItems,
@@ -97,7 +102,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
         const ms = this;
         this.map.on("draw:created", function(e: L.DrawEvents.Created) {
-            var type = e.layerType,
+            let type = e.layerType,
                 layer = e.layer;
 
             ms.drawnItems.addLayer(layer);
@@ -105,11 +110,30 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             // map.flyToBounds(ms.drawnItems.getBounds(), {paddingTopLeft: [350, 75]})
         });
 
+        this.map.on("click", (e: MouseEvent) => {
+            if (this.markerAdd && this.drawnItems.getLayers().length === 0) {
+                ms.editMarker = L.marker(e.latlng, {
+                    icon: L.icon({
+                        iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
+                        shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
+                    }),
+                    draggable: true
+                })
+                .bindPopup("New marker", {
+                    offset: L.point(12, 6)
+                });
+
+                ms.drawnItems.addLayer(ms.editMarker);
+                ms.editMarker.openPopup();
+                ms.markerAdd = false;
+            }
+        });
+
         map.clicked = 0;
     }
 
     ngAfterViewInit(): void {
-        this.markerComponent.Initialize();
+        // this.markerComponent.Initialize();
         this.orgUnitService.registerMapView(this);
 
         // Used to set default values on initialization
@@ -123,43 +147,76 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
 
         // Fire changed options event
-        for (let l of this.levels) {
-            for (let p of l) {
-                p.fire("optionsChanged");
+        this.fireEvent("optionsChanged");
+    }
+
+    startEditMode(orgUnitId: string, polygon: boolean): void {
+        this.editId = orgUnitId;
+        this.fireEvent("setEditStyle");
+        this.eventsEnabled = false;
+        this.editTypePolygon = polygon;
+
+        if (this.editTypePolygon) {
+            if ((this.editOngoing) || (orgUnitId === "")) {
+                this.drawnItems.addTo(this.map);
+                this.drawControl.addTo(this.map);
+
+            } else {
+                this.editOngoing = true;
+                this.fireEvent("getPolygonCoordinates");
+            }
+
+        } else {
+            if ((this.editOngoing) || (orgUnitId === "")) {
+                this.markerAdd = false;
+                this.drawnItems.addTo(this.map);
+
+            } else {
+                this.editOngoing = true;
+                this.fireEvent("getMarkerCoordinates");
             }
         }
     }
 
-    startEditMode(orgUnitId: string): void {
-        this.editId = orgUnitId;
-        for (let l of this.levels) {
-            for (let p of l) {
-                p.fire("setEditStyle");
-            }
+    private loadEditMarker(existing): void {
+        const ms = this;
+
+        if (existing !== null && existing !== undefined) {
+            this.editMarker = L.marker(existing, {
+                icon: L.icon({
+                    iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
+                    shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
+                }),
+                draggable: true
+            })
+            .bindPopup("New marker", {
+                offset: L.point(12, 6)
+            });
+
+            // Create "backup"
+            this.previousEditMarker = L.marker(JSON.parse(JSON.stringify(existing)), {
+                icon: L.icon({
+                    iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
+                    shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
+                }),
+                draggable: true
+            })
+            .bindPopup("New marker", {
+                offset: L.point(12, 6)
+            });
+
+            ms.drawnItems.addLayer(ms.editMarker);
+            this.editMarker.openPopup();
         }
 
-        this.eventsEnabled = false;
-
-        if ((this.drawnItems.getLayers().length > 0) || (orgUnitId === "")) {
-            this.drawnItems.addTo(this.map);
-            this.drawControl.addTo(this.map);
-
-            console.log("using already loaded or no previous data");
-        } else {
-            console.log("loading data");
-
-            for (let l of this.levels) {
-                for (let p of l) {
-                    p.fire("getEditCoordinates");
-                }
-            }
-        }
+        this.markerAdd = false;
+        this.drawnItems.addTo(this.map);
     }
 
     private loadEditPolygon(existingData): void {
         const ms = this;
 
-        if (existingData[0][0].length > 0) {      
+        if (existingData[0][0].length > 0) {
             let swappedcoords = [];
 
             for (let j of existingData) {
@@ -173,7 +230,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
                 swappedcoords.push(innerJ);
             }
-            
+
             for (let i of swappedcoords) {
                 this.drawnItems.addLayer(L.polygon(swappedcoords, {
                     color: "#f06eaa",
@@ -199,69 +256,112 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     fillOpacity: 0.2,
                 }));
         }
-        
+
         this.drawnItems.addTo(this.map);
         this.drawControl.addTo(this.map);
     }
 
-    endEditMode(saved: boolean): number[][][][] {
-        var coordinates = [];
-        if (saved) {
-            this.previousDrawnItems = [];
-            for(let lay of this.drawnItems.getLayers()) {
+    endEditMode(saved: boolean): number[] {
+        let coordinates = [];
+        if (this.editTypePolygon) {
+            if (saved) {
+                this.previousDrawnItems = [];
+                for (let lay of this.drawnItems.getLayers()) {
 
-                this.previousDrawnItems.push(L.polygon(JSON.parse(JSON.stringify(lay.getLatLngs())), {
-                    color: "#f06eaa",
-                    weight: 4,
-                    opacity: 0.5,
-                    fill: true,
-                    fillColor: null,
-                    fillOpacity: 0.2,
-                }));
+                    this.previousDrawnItems.push(L.polygon(JSON.parse(JSON.stringify(lay.getLatLngs())), {
+                        color: "#f06eaa",
+                        weight: 4,
+                        opacity: 0.5,
+                        fill: true,
+                        fillColor: null,
+                        fillOpacity: 0.2,
+                    }));
 
-                let subfigure = [];
+                    let subfigure = [];
 
-                // Export coords from layer
-                let lats = lay.getLatLngs();
-                for (let area of lats) {
-                    for (let point of area) {
-                        subfigure.push([point.lng, point.lat]);
+                    // Export coords from layer
+                    let lats = lay.getLatLngs();
+                    for (let area of lats) {
+                        for (let point of area) {
+                            subfigure.push([point.lng, point.lat]);
+                        }
                     }
+
+                    let pack1 = [];
+                    let pack2 = [];
+
+                    pack1.push(subfigure);
+                    pack2.push(pack1);
+                    coordinates.push(pack1);
                 }
+            } else {
 
-                let pack1 = [];
-                let pack2 = [];
-
-                pack1.push(subfigure);
-                pack2.push(pack1);
-                coordinates.push(pack1);
+                this.drawnItems.clearLayers();
+                for (let prevLay of this.previousDrawnItems) {
+                    this.drawnItems.addLayer(L.polygon(JSON.parse(JSON.stringify(prevLay.getLatLngs())), {
+                        color: "#f06eaa",
+                        weight: 4,
+                        opacity: 0.5,
+                        fill: true,
+                        fillColor: null,
+                        fillOpacity: 0.2,
+                    }));
+                }
             }
+
+            this.drawControl.remove();
+
         } else {
+            if (saved) {
+                // Update "backup" marker
+                if (this.drawnItems.getLayers().length > 0) {
+                    let coords = this.editMarker.getLatLng();
+                    this.previousEditMarker = L.marker(JSON.parse(JSON.stringify(coords)), {
+                        icon: L.icon({
+                            iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
+                            shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
+                        }),
+                        draggable: true
+                    })
+                    .bindPopup("New marker", {
+                        offset: L.point(12, 6)
+                    });
 
-            this.drawnItems.clearLayers();
-            for (let prevLay of this.previousDrawnItems) {
-                this.drawnItems.addLayer(L.polygon(JSON.parse(JSON.stringify(prevLay.getLatLngs())), {
-                    color: "#f06eaa",
-                    weight: 4,
-                    opacity: 0.5,
-                    fill: true,
-                    fillColor: null,
-                    fillOpacity: 0.2,
-                }));
+                    // this.map.remove(this.editMarker);
+                    coordinates.push(coords.lng);
+                    coordinates.push(coords.lat);
+                } else {
+                    // Just in case
+                    this.editMarker = null;
+                    this.previousEditMarker = null;
+                }
+            } else {
+                this.drawnItems.clearLayers();
+
+                if (this.previousEditMarker !== null) {
+                    this.editMarker = L.marker(JSON.parse(JSON.stringify(this.previousEditMarker.getLatLng())), {
+                        icon: L.icon({
+                            iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
+                            shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
+                        }),
+                        draggable: true
+                    })
+                    .bindPopup("New marker", {
+                        offset: L.point(12, 6)
+                    });
+
+                    this.drawnItems.addLayer(this.editMarker);
+
+                } else {
+                    this.editMarker = null;
+                    this.previousEditMarker = null;
+                }
             }
         }
 
-        for (let l of this.levels) {
-            for (let p of l) {
-                p.fire("selectedChanged");
-            }
-        }
-
-        this.eventsEnabled = true;
-        // this.editId = "";
-
-        this.drawControl.remove();
         this.drawnItems.remove();
+        this.fireEvent("selectedChanged");
+        this.eventsEnabled = true;
 
         return coordinates;
     }
@@ -269,6 +369,26 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     endEdit(): void {
         this.drawnItems.clearLayers();
         this.previousDrawnItems = [];
+
+        this.markerAdd = false;
+        this.editMarker = null;
+        this.previousEditMarker = null;
+        this.editOngoing = false;
+    }
+
+    toggleAddMarker(): void {
+        if (this.drawnItems.getLayers().length === 0 && !this.markerAdd) {
+            this.markerAdd = true;
+        } else {
+            this.markerAdd = false;
+        }
+    }
+
+    removeMarker(): void {
+        if (this.editMarker !== null) {
+            this.drawnItems.clearLayers();
+            this.editMarker = null;
+        }
     }
 
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
@@ -301,42 +421,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.selectedPolygon = orgUnitId;
 
         // Tell all polygons to check, could also result in a fly to depending on settings
-        this.fireSelectedChanged();
+        this.fireEvent("selectedChanged");
     }
 
-    private parsePolygonCoordinates(coordinatesAsString: string): any {
-        let bracketsRemoved = coordinatesAsString.slice(4, coordinatesAsString.length - 4); // Remove brackets on each end (1)
-        let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
-
-        let parsedCoordinates = [];
-
-        // For each subfigure within the figure
-        for (let subfig of subfigures) {
-
-            let subfigureBuildup = [];
-            let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
-
-            // For each x,y tupple within the subfigure
-            for (let tuppel of individualTuppels) {
-                let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
-
-                let tuppelBuildup = [];
-                tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
-                tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
-
-                subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
-            }
-
-            parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
-        }
-
-        return parsedCoordinates;
-    }
-
-    private fireSelectedChanged(): void {
+    private fireEvent(event: string): void {
         for (let l of this.levels) {
             for (let p of l) {
-                p.fire("selectedChanged");
+                p.fire(event);
             }
         }
     }
@@ -366,7 +457,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         "properties": {"id": org.id, "name": org.displayName},
                         "geometry": {
                             "type": "Polygon",
-                            "coordinates": ms.parsePolygonCoordinates(org.coordinates)
+                            "coordinates": ms.mapService.parsePolygonCoordinates(org.coordinates)
                         }
                     });
 
@@ -407,7 +498,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                                 if (map.clicked === 1 && ms.selectedPolygon !== id) {
                                     ms.selectedPolygon = id;
                                     ms.orgUnitService.callOnMapClick(id, false);
-                                    ms.fireSelectedChanged();
+                                    ms.fireEvent("selectedChanged");
                                 }
 
                                 map.clicked = 0;
@@ -421,7 +512,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             if (!(maxLevelReached)) {
                                 ms.selectedPolygon = "";
                                 ms.orgUnitService.callOnMapClick(id, true);
-                                ms.fireSelectedChanged();
+                                ms.fireEvent("selectedChanged");
                             }
                         }
                     })
@@ -456,7 +547,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         this.setStyle(function(feature) {
                             if (id === ms.editId) {
                                 // This layer is to be edited
-                                console.log("fire event for editLayer received and found id");
                                 data = feature.geometry.coordinates;
 
                                 return {color: "black", fillColor: "blue", weight: 0, fillOpacity: 0, opacity: 0};
@@ -465,7 +555,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                             }
                         });
                     })
-                    .addEventListener("getEditCoordinates", function(e) {
+                    .addEventListener("getPolygonCoordinates", function(e) {
                         this.setStyle(function(feature) {
                             if (id === ms.editId) {
                                 ms.loadEditPolygon(feature.geometry.coordinates);
@@ -516,7 +606,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         if (ms.eventsEnabled) {
                             ms.selectedPolygon = id;
                             ms.orgUnitService.callOnMapClick(id, false);
-                            ms.fireSelectedChanged();
+                            ms.fireEvent("selectedChanged");
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
@@ -531,11 +621,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         }
                     })
                     .addEventListener("optionsChanged", function(e) {
-                        // Don't do anything for markers yet
+                        // Don't do anything for markers yet, but should probably hide the marker being edited
                     })
                     .addEventListener("editLayer", function(e) {
                         if (id === ms.editId) {
                             // This layer is to be edited
+                        }
+                    })
+                    .addEventListener("getMarkerCoordinates", function(e) {
+                        if (id === ms.editId) {
+                            ms.loadEditMarker(this.getLatLng());
                         }
                     });
 
@@ -551,10 +646,16 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         }
 
         ms.layers = [];
+        for (let l of ms.levels) {
+            ms.layers.push(L.layerGroup(l));
+        }
+
+        /*
         ms.layers.push(L.layerGroup(ms.levels[0]));
         ms.layers.push(L.layerGroup(ms.levels[1]));
         ms.layers.push(L.layerGroup(ms.levels[2]));
         ms.layers.push(L.layerGroup(ms.levels[3]));
+        */
 
         for (let l of ms.layers) {
             l.addTo(ms.map);

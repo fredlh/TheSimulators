@@ -70,11 +70,13 @@ export class AddOrgUnitComponent {
     drawOrgUnitPolygon(): void {
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.startEditMode("");
+        this.orgUnitService.startEditMode("", true);
     }
 
     drawOrgUnitMarker(): void {
-
+        this.hideAddOrgUnitPanel(false);
+        $("#drawOrgUnitPanelArea").slideToggle("fast");
+        this.orgUnitService.startEditMode("", false);
     }
 
     saveDrawnOrgUnit(): void {
