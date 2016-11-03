@@ -6,7 +6,7 @@ import "rxjs/add/operator/toPromise";
 import "rxjs/add/operator/map";
 import "rxjs/Rx";
 
-import { OrganisationUnit } from './organisationUnit';
+import { OrganisationUnit } from "../services/organisationUnit";
 
 import { OrgUnit }  from "../core/org-unit";
 
@@ -54,7 +54,7 @@ export class OrgUnitService {
 
         let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${query}`;
         console.log("Requesting org units from api: " + apiUrl);
-       // console.log(string);
+        //console.log(string);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));
         return Observable.create(observer => {
           this.http
@@ -67,20 +67,27 @@ export class OrgUnitService {
         });
     }
     // den skal lagre nye orgUnits på serveren
-  
-   saveOrgUnits(organisationUnit: OrganisationUnit):any{
-   console.log("tatti");
-   console.log(JSON.stringify(organisationUnit));
+     
+    saveOrgUnits(organisationUnit: string):any{
+     let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${organisationUnit}`;
+        console.log("saveorgunits");
+        console.log(JSON.stringify(organisationUnit));
         this.headers.append('Authorization', this.basicAuth);
         return this.http
-            .post(`${this.serverUrl}/organisationUnits`, JSON.stringify(organisationUnit), {headers: this.headers})
-            .map( res => res.json() )
+        .post(apiUrl, {headers: this.headers})
+        .map( res => res.json() )
     }
-
-    /*
-    newOrganisationUnit(){
-    this.model
+    /*saveAllOrgUnits(): void{
+    this.saveAllOrgUnits();
     }*/
+    saveAllOrgUnits(): void {
+     this.saveOrgUnits("").subscribe(res => {
+            this.orgUnits = res.organisationUnits;
+            // this.callOnSearch();
+        });
+
+    }
+    
 
 
     getOrgUnit(orgUnitId: string): any {

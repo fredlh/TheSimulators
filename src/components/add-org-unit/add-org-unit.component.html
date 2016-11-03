@@ -54,7 +54,10 @@
 
 
             <input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
-            <input style="float: right;" type="submit" value="Add org unit" class="btn btn-primary" (click)="saveOrgUnits" [disabled]="!optionsForm.form.valid">
+            <!--input style="float: right;" type="submit" value="Add org unit" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+        </form-->
+
+            <input style="float: right;" type="submit" value="Add org unit" class="btn btn-primary" (click)="saveAllOrgUnits()" [disabled]="!optionsForm.form.valid">
         </form>
     </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+// import { OrganisationUnit } from "../services/organisationUnit";
 
 @Component({
     selector : "app",
@@ -6,4 +7,18 @@ import { Component } from "@angular/core";
     styles: [ require<any>("./app.component.less") ]
 })
 
-export class AppComponent { }
+export class AppComponent { 
+/*
+public organisationUnit = [];
+    private organisationUnits;
+
+    model = new OrganisationUnit('', '', '');
+
+ newUnit(): void {
+        this.appService.saveOrganisationUnit(this.model)
+            .subscribe((data) => {
+              this.loadList()
+            })
+    }
+*/
+}
