@@ -142,7 +142,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     startEditMode(orgUnitId: string, polygon: boolean): boolean {
         if (this.drawnItems.getLayers().length > 0) {
-            console.log("inside first");
             let condition = this.drawnItems.getLayers()[0];
 
             if ((polygon && condition instanceof L.Marker) || ((!polygon) && condition instanceof L.Polygon)) {
@@ -552,18 +551,21 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                         } else {
                             this.setIcon(defIcon);
                         }
+
+                        this.setOpacity(1);
                     })
                     .addEventListener("optionsChanged", function(e) {
-                        // Don't do anything for markers yet, but should probably hide the marker being edited
-                    })
-                    .addEventListener("editLayer", function(e) {
-                        if (id === ms.editId) {
-                            // This layer is to be edited
-                        }
+                        // Don't do anything for markers yet, probably no options for markers ever
                     })
                     .addEventListener("getMarkerCoordinates", function(e) {
                         if (id === ms.editId) {
                             ms.loadEditMarker(this.getLatLng());
+                        }
+                    })
+                    .addEventListener("setEditStyle", function(e) {
+                        if (id === ms.editId) {
+                            // Hide icon temporarily
+                            this.setOpacity(0);
                         }
                     });
 
