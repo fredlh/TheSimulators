@@ -9,6 +9,9 @@ import "rxjs/Rx";
 //import { OrganisationUnit } from "./organisationUnit";
 import { OrganisationUnit } from "../services/organisationUnit";
 
+import { AppComponent } from "../components/app/app.component";
+
+
 import { OrgUnit }  from "../core/org-unit";
 
 import { SideBarInterface } from "../core/side-bar.interface";
@@ -78,7 +81,8 @@ export class OrgUnitService {
      let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${organisationUnit}`;
         console.log("saveorgunits");
         console.log(JSON.stringify(organisationUnit));
-        this.headers.append('Authorization', this.basicAuth);
+        //this.headers.append('Authorization', this.basicAuth);
+        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
         return this.http
         .post(apiUrl, {headers: this.headers})
         .map( res => res.json() )
@@ -96,7 +100,9 @@ export class OrgUnitService {
         });*/
 
     //}
-    
+    saveNewOrgUnits1(): void {
+    this.appComponent.saveNewOrgUnits()
+    }
 
 
     getOrgUnit(orgUnitId: string): any {
