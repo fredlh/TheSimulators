@@ -26,7 +26,7 @@ const leafletDraw = require("leaflet-draw");
 
 export class MapViewComponent implements OnInit, MapViewInterface {
     // private orgUnits: OrgUnit[];
-    private levels: L.GeoJSON[][] = [[], [], [], []];
+    private levels: L.GeoJSON[][] = [];
     private layers = [];
     private selectedPolygon;
     private maxLevelReached: boolean;
@@ -64,6 +64,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             maxZoom: 19,
             layers: [this.mapService.baseMaps.OpenStreetMap]
         });
+
+        // Get number of levels from GLOBAL, 4 hardcoded atm
+        for (let i = 0; i < 4; i++) {
+            this.levels.push([]);
+        }
 
         this.maxLevelReached = false;
         let map = this.map;
@@ -148,6 +153,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 return false;
             }
         }
+        this.drawnItems.addTo(this.map);
 
         this.editId = orgUnitId;
         this.fireEvent("setEditStyle");
@@ -155,21 +161,17 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.editTypePolygon = polygon;
 
         if (this.editTypePolygon) {
-            if ((this.editOngoing) || (orgUnitId === "")) {
-                this.drawnItems.addTo(this.map);
-                this.drawControl.addTo(this.map);
+            this.drawControl.addTo(this.map);
 
-            } else {
+            if (!((this.editOngoing) || (orgUnitId === ""))) {
                 this.editOngoing = true;
                 this.fireEvent("getPolygonCoordinates");
             }
 
         } else {
-            if ((this.editOngoing) || (orgUnitId === "")) {
-                this.markerAdd = false;
-                this.drawnItems.addTo(this.map);
-
-            } else {
+            this.markerAdd = false;
+            
+            if (!((this.editOngoing) || (orgUnitId === ""))) {
                 this.editOngoing = true;
                 this.fireEvent("getMarkerCoordinates");
             }
@@ -179,20 +181,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     }
 
     private loadEditMarker(existing): void {
-        const ms = this;
+        // Create "backup"
+        this.previousEditMarker = this.mapService.createEditMarker(existing);
 
-        if (existing !== null && existing !== undefined) {
-            this.editMarker = ms.mapService.createEditMarker(existing);
-
-            // Create "backup"
-            this.previousEditMarker = ms.mapService.createEditMarker(existing);
-
-            ms.drawnItems.addLayer(ms.editMarker);
-            this.editMarker.openPopup();
-        }
-
-        this.markerAdd = false;
-        this.drawnItems.addTo(this.map);
+        this.editMarker = this.mapService.createEditMarker(existing);
+        this.drawnItems.addLayer(this.editMarker);
+        this.editMarker.openPopup();
     }
 
     private loadEditPolygon(existingData): void {
@@ -223,9 +217,6 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         for (let l of this.drawnItems.getLayers()) {
             this.previousDrawnItems.push(this.mapService.createEditPolygon(l.getLatLngs()));
         }
-
-        this.drawnItems.addTo(this.map);
-        this.drawControl.addTo(this.map);
     }
 
     endEditMode(saved: boolean): number[] {

@@ -66,7 +66,7 @@ export class MapService {
             }),
             draggable: true
         })
-        .bindPopup("New marker", {
+        .bindPopup("current organisation unit marker", {
             offset: L.point(12, 6)
         });
     }
