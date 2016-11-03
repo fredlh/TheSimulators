@@ -7,7 +7,7 @@ export interface MapViewInterface {
     deselectMap();
     onMapOptionsSave();
     startEditMode(orgUnitId: string, polygon: boolean);
-    // endEditMode(saved: boolean);
+    clearEditData();
     endEditMode(saved: boolean);
     endEdit();
     previewCoordinates(coords: number[][][][]);

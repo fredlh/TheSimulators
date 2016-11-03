@@ -294,6 +294,13 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         return coordinates;
     }
 
+    clearEditData(): void {
+        this.drawnItems.clearLayers();
+        this.previousDrawnItems = [];
+        this.editMarker = null;
+        this.previousEditMarker = null;
+    }
+
     endEdit(): void {
         this.drawnItems.clearLayers();
         this.previousDrawnItems = [];
