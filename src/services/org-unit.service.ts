@@ -6,7 +6,7 @@ import "rxjs/add/operator/toPromise";
 import "rxjs/add/operator/map";
 import "rxjs/Rx";
 
-//import { OrganisationUnit } from "../services/organisationUnit";
+import { OrganisationUnit } from "./organisationUnit";
 
 import { OrgUnit }  from "../core/org-unit";
 
@@ -25,12 +25,11 @@ export class OrgUnitService {
 
     private orgUnits: OrgUnit[];
     private orgUnitStack: OrgUnit[][] = [];
+    
+    public organisationUnit = [];
+    private organisationUnits;
 
-
-    //public organisationUnit = [];
-    //private organisationUnits;
-
-    //model = new OrganisationUnit('', '', '');
+    model = new OrganisationUnit('', '', '');
 
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
@@ -74,24 +73,23 @@ export class OrgUnitService {
     }
     // den skal lagre nye orgUnits på serveren
      
-    saveOrgUnits(orgUnit: string):any{
-     let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${orgUnit}`;
+    saveOrgUnits(organisationUnit):any{
+     let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${organisationUnit}`;
         console.log("saveorgunits");
-        console.log(JSON.stringify(orgUnit));
+        console.log(JSON.stringify(organisationUnit));
         this.headers.append('Authorization', this.basicAuth);
         return this.http
         .post(apiUrl, {headers: this.headers})
         .map( res => res.json() )
     }
     
-
     saveNewOrgUnits(): void {
-         this.saveOrgUnits("").subscribe((data) => {
-            //  this.loadList()
-            this.orgUnits = data.organisationUnits;
-             });
+     this.saveOrgUnits(this.model)
+            .subscribe((data) => {
+          //    this.loadList()
+            })
 
-             /* this.getOrgUnits("").subscribe(res => {
+        /*  this.getOrgUnits("").subscribe(res => {
             this.orgUnits = res.organisationUnits;
             this.callOnSearch();
         });*/
@@ -227,4 +225,22 @@ export class OrgUnitService {
     showSideBar(): void {
         this.sideBar.showSideBar();
     }
+/*
+      loadList(): void {
+       this.getOrgUnits("")
+            .subscribe( res => this.updateList(res.organisationUnits) );
+    }
+ 
+     updateList( organisationUnits ): void {
+         console.log(organisationUnits);
+        console.log(organisationUnits.length);
+         this.organisationUnit = [];
+         for(let i = 0; i < organisationUnits.length; i++){
+             console.log(organisationUnits[i]);
+             this.organisationUnit.push(organisationUnits[i]);
+         }
+
+         console.log(this.organisationUnit);
+     }*/
+
 }
