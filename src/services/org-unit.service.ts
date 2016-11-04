@@ -1,4 +1,4 @@
-import { Injectable }   from "@angular/core";
+import { Injectable, OnInit }   from "@angular/core";
 import { Headers, Http} from "@angular/http";
 import { Observable } from "rxjs/Observable";
 
@@ -14,11 +14,11 @@ import { MapViewInterface }      from "../core/map-view.interface";
 
 import { AccordionComponent } from "../components/accordion/accordion.component";
 
-import {Globals} from "../globals/globals"
+import {Globals, OrganisationUnitLevel} from "../globals/globals"
 
 
 @Injectable()
-export class OrgUnitService {
+export class OrgUnitService {
 
     private serverUrl = "https://play.dhis2.org/demo/api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
@@ -31,10 +31,35 @@ export class OrgUnitService {
     private mapView: MapViewInterface;
     private accordion: AccordionComponent;
 
-    constructor(private http: Http) {}
+    constructor(private http: Http) {
+        this.getOrganisationUnitLevels().subscribe(res => {
+            let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
+            for (let level of levels) {
+                Globals.organisationUnitLevels.push(level);
+                console.log("Name: " + level.name + " | id: " + level.id + " | level: " + level.level);
+            }
+        });
+    }
 
     registerSideBar(sideBar: SideBarInterface) {
         this.sideBar = sideBar;
+    }
+
+    getOrganisationUnitLevels(): any {
+        let apiUrl = `https://play.dhis2.org/demo/api/organisationUnitLevels.json?fields=:all&paging=false`;
+        console.log("Requesting org units from api: " + apiUrl);
+        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
+        return Observable.create(observer => {
+          this.http
+            .get(apiUrl, {headers: this.headers})
+            .map(res => res.json())
+            .subscribe((data) => {
+                observer.next(data);
+                observer.complete();
+            }, (error) => {
+                alert("*** ERROR ***");
+            });
+        });
     }
 
     registerMapView(mapView: MapViewInterface) {
@@ -123,7 +148,7 @@ export class OrgUnitService {
 
             if (this.orgUnits[0].level === 3) {
                 this.mapView.draw(this.orgUnits, true, false);
-                
+
             } else {
                 this.mapView.draw(this.orgUnits, false, false);
             }

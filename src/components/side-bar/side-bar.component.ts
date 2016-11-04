@@ -6,7 +6,7 @@ import { OrgUnitService } from "../../services/org-unit.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
 
-import { Globals } from "../../globals/globals";
+import { Globals, FeatureType } from "../../globals/globals";
 
 declare var $: any;
 
@@ -19,17 +19,26 @@ declare var $: any;
 export class SideBarComponent implements SideBarInterface, OnInit {
     private orgUnits: OrgUnit[] = null;
     private displayedOrgUnits = null;
-    private levelToNameMap: String[] = Globals.nameToLevelMapping;
+    private globals = Globals;
+    private featurType = FeatureType;
 
     private toggleSideBarButtonVisible: boolean = false;
     private sideBarVisible: boolean = false;
     private filterAreaVisible: boolean = false;
 
-    private filterApplied:boolean = false;
+    private filterApplied: boolean = false;
+
+    private orgUnitLevels = [];
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private orgUnitService: OrgUnitService) {
+        let tmpThis = this;
+        setTimeout(function() {
+            tmpThis.orgUnitLevels = Globals.organisationUnitLevels;
+            console.log("YOOO");
+        }, 1000);
+    }
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
@@ -143,6 +152,10 @@ export class SideBarComponent implements SideBarInterface, OnInit {
         return null;
     }
 
+    hasChildren(orgUnitId: string): boolean {
+        return this.getOrgUnitById(orgUnitId).featureType !== FeatureType.NONE;
+    }
+
 
     //
     // Edit org unit
@@ -238,6 +251,7 @@ export class SideBarComponent implements SideBarInterface, OnInit {
     // Deletes the orgUnit with the given id
     deleteOrgUnit(orgUnitId: string) {
         console.log("Delete: " + orgUnitId);
+        console.log(this.getOrgUnitById(orgUnitId).featureType);
     }
 
 

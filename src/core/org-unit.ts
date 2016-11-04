@@ -1,22 +1,36 @@
-class Parent {
+class ID {
     id: string;
 }
 
 export class OrgUnit {
+    code: string;
+    lastUpdated: string;
     id: string;
-    displayName: string;
-    lastUpdated: Date;
     level: number;
-    created: Date;
-    openingDate: Date;
+    name: string;
+    displayName: string;
+    created: string;
+    openingDate: string;
+    coordinates;
+
+    featureType: string;
     dimensionItem: string;
     dimensionItemType: string;
-    children: OrgUnit[];
-    users: OrgUnit[];
-    coordinates;
-    parent: Parent;
+
+    parent: ID;
+    children: ID[];
+    ancestors: ID [];
+    organisationUnitGroups: ID[];
+    datasets: ID[];
+    users: ID[];
+
 
     constructor() {
-        this.parent = new Parent();
+        this.parent = new ID();
+        this.children = [];
+        this.ancestors = [];
+        this.organisationUnitGroups = [];
+        this.datasets = [];
+        this.users = [];
     }
 }

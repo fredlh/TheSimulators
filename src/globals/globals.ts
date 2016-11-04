@@ -1,32 +1,53 @@
-export class Globals {
-    public static LEVEL_1 = "Country";
-    public static LEVEL_2 = "Province";
-    public static LEVEL_3 = "District";
-    public static LEVEL_4 = "Unit";
+export class FeatureType {
+    public static NONE = "NONE";
+    public static MULTI_POLYGON = "MULTI_POLYGON";
+    public static POLYGON = "POLYGON";
+    public static SYMBOL = "SYMBOL";   
+}
 
-    public static nameToLevelMapping = [Globals.LEVEL_1, Globals.LEVEL_2, Globals.LEVEL_3, Globals.LEVEL_4];
+export class OrganisationUnitLevel {
+    level: number;
+    name: string;
+    id: string;
+}
+
+export class OrganisationUnitGroup {
+    code: string;
+    id: string;
+    name: string;
+}
+
+
+export class Globals {
+
+    public static organisationUnitLevels: OrganisationUnitLevel[] = [];
+    public static organisationUnitGroups: OrganisationUnitGroup[] = [];
 
     public static IN_EDIT_MODE = false;
     public static IN_EDIT_MODE_POLYGON = false;
     public static IN_EDIT_MODE_MARKER = false;
 
     public static getName(level: number): string {
-        if (level < 1 || level > 4) return "Error: Illegal level value";
-        return Globals.nameToLevelMapping[level - 1];
+        for (let elem of Globals.organisationUnitLevels) {
+            if (elem.level === level) return elem.name;
+        }
+        
+        return "";
     }
 
     public static getLevel(name: string): number {
-        let map = Globals.nameToLevelMapping;
-        for (let i = 0; i < map.length; i++) {
-            if (map[i] === name) return i;
+        for (let elem of Globals.organisationUnitLevels) {
+            if (elem.name === name) return elem.level;
         }
 
         return -1;
     }
 
-    public static getNumOrgUnits(): number {
-        return Globals.nameToLevelMapping.length;
+
+    public static getNumOrgUnitLevels(): number {
+        return Globals.organisationUnitLevels.length;
     }
+
 
     public static setInEditMode(polygon: boolean) {
         Globals.IN_EDIT_MODE = true;

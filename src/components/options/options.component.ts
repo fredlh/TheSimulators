@@ -55,7 +55,7 @@ class Options {
 
 
 export class OptionsComponent {
-    private globals = Globals;
+    private orgUnitLevels = [];
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
 
@@ -63,9 +63,13 @@ export class OptionsComponent {
     private static tempOptions = new Options();
     private static currentOptions = new Options();
 
-    private unqiueIndexModifier = -1;
-
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private orgUnitService: OrgUnitService) {
+        let tmpThis = this;
+        setTimeout(function() {
+            tmpThis.orgUnitLevels = Globals.organisationUnitLevels;
+            console.log("YOOO");
+        }, 1000);
+    }
 
     public static getAutoZoomOnSearch(): boolean {
         return OptionsComponent.currentOptions.autoZoomOnSearch === "Yes";

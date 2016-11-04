@@ -17,26 +17,30 @@ declare var $: any;
     styles: [ require<any>("./org-unit-search.component.less") ]
 })
 
-export class OrgUnitSearchComponent implements OnInit {
+export class OrgUnitSearchComponent {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
     private advancedSearchVisible = false;
-    private levelToNameMap: String[] = Globals.nameToLevelMapping;
+    private orgUnitLevels = [];
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private orgUnitService: OrgUnitService) {
+        let tmpThis = this;
+        setTimeout(function() {
+            tmpThis.orgUnitLevels = Globals.organisationUnitLevels;
+            console.log("YOOO");
+        }, 1000);
+    }
 
     advancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;
         let top = this.advancedSearchVisible ? "255px" : "120px";
         let animateSpeed = 200;
 
-        $("#sideBar")
-        .animate({
+        $("#sideBar").animate({
             top: top,
         }, animateSpeed);
 
-        $("#toggleSideBar")
-        .animate({
+        $("#toggleSideBar").animate({
             top: top
         }, animateSpeed);
 
@@ -47,33 +51,9 @@ export class OrgUnitSearchComponent implements OnInit {
         this.orgUnitService.search(term, level, maxLevel);
     }
 
-    ngOnInit(): void {
-        // TODO: Auto search on key-press, rather than a button?
-    }
-
     getAllOrgUnits(): void {
         this.orgUnitService.getAllOrgUnits();
     }
 
-    /*
-    getMaxLevel(maxLevel): void {
-        if (maxLevel === "Country"){
-        maxLevel = "1";
-
-        }
-        else if (maxLevel === "Provence"){
-        maxLevel = "2";
-
-        }
-        if (maxLevel === "District"){
-        maxLevel = "3";
-
-        }
-        else if (maxLevel === "Unit"){
-        maxLevel = "4";
-        }
-    }
-    */
 }
-// git commit -a -m "en eller annen beskjed"
-// git push -u origin map_version
+
