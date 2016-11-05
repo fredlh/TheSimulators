@@ -199,15 +199,10 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private loadEditPolygon(existingData): void {
         const ms = this;
 
-        console.log("existing: " + JSON.stringify(existingData));
-
         //if (existingData[0][0].length > 0) {
             let swappedcoords = [];
 
             for (let j of existingData) {
-
-                console.log("per polygon");
-
                 let innerJ = [];
                 for (let k of j) {
                     let innerK = [];
