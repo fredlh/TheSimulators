@@ -15,6 +15,8 @@ import { OptionsComponent, MapOptions } from "../options/options.component";
 
 import { MouseEvent } from "leaflet";
 
+import { Globals, FeatureType } from "../../globals/globals";
+
 const leafletDraw = require("leaflet-draw");
 
 
@@ -388,12 +390,14 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             }
 
             // Check if orgUnit contains coordinates
-            if (org.coordinates !== undefined) {
+            //if (org.coordinates !== undefined) {
+            if (org.featureType !== FeatureType.NONE) {
 
                 // Coordinates is gathered in the form of a string, needs to parse it into [[[x,y],[x,y]],[[x,y]]] number array
 
                 // Check if coordinate indicate a polygon (and not a single point --- marker)
-                if (org.coordinates[1] === "[") {
+                //if (org.coordinates[1] === "[") {
+                if (org.featureType === FeatureType.MULTI_POLYGON || org.featureType === FeatureType.POLYGON) {
                     // Set up polygon information
                     let poly = ({
                         "type": "Feature",
@@ -509,7 +513,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     allCoords.push(tempGeo.getBounds());
                     ms.levels[levelIndex].push(tempGeo);
 
-                } else {
+                } else if (org.featureType === FeatureType.POINT) {
                     // Markers for single point locations
                     let level: any = ms.levels[org.level - 1]; // Hack to force L.Markers into array
 
@@ -572,6 +576,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     });
 
                     level.push(tempMark);
+                } else {
+                    alert("featuretype was symbol");
                 }
             }
         }
