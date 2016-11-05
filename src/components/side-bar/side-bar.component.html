@@ -69,7 +69,7 @@
                 <label class="col-lg-2 col-form-label">Name</label>
                 <div class="col-lg-10">
                     <input class="form-control" type="text" required
-                        [(ngModel)]="selectedOrgUnit.displayName" name="displayName">
+                        [(ngModel)]="selectedOrgUnit.name" name="name">
                 </div>
             </div>
 
@@ -79,15 +79,21 @@
                     <textarea class="form-control" rows="4" readonly
                         [(ngModel)]="selectedOrgUnit.coordinates" name="coordinates"></textarea>
                 </div>
-                <div class="col-lg-3" *ngIf="selectedOrgUnit.level !== 4">
-                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
+                <div class="col-lg-3">
+                    <button *ngIf="canDrawOrgUnitPolygon()" type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
                         Draw org unit
                     </button>
                 </div>
                 <span style="padding: 7px;"></span>
-                <div class="col-lg-3" *ngIf="selectedOrgUnit.level === 4">
-                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitMarker()">
+                <div class="col-lg-3">
+                    <button *ngIf="canDrawOrgUnitMarker()" type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitMarker()">
                         Set marker
+                    </button>
+                </div>
+
+                <div class="col-lg-3">
+                    <button *ngIf="canClearCoordinates()" type="button" class="btn btn-warning" aria-label="Left Align" (click)="clearCoordinates()">
+                        Clear coordinates
                     </button>
                 </div>
             </div>
@@ -95,14 +101,14 @@
              <div class="form-group row">
                  <label class="col-lg-2 col-form-label">Parent ID</label>
                  <div class="col-lg-10">
-                     <input class="form-control" type="text" required
+                     <input class="form-control" type="text" readonly required
                          [(ngModel)]="selectedOrgUnit.parent.id" name="parent">
                  </div>
              </div>
 
 
             <input type="button" value="Cancel" class="btn btn-primary" (click)="onEditOrgUnitCancel()">
-            <input style="float: right;" type="submit" value="Save org unit" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+            <input style="float: right;" type="submit" value="Save changes" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
         </form>
     </div>
 </div>

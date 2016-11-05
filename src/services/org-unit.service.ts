@@ -132,7 +132,18 @@ export class OrgUnitService {
                 alert("Error during deletion of an organisation unit");
             });
         });
-}
+    }
+
+
+    updateOrgUnit(orgUnit: OrgUnit): any {
+        let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnit.id}`;
+        this.headers.append("Authorization", this.basicAuth);
+
+        return this.http
+            .put(apiUrl, JSON.stringify(orgUnit), {headers: this.headers})
+            .map(res => res.json());
+    }
+
 
     startEditMode(orgUnitId: string, polygon: boolean): boolean {
         Globals.setInEditMode(polygon);

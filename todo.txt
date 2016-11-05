@@ -6,9 +6,9 @@ OrgUnit:
 
 OrgUnitService:
 ---------------
-- Create updateOrgUnit()
 - Split parts to mapService and communicationSerice(or something)
 - Use Globals.getMaxLevel() to check whether maxLevel is reached instead of hard coding it
+- Which type to use? (subscribe() eller map())?
 
 
 Search:

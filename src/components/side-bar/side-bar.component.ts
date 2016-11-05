@@ -187,7 +187,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Either the cancel button is clicked or the user clicked outside of the panel
     // Closes the panel and shows the sideBar again
     onEditOrgUnitCancel(tmpThis = this): void {
-        document.getElementById("editOrgUnitArea").style.display = "none";
+        this.closeEditOrgUnitPanel();
         tmpThis.unHideSideBar();
         tmpThis.orgUnitService.endAddOrEditOrgUnit();
     }
@@ -196,9 +196,17 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Re-show the sideBar
     // TODO: Send the updated onrgUnit to orgUnitService, and make a http put request
     onEditOrgUnitSubmit(): void {
-        document.getElementById("editOrgUnitArea").style.display = "none";
+        this.closeEditOrgUnitPanel();
         this.unHideSideBar();
         this.orgUnitService.endAddOrEditOrgUnit();
+
+        this.selectedOrgUnit.shortName = this.selectedOrgUnit.name;
+        this.selectedOrgUnit.displayName = this.selectedOrgUnit.name;
+
+        this.orgUnitService.updateOrgUnit(this.selectedOrgUnit).subscribe(res => {
+            // TODO: Possible to check for erros here?
+        });
+
     }
 
     // Closes the edit org unit panel
@@ -231,7 +239,25 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     // Saves the drawn org unit
     saveDrawnOrgUnit(): void {
-        this.selectedOrgUnit.coordinates = this.orgUnitService.endEditMode(true);
+        // Retrieve the drawn coordinates from the map
+        this.selectedOrgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
+
+        // Check which feature type it is
+        if (this.selectedOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
+            this.selectedOrgUnit.featureType = FeatureType.MULTI_POLYGON;
+        
+        } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") >= 0) {
+            this.selectedOrgUnit.featureType = FeatureType.POLYGON;
+        
+        } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") === -1 && this.selectedOrgUnit.coordinates !== "[]") {
+            this.selectedOrgUnit.featureType = FeatureType.POINT;
+            
+        } else {
+            this.selectedOrgUnit.featureType = FeatureType.NONE;
+            this.selectedOrgUnit.coordinates = "";
+        }
+
+        // Hide the draw area and show the add org unit panel again
         $("#editOrgUnitPanelArea").slideToggle("fast");
         this.onEditOrgUnitOpen();
     }
@@ -241,6 +267,27 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.orgUnitService.endEditMode(false);
         $("#editOrgUnitPanelArea").slideToggle("fast");
         this.onEditOrgUnitOpen();
+    }
+
+    canDrawOrgUnitPolygon(): boolean {
+        return this.selectedOrgUnit.featureType === FeatureType.POLYGON ||
+               this.selectedOrgUnit.featureType === FeatureType.MULTI_POLYGON ||  
+               this.selectedOrgUnit.featureType === FeatureType.NONE;
+    }
+
+    canDrawOrgUnitMarker(): boolean {
+        return this.selectedOrgUnit.featureType === FeatureType.POINT || 
+               this.selectedOrgUnit.featureType === FeatureType.NONE;
+    }
+
+    canClearCoordinates(): boolean {
+        return this.selectedOrgUnit.featureType !== FeatureType.NONE;
+    }
+
+    clearCoordinates(): void {
+        this.selectedOrgUnit.coordinates = "";
+        this.selectedOrgUnit.featureType = FeatureType.NONE;
+        this.orgUnitService.clearMapEditData();
     }
 
 
