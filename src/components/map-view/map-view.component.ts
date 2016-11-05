@@ -303,6 +303,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.previousDrawnItems = [];
         this.editMarker = null;
         this.previousEditMarker = null;
+        this.editOngoing = true;
     }
 
     endEdit(): void {
