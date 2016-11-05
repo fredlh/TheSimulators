@@ -199,10 +199,15 @@ export class MapViewComponent implements OnInit, MapViewInterface {
     private loadEditPolygon(existingData): void {
         const ms = this;
 
-        if (existingData[0][0].length > 0) {
+        console.log("existing: " + JSON.stringify(existingData));
+
+        //if (existingData[0][0].length > 0) {
             let swappedcoords = [];
 
             for (let j of existingData) {
+
+                console.log("per polygon");
+
                 let innerJ = [];
                 for (let k of j) {
                     let innerK = [];
@@ -211,13 +216,15 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     innerJ.push(innerK);
                 }
 
-                swappedcoords.push(innerJ);
+                let addBracket = [];
+                addBracket.push(innerJ);
+                swappedcoords.push(addBracket);
             }
 
             for (let i of swappedcoords) {
-                this.drawnItems.addLayer(this.mapService.createEditPolygon(swappedcoords));
+                this.drawnItems.addLayer(this.mapService.createEditPolygon(i));
             }
-        }
+        //}
 
         // Create a backup of the editable layers
         this.previousDrawnItems = [];
