@@ -25,19 +25,12 @@ export class AddOrgUnitComponent {
         let tmpThis = this;
 
         $(".add-org-unit-close").click(function() {
-            document.getElementById("addOrgUnitArea").style.display = "none";
-            this.orgUnit = new OrgUnit();
-            tmpThis.orgUnitService.endAddOrEditOrgUnit();
-            tmpThis.orgUnitService.unHideSideBar();
+            tmpThis.onCancel(tmpThis);
         });
 
         window.onclick = function(event) {
-            let options = document.getElementById("addOrgUnitArea");
-            if (event.target === options) {
-                options.style.display = "none";
-                tmpThis.orgUnit = new OrgUnit();
-                tmpThis.orgUnitService.endAddOrEditOrgUnit();
-                tmpThis.orgUnitService.unHideSideBar();
+            if (event.target === document.getElementById("addOrgUnitArea")) {
+                tmpThis.onCancel(tmpThis);
             }
         };
     }
@@ -64,7 +57,15 @@ export class AddOrgUnitComponent {
     onSubmit(): void {
         this.hideAddOrgUnitPanel();
         this.orgUnitService.endAddOrEditOrgUnit();
-        
+        this.orgUnit.openingDate = new Date();
+        this.orgUnit.displayName = this.orgUnit.name;
+        this.orgUnit.shortName = this.orgUnit.name;
+        //this.orgUnitService.saveOrganisationUnit(this.orgUnit);
+
+        this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(res => {
+            let tmp = res.organisationUnit;
+            console.log(tmp);
+        });
     }
 
     drawOrgUnitPolygon(): void {
@@ -86,7 +87,7 @@ export class AddOrgUnitComponent {
     }
 
     saveDrawnOrgUnit(): void {
-        this.orgUnit.coordinates = this.orgUnitService.endEditMode(true);
+        this.orgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.showAddOrgUnitPanel();
     }

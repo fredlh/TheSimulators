@@ -21,6 +21,7 @@ import {Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/
 @Injectable()
 export class OrgUnitService {
 
+    //private serverUrl = "http://localhost:8082/api/";
     private serverUrl = "https://play.dhis2.org/demo/api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json"});
@@ -80,7 +81,7 @@ export class OrgUnitService {
 
     // Retrieves all the organisation units matching the given query
     getOrgUnits(query: string): any {
-        return this.getRequest(`organisationUnits.json?paging=false&fields=:all${query}`);        
+        return this.getRequest(`organisationUnits.json?paging=false&fields=:all${query}`);      
     }
 
     // Retrives the organisation unit with the given id and all its children
@@ -91,17 +92,28 @@ export class OrgUnitService {
     // A general http.get request with a request parameter to retrieve a specific thing
     getRequest(request: string): any {
         let apiUrl = `${this.serverUrl}/${request}`;
-        console.log("Requesting org unit with id from api: " + apiUrl);
+        console.log("Requesting org unit. API URL:\n" + apiUrl);
         this.headers.append("Authorization", this.basicAuth);
+        
         return Observable.create(observer => {
           this.http
             .get(apiUrl, {headers: this.headers})
             .map(res => res.json())
             .subscribe((data) => {
-             observer.next(data);
-             observer.complete();
+                observer.next(data);
+                observer.complete();
           });
         });
+    }
+
+    saveOrganisationUnit(orgUnit: OrgUnit): any {
+        let apiUrl = `${this.serverUrl}/organisationUnits`;
+        console.log("Saving org unit:\n" + JSON.stringify(orgUnit) + "\nURL: " + apiUrl);        
+        this.headers.append("Authorization", this.basicAuth);
+        
+        return this.http
+            .post(apiUrl, JSON.stringify(orgUnit), {headers: this.headers})
+            .map(res => res.json());
     }
 
     startEditMode(orgUnitId: string, polygon: boolean): boolean {

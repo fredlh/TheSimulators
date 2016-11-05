@@ -9,8 +9,9 @@ export class OrgUnit {
     level: number;
     name: string;
     displayName: string;
+    shortName: string;
     created: string;
-    openingDate: string;
+    openingDate: Date;
     coordinates;
 
     featureType: string;
