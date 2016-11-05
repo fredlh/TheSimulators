@@ -251,7 +251,12 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Deletes the orgUnit with the given id
     deleteOrgUnit(orgUnitId: string) {
         console.log("Delete: " + orgUnitId);
-        console.log(this.getOrgUnitById(orgUnitId).featureType);
+
+        if (confirm("Are you sure you want to delete the organisation unit with id '" + orgUnitId + "'")) {
+            this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(res => {
+                // TODO: Possible to check for errors here?
+            });
+        }
     }
 
 

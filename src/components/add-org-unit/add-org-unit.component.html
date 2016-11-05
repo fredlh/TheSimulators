@@ -30,16 +30,23 @@
                         [(ngModel)]="orgUnit.coordinates" name="coordinates"></textarea>
                 </div>
                 <div class="col-lg-3">
-                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
+                    <button *ngIf="canDrawOrgUnitPolygon()" type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
                         Draw org unit
                     </button>
                 </div>
                 <span style="padding: 7px;"></span>
                 <div class="col-lg-3">
-                    <button type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitMarker()">
+                    <button *ngIf="canDrawOrgUnitMarker()" type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitMarker()">
                         Set marker
                     </button>
                 </div>
+
+                <div class="col-lg-3">
+                    <button *ngIf="canClearCoordinates()" type="button" class="btn btn-warning" aria-label="Left Align" (click)="clearCoordinates()">
+                        Clear coordinates
+                    </button>
+                </div>
+                
             </div>
 
              <div class="form-group row">

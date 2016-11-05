@@ -4,6 +4,8 @@ import {OrgUnit} from "../../core/org-unit";
 
 import {OrgUnitService} from "../../services/org-unit.service";
 
+import {FeatureType} from "../../globals/globals";
+
 declare var $: any;
 
 @Component({
@@ -17,7 +19,9 @@ export class AddOrgUnitComponent {
     private orgUnit: OrgUnit = new OrgUnit();
     private self = this;
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private orgUnitService: OrgUnitService) {
+        this.orgUnit.featureType = FeatureType.NONE;
+    }
 
     openAddOrgUnitForm(): void {
         this.showAddOrgUnitPanel();
@@ -55,16 +59,24 @@ export class AddOrgUnitComponent {
 
 
     onSubmit(): void {
+        // Display warning if no coordinates are entered
+        if (this.orgUnit.featureType === FeatureType.NONE) {
+            if (!confirm("The are no coordinates entered. Sure you want to save?")) return;
+        }
+
+        // Hide the panel and enter edit mode
         this.hideAddOrgUnitPanel();
         this.orgUnitService.endAddOrEditOrgUnit();
+
+        // Save the required info in the org unit
         this.orgUnit.openingDate = new Date();
         this.orgUnit.displayName = this.orgUnit.name;
         this.orgUnit.shortName = this.orgUnit.name;
-        //this.orgUnitService.saveOrganisationUnit(this.orgUnit);
-
+       
+        // Save the org unit
         this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(res => {
-            let tmp = res.organisationUnit;
-            console.log(tmp);
+            // TODO: Possible to if an error occured here?
+            //       If yes, then dont close the panel, just show error to user and let them retry
         });
     }
 
@@ -87,7 +99,25 @@ export class AddOrgUnitComponent {
     }
 
     saveDrawnOrgUnit(): void {
+        // Retrieve the drawn coordinates from the map
         this.orgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
+
+        // Check which feature type it is
+        if (this.orgUnit.coordinates.lastIndexOf("[[[") > 4) {
+            this.orgUnit.featureType = FeatureType.MULTI_POLYGON;
+        
+        } else if (this.orgUnit.coordinates.indexOf("[[[[") >= 0) {
+            this.orgUnit.featureType = FeatureType.POLYGON;
+        
+        } else if (this.orgUnit.coordinates.indexOf("[[[[") === -1 && this.orgUnit.coordinates !== "[]") {
+            this.orgUnit.featureType = FeatureType.POINT;
+            
+        } else {
+            this.orgUnit.featureType = FeatureType.NONE;
+            this.orgUnit.coordinates = "";
+        }
+
+        // Hide the draw area and show the add org unit panel again
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.showAddOrgUnitPanel();
     }
@@ -97,5 +127,26 @@ export class AddOrgUnitComponent {
 
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.showAddOrgUnitPanel();
+    }
+
+    canDrawOrgUnitPolygon(): boolean {
+        return this.orgUnit.featureType === FeatureType.POLYGON ||
+               this.orgUnit.featureType === FeatureType.MULTI_POLYGON ||  
+               this.orgUnit.featureType === FeatureType.NONE;
+    }
+
+    canDrawOrgUnitMarker(): boolean {
+        return this.orgUnit.featureType === FeatureType.POINT || 
+               this.orgUnit.featureType === FeatureType.NONE;
+    }
+
+    canClearCoordinates(): boolean {
+        return this.orgUnit.featureType !== FeatureType.NONE;
+    }
+
+    clearCoordinates(): void {
+        this.orgUnit.coordinates = "";
+        this.orgUnit.featureType = FeatureType.NONE;
+        this.orgUnitService.clearMapEditData();
     }
 }

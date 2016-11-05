@@ -96,12 +96,14 @@ export class OrgUnitService {
         this.headers.append("Authorization", this.basicAuth);
         
         return Observable.create(observer => {
-          this.http
+            this.http
             .get(apiUrl, {headers: this.headers})
             .map(res => res.json())
             .subscribe((data) => {
                 observer.next(data);
                 observer.complete();
+          }, (error) => {
+                alert("Error during retrieving of an organisation unit");
           });
         });
     }
@@ -115,6 +117,22 @@ export class OrgUnitService {
             .post(apiUrl, JSON.stringify(orgUnit), {headers: this.headers})
             .map(res => res.json());
     }
+
+    deleteOrganisationUnit(orgUnitId): any {
+        let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnitId}`;
+        this.headers.append("Authorization", this.basicAuth);
+
+        return Observable.create(observer => {
+            this.http
+            .delete(apiUrl, {headers: this.headers})
+            .subscribe((res) => {
+                observer.next(res);
+                observer.complete();
+            }, (error) => {
+                alert("Error during deletion of an organisation unit");
+            });
+        });
+}
 
     startEditMode(orgUnitId: string, polygon: boolean): boolean {
         Globals.setInEditMode(polygon);
@@ -246,5 +264,9 @@ export class OrgUnitService {
 
     endAddOrEditOrgUnit(): void {
         this.mapView.endEdit();
+    }
+
+    clearMapEditData(): void {
+        this.mapView.clearEditData();
     }
 }
