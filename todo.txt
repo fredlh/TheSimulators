@@ -1,53 +1,42 @@
 OrgUnit:
 --------
-- Implement all the fields in the class
-    - How is children and parents represented?
+- Check whether all fields are implemented correctly
+- Any use of OrganisationUnitGroups?
 
 
 OrgUnitService:
 ---------------
-- Create
-    - updateOrgUnit()
-    - deleteOrgUnit()
-    - saveOrgUnit()
+- Create updateOrgUnit()
+- Split parts to mapService and communicationSerice(or something)
+- Use Globals.getMaxLevel() to check whether maxLevel is reached instead of hard coding it
 
 
 Search:
 ------
 - Auto search on each new word, rather than a button?
---- Implement advanced search
---- How to return all results and let the user be able to select one?
+- Combine the orgUnit and place search into same place, with a switch under advanced settings or so?
+- Able to place a marker and say "get all orgUnits (filter too?) within x distance"
 
-
-Map:
-----
-- Draw function which accepts an OrgUnit object --> draws the orgUnit on the map
-- A drawn OrgUnit should be clickable
-    - View the info in some sort of textarea or label?
-    - Edit button
-        - Open a form, default values are the existing ones, able to edit
-        - Save button which updates the orgUnit on the server
-    - Delete button
-        - Deletes the orgUnit from the server
-        - Remove the orgUnit from the map
-- Able to create new orgUnit
-    - By placing a marker
-    - By writing in the longitude and latitude (default current ones)
-        - View chose ones in real-time on map?
 
 Side bar:
 ---------
---- Make it an expandable list?
---- Make it possible to hide and show?
-- List all info of a selected orgUnit
-    - Including info of its children?
+- Implement a canGetChildren() function which checks whether the getChildren() button should be clickable
+
+
+Edit org unit:
+--------------
+- Add the same logic for drawButtons, clearButtons and featureType as in addOrgUnit
+
+
+Globals:
+--------
+- Implement a getMaxLevel() function which returns the max level an org unit can have
 
 
 General:
 --------
 - Cleanup of imports
-    - Remove unneeded ones
-    - Fix the layout (order of imports + pretty-looking ones)
+- When adding, deleting and updating orgUnit, update map and list or do nothing?
 
 
 
