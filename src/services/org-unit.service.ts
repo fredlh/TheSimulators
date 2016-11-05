@@ -11,10 +11,11 @@ import { OrgUnit }  from "../core/org-unit";
 
 import { SideBarInterface } from "../core/side-bar.interface";
 import { MapViewInterface }      from "../core/map-view.interface";
+import { GlobalsUpdateInterface} from "../core/globals-update.interface";
 
 import { AccordionComponent } from "../components/accordion/accordion.component";
 
-import {Globals, OrganisationUnitLevel} from "../globals/globals"
+import {Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals"
 
 
 @Injectable()
@@ -30,23 +31,45 @@ export class OrgUnitService {
     private sideBar: SideBarInterface;
     private mapView: MapViewInterface;
     private accordion: AccordionComponent;
+    private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
     constructor(private http: Http) {
+        // Get all the organisation unit levels
         this.getOrganisationUnitLevels().subscribe(res => {
             let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
             for (let level of levels) {
                 Globals.organisationUnitLevels.push(level);
-                console.log("Name: " + level.name + " | id: " + level.id + " | level: " + level.level);
+            }
+            this.callOnGlobalsUpdate();
+        });
+
+        // Get all the organisation unit groups
+        this.getOrganisationUnitGroups().subscribe(res => {
+            let groups: OrganisationUnitGroup[] = res.organisationUnitGroups;
+            for (let group of groups) {
+                Globals.organisationUnitGroups.push(group);
             }
         });
+    }
+
+    registerGlobalsUpdateListener(listener: GlobalsUpdateInterface) {
+        this.globalsUpdateListeners.push(listener);
     }
 
     registerSideBar(sideBar: SideBarInterface) {
         this.sideBar = sideBar;
     }
 
+    registerMapView(mapView: MapViewInterface) {
+        this.mapView = mapView;
+    }
+
+    registerAccordion(accordion: AccordionComponent) {
+        this.accordion = accordion;
+    }
+
     getOrganisationUnitLevels(): any {
-        let apiUrl = `https://play.dhis2.org/demo/api/organisationUnitLevels.json?fields=:all&paging=false`;
+        let apiUrl = `${this.serverUrl}/organisationUnitLevels.json?fields=:all&paging=false`;
         console.log("Requesting org units from api: " + apiUrl);
         this.headers.append("Authorization", "Basic " + btoa("admin:district"));
         return Observable.create(observer => {
@@ -62,12 +85,21 @@ export class OrgUnitService {
         });
     }
 
-    registerMapView(mapView: MapViewInterface) {
-        this.mapView = mapView;
-    }
-
-    registerAccordion(accordion: AccordionComponent) {
-        this.accordion = accordion;
+    getOrganisationUnitGroups(): any {
+        let apiUrl = `${this.serverUrl}/organisationUnitGroups.jsonfields=:all&paging=false`;
+        console.log("Requesting org units from api: " + apiUrl);
+        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
+        return Observable.create(observer => {
+          this.http
+            .get(apiUrl, {headers: this.headers})
+            .map(res => res.json())
+            .subscribe((data) => {
+                observer.next(data);
+                observer.complete();
+            }, (error) => {
+                alert("*** ERROR ***");
+            });
+        });
     }
 
 
@@ -201,6 +233,12 @@ export class OrgUnitService {
 
     callOnSideBarClick(orgUnitId: string): void {
         this.mapView.onSideBarClick(orgUnitId);
+    }
+
+    callOnGlobalsUpdate(): void {
+        for (let listener of this.globalsUpdateListeners) {
+            listener.onOrganisationUnitLevelsUpdate();
+        }
     }
 
     deselectMap(): void {

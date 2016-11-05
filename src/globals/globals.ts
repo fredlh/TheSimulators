@@ -1,7 +1,12 @@
+class Id {
+    id: string;
+}
+
 export class FeatureType {
     public static NONE = "NONE";
     public static MULTI_POLYGON = "MULTI_POLYGON";
     public static POLYGON = "POLYGON";
+    public static POINT = "POINT";
     public static SYMBOL = "SYMBOL";   
 }
 
@@ -15,6 +20,16 @@ export class OrganisationUnitGroup {
     code: string;
     id: string;
     name: string;
+    symbol: string;
+    dimensionItem: string;
+    dimensionItentType: string;
+    organisationGroupSet: Id;
+    organisationUnits: Id[];
+
+    constructor() {
+        this.organisationGroupSet = new Id();
+        this.organisationUnits = [];
+    }
 }
 
 

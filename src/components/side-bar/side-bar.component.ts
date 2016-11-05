@@ -5,6 +5,7 @@ import { OrgUnit }  from "../../core/org-unit";
 import { OrgUnitService } from "../../services/org-unit.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
+import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
 
 import { Globals, FeatureType } from "../../globals/globals";
 
@@ -16,7 +17,7 @@ declare var $: any;
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent implements SideBarInterface, OnInit {
+export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterface, OnInit {
     private orgUnits: OrgUnit[] = null;
     private displayedOrgUnits = null;
     private globals = Globals;
@@ -32,16 +33,15 @@ export class SideBarComponent implements SideBarInterface, OnInit {
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
 
-    constructor(private orgUnitService: OrgUnitService) {
-        let tmpThis = this;
-        setTimeout(function() {
-            tmpThis.orgUnitLevels = Globals.organisationUnitLevels;
-            console.log("YOOO");
-        }, 1000);
+    constructor(private orgUnitService: OrgUnitService) {}
+
+    onOrganisationUnitLevelsUpdate(): void {
+        this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
+        this.orgUnitService.registerGlobalsUpdateListener(this);
     }
 
     //

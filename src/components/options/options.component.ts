@@ -1,8 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
 import { Globals }            from "../../globals/globals";
+
+import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
+
 
 declare var $: any;
 
@@ -54,7 +57,7 @@ class Options {
 })
 
 
-export class OptionsComponent {
+export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
     private orgUnitLevels = [];
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
@@ -63,12 +66,14 @@ export class OptionsComponent {
     private static tempOptions = new Options();
     private static currentOptions = new Options();
 
-    constructor(private orgUnitService: OrgUnitService) {
-        let tmpThis = this;
-        setTimeout(function() {
-            tmpThis.orgUnitLevels = Globals.organisationUnitLevels;
-            console.log("YOOO");
-        }, 1000);
+    constructor(private orgUnitService: OrgUnitService) {}
+
+    onOrganisationUnitLevelsUpdate(): void {
+        this.orgUnitLevels = Globals.organisationUnitLevels;
+    }
+
+    ngOnInit(): void {
+        this.orgUnitService.registerGlobalsUpdateListener(this);
     }
 
     public static getAutoZoomOnSearch(): boolean {
