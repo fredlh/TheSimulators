@@ -68,60 +68,31 @@ export class OrgUnitService {
         this.accordion = accordion;
     }
 
+    // Retrieves all the organisation groups levels
     getOrganisationUnitLevels(): any {
-        let apiUrl = `${this.serverUrl}/organisationUnitLevels.json?fields=:all&paging=false`;
-        console.log("Requesting org units from api: " + apiUrl);
-        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
-        return Observable.create(observer => {
-          this.http
-            .get(apiUrl, {headers: this.headers})
-            .map(res => res.json())
-            .subscribe((data) => {
-                observer.next(data);
-                observer.complete();
-            }, (error) => {
-                alert("*** ERROR ***");
-            });
-        });
+        return this.getRequest(`organisationUnitLevels.json?fields=:all&paging=false`);            
     }
 
+    // Retrives all the organisation unit groups
     getOrganisationUnitGroups(): any {
-        let apiUrl = `${this.serverUrl}/organisationUnitGroups.jsonfields=:all&paging=false`;
-        console.log("Requesting org units from api: " + apiUrl);
-        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
-        return Observable.create(observer => {
-          this.http
-            .get(apiUrl, {headers: this.headers})
-            .map(res => res.json())
-            .subscribe((data) => {
-                observer.next(data);
-                observer.complete();
-            }, (error) => {
-                alert("*** ERROR ***");
-            });
-        });
+        return this.getRequest(`organisationUnitGroups.jsonfields=:all&paging=false`);                
     }
 
-
+    // Retrieves all the organisation units matching the given query
     getOrgUnits(query: string): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits.json?paging=false&fields=:all${query}`;
-        console.log("Requesting org units from api: " + apiUrl);
-        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
-        return Observable.create(observer => {
-          this.http
-            .get(apiUrl, {headers: this.headers})
-            .map(res => res.json())
-            .subscribe((data) => {
-             observer.next(data);
-             observer.complete();
-          });
-        });
+        return this.getRequest(`organisationUnits.json?paging=false&fields=:all${query}`);        
     }
 
+    // Retrives the organisation unit with the given id and all its children
     getOrgUnit(orgUnitId: string): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnitId}?includeChildren=true`;
+        return this.getRequest(`organisationUnits/${orgUnitId}?includeChildren=true`);
+    }
+
+    // A general http.get request with a request parameter to retrieve a specific thing
+    getRequest(request: string): any {
+        let apiUrl = `${this.serverUrl}/${request}`;
         console.log("Requesting org unit with id from api: " + apiUrl);
-        this.headers.append("Authorization", "Basic " + btoa("admin:district"));
+        this.headers.append("Authorization", this.basicAuth);
         return Observable.create(observer => {
           this.http
             .get(apiUrl, {headers: this.headers})
