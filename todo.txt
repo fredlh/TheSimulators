@@ -52,11 +52,5 @@ General:
 
 
 Thoughts (Rune):
-- Hide all other elements on the map when editing/creating new polygons
-    - Could potentially draw the old data (the data to edit) twice, once to edit
-      and another to show the status pre-edit
-    - Fixes issues with elements being clickable, could also do an invisible layer over everything
-- What happens when editing an id without coordinates, with marker coordinates etc?
-- Need to guarantee either save or revert on add/edit polygons
-- Filter searches based on level, string starting with, ending with, contains...
-- "edit mode" for polygons and possibly markers
+- "BUG": Can select parent in list and get children repeatedly (adding new pushes to the org unit stack)
+

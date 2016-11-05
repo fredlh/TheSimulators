@@ -66,9 +66,11 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         });
 
         // Get number of levels from GLOBAL, 4 hardcoded atm
+        /*
         for (let i = 0; i < 4; i++) {
             this.levels.push([]);
         }
+        */
 
         this.maxLevelReached = false;
         let map = this.map;
@@ -379,6 +381,12 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             let levelIndex = org.level - 1;
             let id = org.id;
 
+            if (org.level > this.levels.length) {
+                for (let i = this.levels.length; i < org.level; i++) {
+                    this.levels.push([]);
+                }
+            }
+
             // Check if orgUnit contains coordinates
             if (org.coordinates !== undefined) {
 
@@ -505,17 +513,8 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     // Markers for single point locations
                     let level: any = ms.levels[org.level - 1]; // Hack to force L.Markers into array
 
-                    // Markers are parsed in-function because of the low complexity
-                    let bracketsRemoved = org.coordinates.slice(1, org.coordinates.length - 1);
-                    let markerCoordinate = [];
-
-                    // For each x,y tupple within the subfigure
-                    let individualNumbers = bracketsRemoved.split(","); // Split into seperate number values (4)
-
-                    markerCoordinate.push(Number(individualNumbers[1]));
-                    markerCoordinate.push(Number(individualNumbers[0]));
-
-                    allCoords.push(markerCoordinate);
+                    let markerCoordinate = JSON.parse(org.coordinates);
+                    allCoords.push([markerCoordinate[1], markerCoordinate[0]]);
 
                     const defaultIcon = require("../../../images/ambulance_green.png");
                     const highlightIcon = require("../../../images/ambulance_red.png");
@@ -535,7 +534,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     });
 
                     let id = org.id;
-                    let markerlatlng = L.latLng(markerCoordinate[0], markerCoordinate[1]);
+                    let markerlatlng = L.latLng(markerCoordinate[1], markerCoordinate[0]);
                     let tempMark = L.marker(markerlatlng, markOptions)
                     .addEventListener("click", function(e) {
                         if (ms.eventsEnabled) {

@@ -29,6 +29,7 @@ export class MapService {
     };
 
     parsePolygonCoordinates(coordinatesAsString: string): any {
+        /*
         let bracketsRemoved = coordinatesAsString.slice(4, coordinatesAsString.length - 4); // Remove brackets on each end (1)
         let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
 
@@ -53,7 +54,15 @@ export class MapService {
 
             parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
         }
+        */
 
+        let parsedCoordinates = [];
+        let polygons = JSON.parse(coordinatesAsString);
+
+        for (let poly of polygons) {
+            parsedCoordinates.push(poly[0]);
+        }
+        
         return parsedCoordinates;
     }
 
