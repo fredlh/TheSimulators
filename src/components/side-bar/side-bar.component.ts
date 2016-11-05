@@ -32,6 +32,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     private orgUnitLevels = [];
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
+    private tempOrgUnit: OrgUnit = new OrgUnit();
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -131,7 +132,10 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Tells the orgUnitService that it should retrive the children of the given orgUnit
     // Called when the get children button is clicked
     onGetChildrenClicked(orgUnitId: string) {
-        this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
+        let orgUnit = this.getOrgUnitById(orgUnitId);
+        if (orgUnit.featureType === FeatureType.POLYGON || orgUnit.featureType === FeatureType.MULTI_POLYGON) {
+            this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
+        }
     }
 
     // A "back button" which displays the previous orgUnits before getChildren was clicked
@@ -152,8 +156,10 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         return null;
     }
 
-    hasChildren(orgUnitId: string): boolean {
-        return this.getOrgUnitById(orgUnitId).featureType !== FeatureType.NONE;
+    canGetChildren(featurType: string): boolean {
+        let tmp = featurType !== FeatureType.NONE;
+        console.log(tmp);
+        return tmp;
     }
 
 
@@ -169,6 +175,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         
         if (orgUnitId !== "") {
             this.selectedOrgUnit = this.getOrgUnitById(orgUnitId);
+            this.tempOrgUnit = JSON.parse(JSON.stringify(this.selectedOrgUnit));
         }
 
         let tmpThis = this;
@@ -200,6 +207,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.unHideSideBar();
         this.orgUnitService.endAddOrEditOrgUnit();
 
+        this.selectedOrgUnit = JSON.parse(JSON.stringify(this.tempOrgUnit));
         this.selectedOrgUnit.shortName = this.selectedOrgUnit.name;
         this.selectedOrgUnit.displayName = this.selectedOrgUnit.name;
 
@@ -240,21 +248,21 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Saves the drawn org unit
     saveDrawnOrgUnit(): void {
         // Retrieve the drawn coordinates from the map
-        this.selectedOrgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
+        this.tempOrgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
 
         // Check which feature type it is
-        if (this.selectedOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
-            this.selectedOrgUnit.featureType = FeatureType.MULTI_POLYGON;
+        if (this.tempOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
+            this.tempOrgUnit.featureType = FeatureType.MULTI_POLYGON;
         
-        } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") >= 0) {
-            this.selectedOrgUnit.featureType = FeatureType.POLYGON;
+        } else if (this.tempOrgUnit.coordinates.indexOf("[[[[") >= 0) {
+            this.tempOrgUnit.featureType = FeatureType.POLYGON;
         
-        } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") === -1 && this.selectedOrgUnit.coordinates !== "[]") {
-            this.selectedOrgUnit.featureType = FeatureType.POINT;
+        } else if (this.tempOrgUnit.coordinates.indexOf("[[[[") === -1 && this.tempOrgUnit.coordinates !== "[]") {
+            this.tempOrgUnit.featureType = FeatureType.POINT;
             
         } else {
-            this.selectedOrgUnit.featureType = FeatureType.NONE;
-            this.selectedOrgUnit.coordinates = "";
+            this.tempOrgUnit.featureType = FeatureType.NONE;
+            this.tempOrgUnit.coordinates = "";
         }
 
         // Hide the draw area and show the add org unit panel again
@@ -270,23 +278,23 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     }
 
     canDrawOrgUnitPolygon(): boolean {
-        return this.selectedOrgUnit.featureType === FeatureType.POLYGON ||
-               this.selectedOrgUnit.featureType === FeatureType.MULTI_POLYGON ||  
-               this.selectedOrgUnit.featureType === FeatureType.NONE;
+        return this.tempOrgUnit.featureType === FeatureType.POLYGON ||
+               this.tempOrgUnit.featureType === FeatureType.MULTI_POLYGON ||  
+               this.tempOrgUnit.featureType === FeatureType.NONE;
     }
 
     canDrawOrgUnitMarker(): boolean {
-        return this.selectedOrgUnit.featureType === FeatureType.POINT || 
-               this.selectedOrgUnit.featureType === FeatureType.NONE;
+        return this.tempOrgUnit.featureType === FeatureType.POINT || 
+               this.tempOrgUnit.featureType === FeatureType.NONE;
     }
 
     canClearCoordinates(): boolean {
-        return this.selectedOrgUnit.featureType !== FeatureType.NONE;
+        return this.tempOrgUnit.featureType !== FeatureType.NONE;
     }
 
     clearCoordinates(): void {
-        this.selectedOrgUnit.coordinates = "";
-        this.selectedOrgUnit.featureType = FeatureType.NONE;
+        this.tempOrgUnit.coordinates = "";
+        this.tempOrgUnit.featureType = FeatureType.NONE;
         this.orgUnitService.clearMapEditData();
     }
 

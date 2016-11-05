@@ -42,6 +42,25 @@ export class Globals {
     public static IN_EDIT_MODE_POLYGON = false;
     public static IN_EDIT_MODE_MARKER = false;
 
+    // Returns the highest organisation unit level, or -1 on error
+    public static getMaxLevel(): number {
+        let maxLevel = Number.MIN_SAFE_INTEGER;
+        for (let orgUnit of Globals.organisationUnitLevels) {
+            if (orgUnit.level > maxLevel) maxLevel = orgUnit.level;
+        }
+        return maxLevel === Number.MIN_SAFE_INTEGER ? -1 : maxLevel;
+    }
+
+    // Returns the lowest organisation unit level, or -1 on error
+    public static getMinlevel(): number {
+        let minLevel = Number.MAX_SAFE_INTEGER;
+        for (let orgUnit of Globals.organisationUnitLevels) {
+            if (orgUnit.level < minLevel) minLevel = orgUnit.level;
+        }
+        return minLevel === Number.MAX_SAFE_INTEGER ? -1 : minLevel;
+    }
+
+
     public static getName(level: number): string {
         for (let elem of Globals.organisationUnitLevels) {
             if (elem.level === level) return elem.name;

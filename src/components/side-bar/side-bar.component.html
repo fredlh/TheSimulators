@@ -32,8 +32,7 @@
                                 {{orgUnit.displayName}}
                             </accordion-heading>
                             <span style="cursor: auto;">
-                                <button *ngIf="orgUnit.featureType != featurType.POLYGON" id="#zoomToChildrenButton" class="btn btn-info disabled">Children</button>
-                                <button *ngIf="orgUnit.featureType === featurType.POLYGON" id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
+                                <button id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
                                 <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
                                 <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
                                 <ul>
@@ -69,7 +68,7 @@
                 <label class="col-lg-2 col-form-label">Name</label>
                 <div class="col-lg-10">
                     <input class="form-control" type="text" required
-                        [(ngModel)]="selectedOrgUnit.name" name="name">
+                        [(ngModel)]="tempOrgUnit.name" name="name">
                 </div>
             </div>
 
@@ -77,7 +76,7 @@
                 <label class="col-lg-2 col-form-label">Coordinates</label>
                 <div class="col-lg-7">
                     <textarea class="form-control" rows="4" readonly
-                        [(ngModel)]="selectedOrgUnit.coordinates" name="coordinates"></textarea>
+                        [(ngModel)]="tempOrgUnit.coordinates" name="coordinates"></textarea>
                 </div>
                 <div class="col-lg-3">
                     <button *ngIf="canDrawOrgUnitPolygon()" type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
@@ -102,7 +101,7 @@
                  <label class="col-lg-2 col-form-label">Parent ID</label>
                  <div class="col-lg-10">
                      <input class="form-control" type="text" readonly required
-                         [(ngModel)]="selectedOrgUnit.parent.id" name="parent">
+                         [(ngModel)]="tempOrgUnit.parent.id" name="parent">
                  </div>
              </div>
 
