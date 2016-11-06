@@ -7,8 +7,7 @@ OrgUnit:
 OrgUnitService:
 ---------------
 - Split parts to mapService and communicationSerice(or something)
-- Use Globals.getMaxLevel() to check whether maxLevel is reached instead of hard coding it
-- Which type to use? (subscribe() eller map())?
+- Cleanup: remove unneeded functions, re-order and such
 
 
 Search:
@@ -18,28 +17,6 @@ Search:
 - Able to place a marker and say "get all orgUnits (filter too?) within x distance"
 
 
-Side bar:
----------
-- Implement a canGetChildren() function which checks whether the getChildren() button should be clickable
-
-
-Edit org unit:
---------------
-- Add the same logic for drawButtons, clearButtons and featureType as in addOrgUnit
-
-
-Globals:
---------
-- Implement a getMaxLevel() function which returns the max level an org unit can have
-
-
 General:
 --------
 - Cleanup of imports
-- When adding, deleting and updating orgUnit, update map and list or do nothing?
-
-
-
-Thoughts (Rune):
-- "BUG": Can select parent in list and get children repeatedly (adding new pushes to the org unit stack)
-

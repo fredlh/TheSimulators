@@ -136,7 +136,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     onGetChildrenClicked(orgUnitId: string) {
         let orgUnit = this.getOrgUnitById(orgUnitId);
         if (orgUnit.featureType === FeatureType.POLYGON || orgUnit.featureType === FeatureType.MULTI_POLYGON) {
-            this.orgUnitService.getOrgUnitAndChildren(orgUnitId);
+            this.orgUnitService.getOrgUnitAndChildren(orgUnitId, true, true);
         }
     }
 

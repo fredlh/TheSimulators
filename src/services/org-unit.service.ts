@@ -170,8 +170,15 @@ export class OrgUnitService {
 
     // Returns an array with the parent at index 0
     // and all its children afterwards
-    getOrgUnitAndChildren(orgUnitID: string, pushToStack = true): void {
+    getOrgUnitAndChildren(orgUnitID: string, pushToStack = true, checkForIdenticalArrays = false): void {
         this.getOrgUnitWithChildren(orgUnitID).subscribe(res => {
+
+            if (checkForIdenticalArrays) {
+                if (this.containsSameOrgUnits(this.orgUnits, res.organisationUnits)) {
+                    pushToStack = false;
+                }
+            }
+
             if (pushToStack) this.orgUnitStack.push(this.orgUnits);
             this.orgUnits = res.organisationUnits;
 
@@ -297,5 +304,18 @@ export class OrgUnitService {
 
         this.sideBar.updateList(this.orgUnits);
         this.mapView.draw(this.orgUnits, false, onSearch);
+    }
+
+    containsSameOrgUnits(a: OrgUnit[], b: OrgUnit[]): boolean {
+        if (!a || !b) return false;
+        if (a.length !== b.length) return false;
+
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].id !==  b[i].id) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
