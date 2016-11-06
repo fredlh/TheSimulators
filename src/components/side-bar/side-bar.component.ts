@@ -413,4 +413,14 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         $("#filterArea").find("form")[0].reset();
     }
 
+
+    //
+    // Refresh side bar
+    //
+
+    // Refreshes the organisation units in the side bar
+    refreshSideBar(): void {
+        this.orgUnitService.refreshOrgUnits();
+    }
+
 }

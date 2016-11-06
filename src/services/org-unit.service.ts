@@ -34,6 +34,9 @@ export class OrgUnitService {
     private accordion: AccordionComponent;
     private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
+    private lastApiUrlCall: string = "";
+    private lastApiSearch: string = "";
+
     constructor(private http: Http) {
         // Get all the organisation unit levels
         this.getOrganisationUnitLevels().subscribe(res => {
@@ -81,16 +84,20 @@ export class OrgUnitService {
 
     // Retrives the organisation unit with the given id
     getOrgUnit(orgUnitId: string): any {
+        this.lastApiUrlCall = `getOrgUnit|${orgUnitId}`;
         return this.getRequest(`organisationUnits/${orgUnitId}?fields=:all&paging=false`);
     }
 
     // Retrives the organisation unit with the given id and all its children
     getOrgUnitWithChildren(orgUnitId: string): any {
+        this.lastApiUrlCall = `getOrgUnitWithChildren|${orgUnitId}`
         return this.getRequest(`organisationUnits/${orgUnitId}?includeChildren=true&fields=:all&paging=false`);
     }
 
     // Retrieves all the organisation units matching the given query
     getOrgUnits(query: string): any {
+        this.lastApiUrlCall = `getOrgUnits|${query}`;
+        this.lastApiSearch = query;
         return this.getRequest(`organisationUnits?paging=false&fields=:all${query}`);      
     }
 
@@ -163,9 +170,9 @@ export class OrgUnitService {
 
     // Returns an array with the parent at index 0
     // and all its children afterwards
-    getOrgUnitAndChildren(orgUnitID: string): void {
+    getOrgUnitAndChildren(orgUnitID: string, pushToStack = true): void {
         this.getOrgUnitWithChildren(orgUnitID).subscribe(res => {
-            this.orgUnitStack.push(this.orgUnits);
+            if (pushToStack) this.orgUnitStack.push(this.orgUnits);
             this.orgUnits = res.organisationUnits;
 
             if (this.orgUnits[0].level === 3) {
@@ -194,6 +201,7 @@ export class OrgUnitService {
 
             this.mapView.draw(this.orgUnits, false, false);
             this.sideBar.updateList(this.orgUnits);
+            this.lastApiUrlCall = "getOrgUnitWithChildren|" + this.orgUnits[0].id;
         }
     }
 
@@ -262,5 +270,25 @@ export class OrgUnitService {
 
     clearMapEditData(): void {
         this.mapView.clearEditData();
+    }
+
+    refreshOrgUnits(): void {
+        let lastCalls = this.lastApiUrlCall.split("|");
+        let onSearch = false;
+
+        if (this.orgUnitStack.length === 0) {
+            this.getOrgUnits(this.lastApiSearch).subscribe(res => {
+                this.orgUnits = res.organisationUnits;
+                this.callOnSearch();
+                onSearch = true;
+            });
+        }
+
+        else if (lastCalls[0] === "getOrgUnitWithChildren") {
+            this.getOrgUnitAndChildren(lastCalls[1], false);
+        }
+        
+        this.sideBar.updateList(this.orgUnits);
+        this.mapView.draw(this.orgUnits, false, onSearch);
     }
 }

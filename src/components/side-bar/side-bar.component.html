@@ -8,6 +8,10 @@
         <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
             Filter
         </button>
+
+        <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="margin-left: 100px;" (click)="refreshSideBar()">
+            Refresh
+        </button>
             
         <br>
         <h3 style="text-align: center;">Search results </h3>
