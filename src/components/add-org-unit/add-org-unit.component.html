@@ -13,7 +13,7 @@
         <p>Enter data in the fields, draw the org unit, and click save</p>
         <br>
         
-        <form (ngSubmit)="onSubmit()" #optionsForm="ngForm">
+        <form (ngSubmit)="onSubmit()" #addOrgUnitForm="ngForm">
                 
             <div class="form-group row">
                 <label class="col-lg-2 col-form-label">Name</label>
@@ -58,10 +58,32 @@
              </div>
 
 
-            <input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
-            <input style="float: right;" type="submit" value="Add org unit" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+            <input type="button" value="Cancel" id="orgUnitCancelButton" class="btn btn-primary" (click)="onCancel()">
+            <input style="float: right;" type="submit" id="submitOrgUnitButton" value="Add org unit" 
+                    class="btn btn-primary" [disabled]="!addOrgUnitForm.form.valid">
         </form>
+
+        <br />
+        <div *ngIf="saveSuccess === true">
+            <div class="alert alert-success">
+                <strong>Success:</strong> The organisation unit was successfully saved.
+            </div>
+            <button type="button" class="btn btn-success" aria-label="Left Align" (click)="gotoOrgUnit()">
+                Go to org unit
+            </button>
+            <button type="button" class="btn btn-success" aria-label="Left Align" (click)="gotoParent()">
+                Go to parent
+            </button>
+        </div>
+
+        <div *ngIf="saveSuccess === false" class="alert alert-danger">
+            <strong>Error:</strong> Unable to save the organisation unti. Please try again.
+        </div>
+
     </div>
+
+    
+
 </div>
 
 

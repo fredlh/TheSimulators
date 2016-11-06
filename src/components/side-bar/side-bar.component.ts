@@ -32,7 +32,6 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     private orgUnitLevels = [];
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
-    private tempOrgUnit: OrgUnit = new OrgUnit();
 
     constructor(private orgUnitService: OrgUnitService) {}
 
@@ -174,8 +173,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.showEditOrgUnitPanel();
         
         if (orgUnitId !== "") {
-            this.selectedOrgUnit = this.getOrgUnitById(orgUnitId);
-            this.tempOrgUnit = JSON.parse(JSON.stringify(this.selectedOrgUnit));
+            this.selectedOrgUnit = JSON.parse(JSON.stringify(this.getOrgUnitById(orgUnitId)));
         }
 
         let tmpThis = this;
@@ -203,14 +201,21 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Re-show the sideBar
     // TODO: Send the updated onrgUnit to orgUnitService, and make a http put request
     onEditOrgUnitSubmit(): void {
+        // Display warning if there are no coordinates
+        if (this.selectedOrgUnit.featureType === FeatureType.NONE) {
+            if (!confirm("The are no coordinates entered. Sure you want to save?")) return;
+        }
+
+        // Hide the panel, show the sideBar again and leave edit mode
         this.closeEditOrgUnitPanel();
         this.unHideSideBar();
         this.orgUnitService.endAddOrEditOrgUnit();
 
-        this.selectedOrgUnit = JSON.parse(JSON.stringify(this.tempOrgUnit));
+        // Save the required info
         this.selectedOrgUnit.shortName = this.selectedOrgUnit.name;
         this.selectedOrgUnit.displayName = this.selectedOrgUnit.name;
 
+        // Send a put update to the api
         this.orgUnitService.updateOrgUnit(this.selectedOrgUnit).subscribe(res => {
             // TODO: Possible to check for erros here?
         });
@@ -248,21 +253,21 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Saves the drawn org unit
     saveDrawnOrgUnit(): void {
         // Retrieve the drawn coordinates from the map
-        this.tempOrgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
+        this.selectedOrgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
 
         // Check which feature type it is
-        if (this.tempOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
-            this.tempOrgUnit.featureType = FeatureType.MULTI_POLYGON;
+        if (this.selectedOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
+            this.selectedOrgUnit.featureType = FeatureType.MULTI_POLYGON;
         
-        } else if (this.tempOrgUnit.coordinates.indexOf("[[[[") >= 0) {
-            this.tempOrgUnit.featureType = FeatureType.POLYGON;
+        } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") >= 0) {
+            this.selectedOrgUnit.featureType = FeatureType.POLYGON;
         
-        } else if (this.tempOrgUnit.coordinates.indexOf("[[[[") === -1 && this.tempOrgUnit.coordinates !== "[]") {
-            this.tempOrgUnit.featureType = FeatureType.POINT;
+        } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") === -1 && this.selectedOrgUnit.coordinates !== "[]") {
+            this.selectedOrgUnit.featureType = FeatureType.POINT;
             
         } else {
-            this.tempOrgUnit.featureType = FeatureType.NONE;
-            this.tempOrgUnit.coordinates = "";
+            this.selectedOrgUnit.featureType = FeatureType.NONE;
+            this.selectedOrgUnit.coordinates = "";
         }
 
         // Hide the draw area and show the add org unit panel again
@@ -278,23 +283,23 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     }
 
     canDrawOrgUnitPolygon(): boolean {
-        return this.tempOrgUnit.featureType === FeatureType.POLYGON ||
-               this.tempOrgUnit.featureType === FeatureType.MULTI_POLYGON ||  
-               this.tempOrgUnit.featureType === FeatureType.NONE;
+        return this.selectedOrgUnit.featureType === FeatureType.POLYGON ||
+               this.selectedOrgUnit.featureType === FeatureType.MULTI_POLYGON ||  
+               this.selectedOrgUnit.featureType === FeatureType.NONE;
     }
 
     canDrawOrgUnitMarker(): boolean {
-        return this.tempOrgUnit.featureType === FeatureType.POINT || 
-               this.tempOrgUnit.featureType === FeatureType.NONE;
+        return this.selectedOrgUnit.featureType === FeatureType.POINT || 
+               this.selectedOrgUnit.featureType === FeatureType.NONE;
     }
 
     canClearCoordinates(): boolean {
-        return this.tempOrgUnit.featureType !== FeatureType.NONE;
+        return this.selectedOrgUnit.featureType !== FeatureType.NONE;
     }
 
     clearCoordinates(): void {
-        this.tempOrgUnit.coordinates = "";
-        this.tempOrgUnit.featureType = FeatureType.NONE;
+        this.selectedOrgUnit.coordinates = "";
+        this.selectedOrgUnit.featureType = FeatureType.NONE;
         this.orgUnitService.clearMapEditData();
     }
 

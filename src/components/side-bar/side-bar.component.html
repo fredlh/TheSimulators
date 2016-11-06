@@ -68,7 +68,7 @@
                 <label class="col-lg-2 col-form-label">Name</label>
                 <div class="col-lg-10">
                     <input class="form-control" type="text" required
-                        [(ngModel)]="tempOrgUnit.name" name="name">
+                        [(ngModel)]="selectedOrgUnit.name" name="name">
                 </div>
             </div>
 
@@ -76,7 +76,7 @@
                 <label class="col-lg-2 col-form-label">Coordinates</label>
                 <div class="col-lg-7">
                     <textarea class="form-control" rows="4" readonly
-                        [(ngModel)]="tempOrgUnit.coordinates" name="coordinates"></textarea>
+                        [(ngModel)]="selectedOrgUnit.coordinates" name="coordinates"></textarea>
                 </div>
                 <div class="col-lg-3">
                     <button *ngIf="canDrawOrgUnitPolygon()" type="button" class="btn btn-success" aria-label="Left Align" (click)="drawOrgUnitPolygon()">
@@ -101,7 +101,7 @@
                  <label class="col-lg-2 col-form-label">Parent ID</label>
                  <div class="col-lg-10">
                      <input class="form-control" type="text" readonly required
-                         [(ngModel)]="tempOrgUnit.parent.id" name="parent">
+                         [(ngModel)]="selectedOrgUnit.parent.id" name="parent">
                  </div>
              </div>
 

@@ -1,5 +1,5 @@
 import { Injectable, OnInit }   from "@angular/core";
-import { Headers, Http} from "@angular/http";
+import { Headers, Http, Response} from "@angular/http";
 import { Observable } from "rxjs/Observable";
 
 import "rxjs/add/operator/toPromise";
@@ -26,7 +26,7 @@ export class OrgUnitService {
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json"});
 
-    private orgUnits: OrgUnit[];
+    private orgUnits: OrgUnit[] = [];
     private orgUnitStack: OrgUnit[][] = [];
 
     private sideBar: SideBarInterface;
@@ -115,7 +115,8 @@ export class OrgUnitService {
         
         return this.http
             .post(apiUrl, JSON.stringify(orgUnit), {headers: this.headers})
-            .map(res => res.json());
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || "Server error"));        
     }
 
     deleteOrganisationUnit(orgUnitId): any {
@@ -201,6 +202,11 @@ export class OrgUnitService {
 
         });
         return;
+    }
+
+    gotoOrgUnit(orgUnitId: string): void {
+        // TODO: Fix this without any errors
+        
     }
 
     returnToLastStackFrame(): void {

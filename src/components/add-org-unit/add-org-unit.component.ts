@@ -18,6 +18,10 @@ export class AddOrgUnitComponent {
 
     private orgUnit: OrgUnit = new OrgUnit();
     private self = this;
+    private haveSubmitted = false;
+    private saveSuccess = null;
+
+    private savedOrgUnitId: string = "";
 
     constructor(private orgUnitService: OrgUnitService) {
         this.orgUnit.featureType = FeatureType.NONE;
@@ -25,6 +29,14 @@ export class AddOrgUnitComponent {
 
     openAddOrgUnitForm(): void {
         this.showAddOrgUnitPanel();
+
+        // Reset the form
+        this.orgUnit = new OrgUnit();
+        this.orgUnit.featureType = FeatureType.NONE;
+        this.haveSubmitted = false;
+        this.saveSuccess = null;      
+        $("#submitOrgUnitButton").removeClass("disabled");
+        $("#orgUnitCancelButton").prop("value", "Cancel");
 
         let tmpThis = this;
 
@@ -53,20 +65,18 @@ export class AddOrgUnitComponent {
 
     onCancel(tmpThis = this): void {
         tmpThis.hideAddOrgUnitPanel();
-        this.orgUnit = new OrgUnit();
         this.orgUnitService.endAddOrEditOrgUnit();
     }
 
 
     onSubmit(): void {
+        // Ignore if user alreayd have submitted successfully
+        if (this.haveSubmitted) return;
+
         // Display warning if no coordinates are entered
         if (this.orgUnit.featureType === FeatureType.NONE) {
             if (!confirm("The are no coordinates entered. Sure you want to save?")) return;
         }
-
-        // Hide the panel and enter edit mode
-        this.hideAddOrgUnitPanel();
-        this.orgUnitService.endAddOrEditOrgUnit();
 
         // Save the required info in the org unit
         this.orgUnit.openingDate = new Date();
@@ -74,10 +84,19 @@ export class AddOrgUnitComponent {
         this.orgUnit.shortName = this.orgUnit.name;
        
         // Save the org unit
-        this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(res => {
-            // TODO: Possible to if an error occured here?
-            //       If yes, then dont close the panel, just show error to user and let them retry
-        });
+        let tmpThis = this;
+        this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(
+            res => {
+                $("#orgUnitCancelButton").prop("value", "Close");
+                $("#submitOrgUnitButton").addClass("disabled");
+                tmpThis.saveSuccess = true;
+                tmpThis.haveSubmitted = true;
+                tmpThis.savedOrgUnitId = res.response.uid;
+            },
+            error => {
+                tmpThis.saveSuccess = false;
+            }
+        );
     }
 
     drawOrgUnitPolygon(): void {
@@ -148,5 +167,21 @@ export class AddOrgUnitComponent {
         this.orgUnit.coordinates = "";
         this.orgUnit.featureType = FeatureType.NONE;
         this.orgUnitService.clearMapEditData();
+    }
+
+
+    gotoOrgUnit(): void {
+        this.hideAddOrgUnitPanel();
+        this.orgUnitService.endAddOrEditOrgUnit();
+
+        this.orgUnitService.getOrgUnitAndChildren(this.orgUnit.parent.id);
+        this.orgUnitService.gotoOrgUnit(this.savedOrgUnitId);
+    }
+
+    gotoParent(): void {
+        this.hideAddOrgUnitPanel();
+        this.orgUnitService.endAddOrEditOrgUnit();
+        
+        this.orgUnitService.getOrgUnitAndChildren(this.orgUnit.parent.id);
     }
 }
