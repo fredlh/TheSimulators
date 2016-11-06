@@ -179,16 +179,11 @@ export class AddOrgUnitComponent {
 
     gotoOrgUnit(): void {
         this.hideAddOrgUnitPanel();
-        this.orgUnitService.endAddOrEditOrgUnit();
-
-        this.orgUnitService.getOrgUnitAndChildren(this.orgUnit.parent.id);
-        this.orgUnitService.gotoOrgUnit(this.savedOrgUnitId);
+        this.orgUnitService.gotoOrgUnit(this.orgUnit.parent.id, this.savedOrgUnitId);
     }
 
     gotoParent(): void {
         this.hideAddOrgUnitPanel();
-        this.orgUnitService.endAddOrEditOrgUnit();
-        
-        this.orgUnitService.getOrgUnitAndChildren(this.orgUnit.parent.id);
+        this.orgUnitService.gotoParent(this.orgUnit.parent.id);
     }
 }

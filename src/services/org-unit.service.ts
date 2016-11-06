@@ -35,7 +35,7 @@ export class OrgUnitService {
     private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
     private lastApiUrlCall: string = "";
-    private lastApiSearch: string = "";
+    private lastApiSearch: string = null;
 
     constructor(private http: Http) {
         // Get all the organisation unit levels
@@ -188,9 +188,16 @@ export class OrgUnitService {
         return;
     }
 
-    gotoOrgUnit(orgUnitId: string): void {
-        // TODO: Fix this without any errors
-        
+    gotoOrgUnit(parentId: string, orgUnitId: string): void {
+        this.endAddOrEditOrgUnit();
+        this.getOrgUnitAndChildren(parentId, false);
+        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`
+    }
+
+    gotoParent(parentId: string): void {
+        this.endAddOrEditOrgUnit();
+        this.getOrgUnitAndChildren(parentId, false);
+        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`        
     }
 
     returnToLastStackFrame(): void {
@@ -276,17 +283,18 @@ export class OrgUnitService {
         let lastCalls = this.lastApiUrlCall.split("|");
         let onSearch = false;
 
-        if (this.orgUnitStack.length === 0) {
+
+        if (lastCalls[0] === "getOrgUnitWithChildren") {
+            this.getOrgUnitAndChildren(lastCalls[1], false);
+        }
+
+        else if (this.orgUnitStack.length === 0) {
             this.getOrgUnits(this.lastApiSearch).subscribe(res => {
                 this.orgUnits = res.organisationUnits;
                 onSearch = true;
             });
         }
 
-        else if (lastCalls[0] === "getOrgUnitWithChildren") {
-            this.getOrgUnitAndChildren(lastCalls[1], false);
-        }
-        
         this.sideBar.updateList(this.orgUnits);
         this.mapView.draw(this.orgUnits, false, onSearch);
     }
