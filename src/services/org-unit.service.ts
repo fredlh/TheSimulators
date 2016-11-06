@@ -175,7 +175,7 @@ export class OrgUnitService {
             if (pushToStack) this.orgUnitStack.push(this.orgUnits);
             this.orgUnits = res.organisationUnits;
 
-            if (this.orgUnits[0].level === 3) {
+            if (this.orgUnits[0].level === Globals.getMaxLevel() - 1) {
                 this.mapView.draw(this.orgUnits, true, false);
 
             } else {
@@ -284,7 +284,7 @@ export class OrgUnitService {
         let onSearch = false;
 
 
-        if (lastCalls[0] === "getOrgUnitWithChildren") {
+        if (lastCalls[0] === "getOrgUnitWithChildren" && this.orgUnitStack.length !== 0) {
             this.getOrgUnitAndChildren(lastCalls[1], false);
         }
 
