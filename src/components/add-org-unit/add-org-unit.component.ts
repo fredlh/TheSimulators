@@ -22,6 +22,7 @@ export class AddOrgUnitComponent {
     private saveSuccess = null;
 
     private savedOrgUnitId: string = "";
+    private errorMessage: string = "";
 
     constructor(private orgUnitService: OrgUnitService) {
         this.orgUnit.featureType = FeatureType.NONE;
@@ -95,6 +96,12 @@ export class AddOrgUnitComponent {
             },
             error => {
                 tmpThis.saveSuccess = false;
+
+                if (error.status === 409 && error._body.includes("parent")) {
+                    tmpThis.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
+                } else {
+                    tmpThis.errorMessage = "Something went wrong, pleas try again.";
+                }
             }
         );
     }
