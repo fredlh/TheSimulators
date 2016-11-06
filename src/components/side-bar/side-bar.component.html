@@ -62,7 +62,7 @@
         <p>Enter data in the fields, draw the org unit, and click save</p>
         <br>
         
-        <form (ngSubmit)="onEditOrgUnitSubmit()" #optionsForm="ngForm">
+        <form (ngSubmit)="onEditOrgUnitSubmit()" #editOrgUnitForm="ngForm">
                 
             <div class="form-group row">
                 <label class="col-lg-2 col-form-label">Name</label>
@@ -107,7 +107,7 @@
 
 
             <input type="button" value="Cancel" class="btn btn-primary" (click)="onEditOrgUnitCancel()">
-            <input style="float: right;" type="submit" value="Save changes" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+            <input style="float: right;" type="submit" value="Save changes" class="btn btn-primary" [disabled]="!editOrgUnitForm.form.valid">
         </form>
     </div>
 </div>

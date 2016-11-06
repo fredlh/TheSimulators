@@ -216,9 +216,14 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.selectedOrgUnit.displayName = this.selectedOrgUnit.name;
 
         // Send a put update to the api
-        this.orgUnitService.updateOrgUnit(this.selectedOrgUnit).subscribe(res => {
-            // TODO: Possible to check for erros here?
-        });
+        this.orgUnitService.updateOrgUnit(this.selectedOrgUnit).subscribe(
+            res => {
+                // All good, display success
+            },
+            error => {
+                // Error, dispay error
+            }
+        );
 
     }
 
@@ -313,9 +318,15 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         console.log("Delete: " + orgUnitId);
 
         if (confirm("Are you sure you want to delete the organisation unit with id '" + orgUnitId + "'")) {
-            this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(res => {
-                // TODO: Possible to check for errors here?
-            });
+            this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(
+                res => {
+                    // All good, nothing to do here
+                },
+                error => {
+                    // Not sure yet what to do here, an alert() for now
+                    alert("Somehow failed during deletion of org unit");
+                }
+            );
         }
     }
 

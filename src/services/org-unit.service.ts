@@ -24,7 +24,7 @@ export class OrgUnitService {
     //private serverUrl = "http://localhost:8082/api/";
     private serverUrl = "https://play.dhis2.org/demo/api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
-    private headers = new Headers({"Content-Type": "application/json"});
+    private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
 
     private orgUnits: OrgUnit[] = [];
     private orgUnitStack: OrgUnit[][] = [];
@@ -35,6 +35,8 @@ export class OrgUnitService {
     private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
     constructor(private http: Http) {
+        this.headers.append("Authorization", this.basicAuth);
+
         // Get all the organisation unit levels
         this.getOrganisationUnitLevels().subscribe(res => {
             let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
@@ -91,58 +93,31 @@ export class OrgUnitService {
 
     // A general http.get request with a request parameter to retrieve a specific thing
     getRequest(request: string): any {
-        let apiUrl = `${this.serverUrl}/${request}`;
-        console.log("Requesting org unit. API URL:\n" + apiUrl);
-        this.headers.append("Authorization", this.basicAuth);
-        
-        return Observable.create(observer => {
-            this.http
-            .get(apiUrl, {headers: this.headers})
-            .map(res => res.json())
-            .subscribe((data) => {
-                observer.next(data);
-                observer.complete();
-          }, (error) => {
-                alert("Error during retrieving of an organisation unit");
-          });
-        });
+        return this.http
+            .get(`${this.serverUrl}/${request}`, {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || "Server error")); 
     }
 
     saveOrganisationUnit(orgUnit: OrgUnit): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits`;
-        console.log("Saving org unit:\n" + JSON.stringify(orgUnit) + "\nURL: " + apiUrl);        
-        this.headers.append("Authorization", this.basicAuth);
-        
         return this.http
-            .post(apiUrl, JSON.stringify(orgUnit), {headers: this.headers})
+            .post(`${this.serverUrl}/organisationUnits`, JSON.stringify(orgUnit), {headers: this.headers})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || "Server error"));        
     }
 
     deleteOrganisationUnit(orgUnitId): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnitId}`;
-        this.headers.append("Authorization", this.basicAuth);
-
-        return Observable.create(observer => {
-            this.http
-            .delete(apiUrl, {headers: this.headers})
-            .subscribe((res) => {
-                observer.next(res);
-                observer.complete();
-            }, (error) => {
-                alert("Error during deletion of an organisation unit");
-            });
-        });
+        return this.http
+            .delete(`${this.serverUrl}/organisationUnits/${orgUnitId}`, {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || "Server error")); 
     }
 
-
     updateOrgUnit(orgUnit: OrgUnit): any {
-        let apiUrl = `${this.serverUrl}/organisationUnits/${orgUnit.id}`;
-        this.headers.append("Authorization", this.basicAuth);
-
         return this.http
-            .put(apiUrl, JSON.stringify(orgUnit), {headers: this.headers})
-            .map(res => res.json());
+            .put(`${this.serverUrl}/organisationUnits/${orgUnit.id}`, JSON.stringify(orgUnit), {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || "Server error"));  
     }
 
 
@@ -151,7 +126,6 @@ export class OrgUnitService {
         return this.mapView.startEditMode(orgUnitId, polygon);
     }
 
-    // endEditMode(saved: boolean): number[][][][] {
     endEditMode(saved: boolean): number[] {
         Globals.endInEditMode();
         return this.mapView.endEditMode(saved);
