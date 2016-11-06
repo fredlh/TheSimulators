@@ -106,28 +106,28 @@ export class OrgUnitService {
         return this.http
             .get(`${this.serverUrl}/${request}`, {headers: this.headers})
             .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || "Server error")); 
+            .catch((error: any) => Observable.throw(error));
     }
 
     saveOrganisationUnit(orgUnit: OrgUnit): any {
         return this.http
             .post(`${this.serverUrl}/organisationUnits`, JSON.stringify(orgUnit), {headers: this.headers})
             .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || "Server error"));        
+            .catch((error: any) => Observable.throw(error));
     }
 
     deleteOrganisationUnit(orgUnitId): any {
         return this.http
             .delete(`${this.serverUrl}/organisationUnits/${orgUnitId}`, {headers: this.headers})
             .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || "Server error")); 
+            .catch((error: any) => Observable.throw(error));
     }
 
     updateOrgUnit(orgUnit: OrgUnit): any {
         return this.http
             .put(`${this.serverUrl}/organisationUnits/${orgUnit.id}`, JSON.stringify(orgUnit), {headers: this.headers})
             .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || "Server error"));  
+            .catch((error: any) => Observable.throw(error));
     }
 
 
