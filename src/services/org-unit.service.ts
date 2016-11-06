@@ -35,8 +35,6 @@ export class OrgUnitService {
     private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
     constructor(private http: Http) {
-        this.headers.append("Authorization", this.basicAuth);
-
         // Get all the organisation unit levels
         this.getOrganisationUnitLevels().subscribe(res => {
             let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
@@ -73,22 +71,27 @@ export class OrgUnitService {
 
     // Retrieves all the organisation groups levels
     getOrganisationUnitLevels(): any {
-        return this.getRequest(`organisationUnitLevels.json?fields=:all&paging=false`);            
+        return this.getRequest(`organisationUnitLevels?fields=:all&paging=false`);            
     }
 
     // Retrives all the organisation unit groups
     getOrganisationUnitGroups(): any {
-        return this.getRequest(`organisationUnitGroups.jsonfields=:all&paging=false`);                
+        return this.getRequest(`organisationUnitGroups?fields=:all&paging=false`);                
+    }
+
+    // Retrives the organisation unit with the given id
+    getOrgUnit(orgUnitId: string): any {
+        return this.getRequest(`organisationUnits/${orgUnitId}?fields=:all&paging=false`);
+    }
+
+    // Retrives the organisation unit with the given id and all its children
+    getOrgUnitWithChildren(orgUnitId: string): any {
+        return this.getRequest(`organisationUnits/${orgUnitId}?includeChildren=true&fields=:all&paging=false`);
     }
 
     // Retrieves all the organisation units matching the given query
     getOrgUnits(query: string): any {
-        return this.getRequest(`organisationUnits.json?paging=false&fields=:all${query}`);      
-    }
-
-    // Retrives the organisation unit with the given id and all its children
-    getOrgUnit(orgUnitId: string): any {
-        return this.getRequest(`organisationUnits/${orgUnitId}?includeChildren=true`);
+        return this.getRequest(`organisationUnits?paging=false&fields=:all${query}`);      
     }
 
     // A general http.get request with a request parameter to retrieve a specific thing
@@ -161,7 +164,7 @@ export class OrgUnitService {
     // Returns an array with the parent at index 0
     // and all its children afterwards
     getOrgUnitAndChildren(orgUnitID: string): void {
-        this.getOrgUnit(orgUnitID).subscribe(res => {
+        this.getOrgUnitWithChildren(orgUnitID).subscribe(res => {
             this.orgUnitStack.push(this.orgUnits);
             this.orgUnits = res.organisationUnits;
 
