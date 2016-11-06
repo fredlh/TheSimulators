@@ -110,9 +110,25 @@
              </div>
 
 
-            <input type="button" value="Cancel" class="btn btn-primary" (click)="onEditOrgUnitCancel()">
-            <input style="float: right;" type="submit" value="Save changes" class="btn btn-primary" [disabled]="!editOrgUnitForm.form.valid">
+            <input type="button" value="Cancel" class="btn btn-primary" id="cancelOrgUnitButton" (click)="onEditOrgUnitCancel()">
+            <input style="float: right;" type="submit" value="Save changes" id="editOrgUnitButton" 
+                    class="btn btn-primary" [disabled]="!editOrgUnitForm.form.valid">
         </form>
+
+        <br />
+        <div *ngIf="saveSuccess === true">
+            <div class="alert alert-success">
+                <strong>Success:</strong> The organisation unit was successfully updated.
+            </div>
+            <button type="button" class="btn btn-success" aria-label="Left Align" (click)="refreshOrgUnits(true)">
+                Refresh org units
+            </button>
+        </div>
+
+        <div *ngIf="saveSuccess === false" class="alert alert-danger">
+            <strong>Error:</strong> Unable to update the organisation unti. Please try again.
+        </div>
+
     </div>
 </div>
 

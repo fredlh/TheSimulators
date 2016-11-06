@@ -33,6 +33,9 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
 
+    private haveSubmitted = false;
+    private saveSuccess = null;
+
     constructor(private orgUnitService: OrgUnitService) {}
 
     onOrganisationUnitLevelsUpdate(): void {
@@ -176,6 +179,12 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
             this.selectedOrgUnit = JSON.parse(JSON.stringify(this.getOrgUnitById(orgUnitId)));
         }
 
+        // Clear the form
+        this.haveSubmitted = false;
+        this.saveSuccess = null;      
+        $("#editOrgUnitButton").removeClass("disabled");
+        $("#cancelOrgUnitButton").prop("value", "Cancel");
+
         let tmpThis = this;
         
         $(".edit-org-unit-close").click(function() {
@@ -201,27 +210,29 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     // Re-show the sideBar
     // TODO: Send the updated onrgUnit to orgUnitService, and make a http put request
     onEditOrgUnitSubmit(): void {
+        // Ignore if user alreayd have submitted successfully
+        if (this.haveSubmitted) return;
+
         // Display warning if there are no coordinates
         if (this.selectedOrgUnit.featureType === FeatureType.NONE) {
             if (!confirm("The are no coordinates entered. Sure you want to save?")) return;
         }
-
-        // Hide the panel, show the sideBar again and leave edit mode
-        this.closeEditOrgUnitPanel();
-        this.unHideSideBar();
-        this.orgUnitService.endAddOrEditOrgUnit();
 
         // Save the required info
         this.selectedOrgUnit.shortName = this.selectedOrgUnit.name;
         this.selectedOrgUnit.displayName = this.selectedOrgUnit.name;
 
         // Send a put update to the api
+        let tmpThis = this;
         this.orgUnitService.updateOrgUnit(this.selectedOrgUnit).subscribe(
             res => {
-                // All good, display success
+                $("#cancelOrgUnitButton").prop("value", "Close");
+                $("#editOrgUnitButton").addClass("disabled");
+                tmpThis.saveSuccess = true;
+                tmpThis.haveSubmitted = true;
             },
             error => {
-                // Error, dispay error
+                tmpThis.saveSuccess = false;
             }
         );
 
@@ -419,8 +430,11 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     //
 
     // Refreshes the organisation units
-    refreshOrgUnits(): void {
+    refreshOrgUnits(closeEditOrgUnitPanel = false): void {
         this.orgUnitService.refreshOrgUnits();
+        if (closeEditOrgUnitPanel) {
+            this.onEditOrgUnitCancel();
+        }
     }
 
 }
