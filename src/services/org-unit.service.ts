@@ -279,7 +279,6 @@ export class OrgUnitService {
         if (this.orgUnitStack.length === 0) {
             this.getOrgUnits(this.lastApiSearch).subscribe(res => {
                 this.orgUnits = res.organisationUnits;
-                this.callOnSearch();
                 onSearch = true;
             });
         }

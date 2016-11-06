@@ -415,11 +415,11 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
 
     //
-    // Refresh side bar
+    // Refresh org units
     //
 
-    // Refreshes the organisation units in the side bar
-    refreshSideBar(): void {
+    // Refreshes the organisation units
+    refreshOrgUnits(): void {
         this.orgUnitService.refreshOrgUnits();
     }
 
