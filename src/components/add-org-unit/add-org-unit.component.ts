@@ -5,7 +5,8 @@ import {OrgUnit} from "../../core/org-unit";
 import {OrgUnitService} from "../../services/org-unit.service";
 import { MapService } from "../../services/map.service";
 
-import {FeatureType} from "../../globals/globals";
+import {Globals, FeatureType, OrganisationUnitLevel} from "../../globals/globals";
+
 
 declare var $: any;
 
@@ -18,9 +19,12 @@ declare var $: any;
 export class AddOrgUnitComponent {
 
     private orgUnit: OrgUnit = new OrgUnit();
+    private orgUnitLevel: OrganisationUnitLevel = new OrganisationUnitLevel();
+
     private self = this;
     private haveSubmitted = false;
     private saveSuccess = null;
+    private newOrgUnitLevelNeeded = false;
 
     private savedOrgUnitId: string = "";
     private errorMessage: string = "";
@@ -37,7 +41,8 @@ export class AddOrgUnitComponent {
         this.orgUnit = new OrgUnit();
         this.orgUnit.featureType = FeatureType.NONE;
         this.haveSubmitted = false;
-        this.saveSuccess = null;      
+        this.saveSuccess = null;
+        this.newOrgUnitLevelNeeded = false;   
         $("#submitOrgUnitButton").removeClass("disabled");
         $("#orgUnitCancelButton").prop("value", "Cancel");
 
@@ -72,7 +77,8 @@ export class AddOrgUnitComponent {
     }
 
 
-    onSubmit(): void {
+    // TODO: Check if valid parent on retrievel of parent, rather than the errro code
+    async onSubmit() {
         // Ignore if user alreayd have submitted successfully
         if (this.haveSubmitted) return;
 
@@ -85,9 +91,26 @@ export class AddOrgUnitComponent {
         this.orgUnit.openingDate = new Date();
         this.orgUnit.displayName = this.orgUnit.name;
         this.orgUnit.shortName = this.orgUnit.name;
+        let tmpThis = this;
+
+        // Get the parent
+        async function getOrgUnitParent() {
+            let org = await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id);
+            return org;
+        }
+        let parentOrgUnit = await getOrgUnitParent();
+
+        // Check if a new org unit level is needed
+        if (parentOrgUnit.level === Globals.getMaxLevel()) {
+            this.newOrgUnitLevelNeeded = true;
+            this.haveSubmitted = true;
+            $("#submitOrgUnitButton").addClass("disabled");
+        }
+        console.log("parent level: " + parentOrgUnit.level + " , globals level: " + Globals.getMaxLevel());
+        return;
+
        
         // Save the org unit
-        let tmpThis = this;
         this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(
             res => {
                 $("#orgUnitCancelButton").prop("value", "Close");
@@ -104,6 +127,23 @@ export class AddOrgUnitComponent {
                 } else {
                     tmpThis.errorMessage = "Something went wrong, pleas try again.";
                 }
+            }
+        );
+    }
+
+
+    addOrgUnitLevelSubmit(): void {
+        this.orgUnitLevel.created = new Date();
+        this.orgUnitLevel.displayName = this.orgUnitLevel.name;
+
+        this.orgUnitService.saveOrganisationUnitLevel(this.orgUnitLevel).subscribe(
+            res => {
+                console.log("YAY");
+                console.log(res);
+            }, 
+            error => {
+                console.log("NAY");
+                console.log(error);
             }
         );
     }

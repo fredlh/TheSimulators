@@ -32,23 +32,7 @@ class Options {
     autoZoomOnSearch = "Yes";
     autoZoomOnGetChildren = "Yes";
     autoZoomOnSelect = "Yes";
-    mapOptions = [
-        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
-            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
-            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
-
-        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
-            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
-            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
-
-        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
-            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
-            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0},
-
-        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
-            opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
-            borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0}
-    ];
+    mapOptions = [];
 }
 
 @Component({
@@ -72,6 +56,16 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
 
     onOrganisationUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
+
+        let mapOption = 
+            {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
+             opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
+             borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0};
+
+        for (let i = 0; i < this.orgUnitLevels.length; i++) {
+            OptionsComponent.tempOptions.mapOptions.push(mapOption);
+            OptionsComponent.currentOptions.mapOptions.push(mapOption);
+        }
     }
 
     ngOnInit(): void {

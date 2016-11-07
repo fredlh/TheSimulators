@@ -14,6 +14,8 @@ export class OrganisationUnitLevel {
     level: number;
     name: string;
     id: string;
+    created: Date;
+    displayName: string;
 }
 
 export class OrganisationUnitGroup {

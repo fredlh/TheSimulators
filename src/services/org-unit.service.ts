@@ -78,6 +78,20 @@ export class OrgUnitService {
         return this.getRequest(`organisationUnitLevels?fields=:all&paging=false`);            
     }
 
+    saveOrganisationUnitLevel(orgUnitLevel: OrganisationUnitLevel): any {
+        return this.http
+            .post(`${this.serverUrl}/organisationUnitLevels`, JSON.stringify(orgUnitLevel), {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error));
+    }
+
+    deleteOrganisationUnitLevel(orgUnitLevel: OrganisationUnitLevel): any {
+        return this.http
+            .delete(`${this.serverUrl}/organisationUnitLevels/${orgUnitLevel.id}`, {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error));
+    }
+
     // Retrives all the organisation unit groups
     getOrganisationUnitGroups(): any {
         return this.getRequest(`organisationUnitGroups?fields=:all&paging=false`);                
@@ -87,6 +101,14 @@ export class OrgUnitService {
     getOrgUnit(orgUnitId: string): any {
         this.lastApiUrlCall = `getOrgUnit|${orgUnitId}`;
         return this.getRequest(`organisationUnits/${orgUnitId}?fields=:all&paging=false`);
+    }
+
+    getOrgUnitAsPromise(orgUnitId: string): Promise<any> {
+        return this.http.
+                get(`${this.serverUrl}/organisationUnits/${orgUnitId}?fields=:all&paging=false`, {headers: this.headers})
+               .toPromise()
+               .then(response => response.json() as OrgUnit)
+               .catch(this.handleError);
     }
 
     // Retrives the organisation unit with the given id and all its children
