@@ -333,12 +333,6 @@ export class MapViewComponent implements OnInit {
                         iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
                     });
 
-                    let highIcon = L.icon({
-                        iconUrl: "../../../images/ambulance_red.png",
-                        iconSize: [3 * currentZoom, 3 * currentZoom],
-                        iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
-                    });
-
                     // Set up marker information
                     let markOptions = ({
                         "title": org.displayName + " | coords: " + markerCoordinate,
@@ -356,14 +350,26 @@ export class MapViewComponent implements OnInit {
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
-                        if (id === ms.selectedPolygon && ms.autoZoomOnSelect) {
-                            this.setIcon(highIcon);
+                        let currentZoom = ms.map.getZoom();
 
-                            let coords = this.getLatLng();
-                            map.flyTo([coords.lat, coords.lng - 0.0004], 18);
+                        if (id === ms.selectedPolygon) {
+                            this.setIcon(L.icon({
+                                iconUrl: "../../../images/ambulance_red.png",
+                                iconSize: [3 * currentZoom, 3 * currentZoom],
+                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                            }));
+
+                            if (ms.autoZoomOnSelect) {
+                                let coords = this.getLatLng();
+                                map.flyTo([coords.lat, coords.lng - 0.0004], 18);
+                            }
 
                         } else {
-                            this.setIcon(defIcon);
+                            this.setIcon(L.icon({
+                                iconUrl: "../../../images/ambulance_green.png",
+                                iconSize: [3 * currentZoom, 3 * currentZoom],
+                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                            }));
                         }
 
                         this.setOpacity(1);
