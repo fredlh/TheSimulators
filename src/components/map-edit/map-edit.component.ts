@@ -78,12 +78,15 @@ export class MapEditComponent implements OnInit {
         return L.marker(coords, {
             icon: L.icon({
                 iconUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-icon.png"),
-                shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png")
+                shadowUrl: require<any>("../../../node_modules/leaflet/dist/images/marker-shadow.png"),
+                iconSize: [26, 40],
+                iconAnchor: [13, 40],
+                shadowAnchor: [13, 40]
             }),
             draggable: true
-        })
+        , zIndexOffset: 1000})
         .bindPopup("current organisation unit marker", {
-            offset: L.point(12, 6)
+            offset: L.point(0, -35)
         });
     }
 

@@ -58,16 +58,7 @@ export class MapViewComponent implements OnInit {
     constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {}
 
     ngOnInit(): void {
-        /*
-        this.map = L.map("map", {
-            zoomControl: false,
-            center: L.latLng(40.731253, -73.996139),
-            zoom: 12,
-            minZoom: 4,
-            maxZoom: 19,
-            layers: [this.mapService.baseMaps.OpenStreetMap]
-        });
-        */
+        let self = this;
 
         this.mapService.map = L.map("map", {
             zoomControl: false,
@@ -79,6 +70,18 @@ export class MapViewComponent implements OnInit {
         });
 
         this.map = this.mapService.map;
+
+        // Use either on zoom or zoomend,
+        // zoom produces prettier results, zoomend is more kind to the system 
+        this.map.on("zoom", function() {
+            self.fireEvent("zoomIcon");
+        });
+
+        /*
+        this.map.on("zoomend", function() {
+            self.fireEvent("zoomIcon");
+        });
+        */
 
         L.control.zoom({ position: "topright" }).addTo(this.map);
         L.control.layers(this.mapService.baseMaps).addTo(this.map);
@@ -120,16 +123,6 @@ export class MapViewComponent implements OnInit {
         // Fire changed options event
         this.fireEvent("optionsChanged");
     }
-
-    /*
-    showMarkerButtons(): void {
-        $("#marker-buttons").show();
-    }
-
-    hideMarkerButtons(): void {
-        $("#marker-buttons").hide();
-    }
-    */
 
     enableEvents(): void {
         this.eventsEnabled = true;
@@ -332,12 +325,18 @@ export class MapViewComponent implements OnInit {
                     const defaultIcon = require("../../../images/ambulance_green.png");
                     const highlightIcon = require("../../../images/ambulance_red.png");
 
+                    let currentZoom = this.map.getZoom();
+
                     let defIcon = L.icon({
-                        iconUrl: "../../../images/ambulance_green.png"
+                        iconUrl: "../../../images/ambulance_green.png",
+                        iconSize: [3 * currentZoom, 3 * currentZoom],
+                        iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
                     });
 
                     let highIcon = L.icon({
-                        iconUrl: "../../../images/ambulance_red.png"
+                        iconUrl: "../../../images/ambulance_red.png",
+                        iconSize: [3 * currentZoom, 3 * currentZoom],
+                        iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
                     });
 
                     // Set up marker information
@@ -381,6 +380,23 @@ export class MapViewComponent implements OnInit {
                         if (id === ms.editId) {
                             // Hide icon temporarily
                             this.setOpacity(0);
+                        }
+                    })
+                    .addEventListener("zoomIcon", function (e) {
+                        let currentZoom = ms.map.getZoom();
+                        
+                        if (id === ms.selectedPolygon) {
+                            this.setIcon(L.icon({
+                                iconUrl: "../../../images/ambulance_red.png",
+                                iconSize: [3 * currentZoom, 3 * currentZoom],
+                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                            }));
+                        } else {
+                            this.setIcon(L.icon({
+                                iconUrl: "../../../images/ambulance_green.png",
+                                iconSize: [3 * currentZoom, 3 * currentZoom],
+                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                            }));
                         }
                     });
 
