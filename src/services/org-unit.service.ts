@@ -10,7 +10,7 @@ import "rxjs/Rx";
 import { OrgUnit }  from "../core/org-unit";
 
 import { SideBarInterface } from "../core/side-bar.interface";
-import { MapViewInterface }      from "../core/map-view.interface";
+// import { MapViewInterface }      from "../core/map-view.interface";
 import { GlobalsUpdateInterface} from "../core/globals-update.interface";
 
 import { AccordionComponent } from "../components/accordion/accordion.component";
@@ -32,7 +32,7 @@ export class OrgUnitService {
     private orgUnitStack: OrgUnit[][] = [];
 
     private sideBar: SideBarInterface;
-    private mapView: MapViewInterface;
+    // private mapView: MapViewInterface;
     private accordion: AccordionComponent;
     private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
@@ -44,6 +44,8 @@ export class OrgUnitService {
         // Get all the organisation unit levels
         this.getOrganisationUnitLevels().subscribe(res => {
             let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
+
+            levels = levels.sort((a, b) => (a.level - b.level));
             for (let level of levels) {
                 Globals.organisationUnitLevels.push(level);
             }
@@ -65,10 +67,6 @@ export class OrgUnitService {
 
     registerSideBar(sideBar: SideBarInterface) {
         this.sideBar = sideBar;
-    }
-
-    registerMapView(mapView: MapViewInterface) {
-        this.mapView = mapView;
     }
 
     registerAccordion(accordion: AccordionComponent) {
@@ -133,17 +131,6 @@ export class OrgUnitService {
             .catch((error: any) => Observable.throw(error));
     }
 
-
-    startEditMode(orgUnitId: string, polygon: boolean): void {
-        Globals.setInEditMode(polygon);
-        this.mapService.startEdit(orgUnitId, polygon);
-    }
-
-    endEdit(saved: boolean): number[] {
-        Globals.endInEditMode();
-        return this.mapService.endEdit(saved);
-    }
-
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {
         if (term.trim() === "") {
             return undefined;
@@ -199,13 +186,13 @@ export class OrgUnitService {
     }
 
     gotoOrgUnit(parentId: string, orgUnitId: string): void {
-        this.endAddOrEditOrgUnit();
+        this.mapService.endEditMode();
         this.getOrgUnitAndChildren(parentId, false);
         this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`
     }
 
     gotoParent(parentId: string): void {
-        this.endAddOrEditOrgUnit();
+        this.mapService.endEditMode();
         this.getOrgUnitAndChildren(parentId, false);
         this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`        
     }
@@ -251,22 +238,10 @@ export class OrgUnitService {
         
     }
 
-    callOnSideBarClick(orgUnitId: string): void {
-        this.mapView.onSideBarClick(orgUnitId);
-    }
-
     callOnGlobalsUpdate(): void {
         for (let listener of this.globalsUpdateListeners) {
             listener.onOrganisationUnitLevelsUpdate();
         }
-    }
-
-    deselectMap(): void {
-        this.mapView.deselectMap();
-    }
-
-    callOnOptionsSave(): void {
-        this.mapView.onMapOptionsSave();
     }
 
     hideSideBar(): void {
@@ -275,18 +250,6 @@ export class OrgUnitService {
 
     unHideSideBar(): void {
         this.sideBar.unHideSideBar();
-    }
-
-    onFilter(orgUnits: OrgUnit[]): void {
-        this.mapService.draw(orgUnits, false, true);
-    }
-
-    endAddOrEditOrgUnit(): void {
-        this.mapView.endEdit();
-    }
-
-    clearMapEditData(): void {
-        this.mapView.clearEditData();
     }
 
     refreshOrgUnits(): void {

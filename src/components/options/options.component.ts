@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { OrgUnitService } from "../../services/org-unit.service";
+import { MapService } from "../../services/map.service";
 
 import { Globals }            from "../../globals/globals";
 
@@ -66,7 +67,8 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
     private static tempOptions = new Options();
     private static currentOptions = new Options();
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private orgUnitService: OrgUnitService,
+                private mapService: MapService) {}
 
     onOrganisationUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
@@ -127,7 +129,7 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
         this.hideOptionsPanel();
         OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.tempOptions));
 
-        this.orgUnitService.callOnOptionsSave();
+        this.mapService.onMapOptionsSaved();
     }
 
     onReset(): void {

@@ -99,7 +99,7 @@ export class MapService {
         this.mapView.selectMap("");
     }
 
-    onMapOptionSaved(): void {
+    onMapOptionsSaved(): void {
         this.mapView.onMapOptionsSaved();
     }
 
@@ -109,5 +109,9 @@ export class MapService {
 
     clearMapEditData(): void {
         this.mapEdit.clearEditData();
+    }
+
+    onFilter(orgUnits: OrgUnit[]): void {
+        this.draw(orgUnits, false, true);
     }
 }

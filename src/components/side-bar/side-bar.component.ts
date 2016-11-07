@@ -402,7 +402,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         });
 
         this.filterApplied = true;
-        this.orgUnitService.onFilter(this.displayedOrgUnits);
+        this.mapService.onFilter(this.displayedOrgUnits);
     }
 
     // Clears the filter
@@ -419,7 +419,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.filterApplied = false;
 
         if (notifyOrgUnitService) {
-            this.orgUnitService.onFilter(this.displayedOrgUnits);
+            this.mapService.onFilter(this.displayedOrgUnits);
         }
 
         if (hideFilterArea) {
