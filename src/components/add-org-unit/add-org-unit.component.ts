@@ -3,6 +3,7 @@ import { Component } from "@angular/core";
 import {OrgUnit} from "../../core/org-unit";
 
 import {OrgUnitService} from "../../services/org-unit.service";
+import { MapService } from "../../services/map.service";
 
 import {FeatureType} from "../../globals/globals";
 
@@ -24,7 +25,8 @@ export class AddOrgUnitComponent {
     private savedOrgUnitId: string = "";
     private errorMessage: string = "";
 
-    constructor(private orgUnitService: OrgUnitService) {
+    constructor(private orgUnitService: OrgUnitService,
+                private mapService: MapService) {
         this.orgUnit.featureType = FeatureType.NONE;
     }
 
@@ -66,7 +68,7 @@ export class AddOrgUnitComponent {
 
     onCancel(tmpThis = this): void {
         tmpThis.hideAddOrgUnitPanel();
-        this.orgUnitService.endAddOrEditOrgUnit();
+        this.mapService.endEditMode();
     }
 
 
@@ -109,24 +111,18 @@ export class AddOrgUnitComponent {
     drawOrgUnitPolygon(): void {
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        if (!this.orgUnitService.startEditMode("", true)) {
-            $("#drawOrgUnitPanelArea").slideToggle("fast");
-            this.showAddOrgUnitPanel();
-        }
+        this.mapService.startEdit("", true);
     }
 
     drawOrgUnitMarker(): void {
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
-        if (!this.orgUnitService.startEditMode("", false)) {
-            $("#drawOrgUnitPanelArea").slideToggle("fast");
-            this.showAddOrgUnitPanel();
-        }
+        this.mapService.startEdit("", false);
     }
 
     saveDrawnOrgUnit(): void {
         // Retrieve the drawn coordinates from the map
-        this.orgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
+        this.orgUnit.coordinates = JSON.stringify(this.mapService.endEdit(true));
 
         // Check which feature type it is
         if (this.orgUnit.coordinates.lastIndexOf("[[[") > 4) {
@@ -149,7 +145,7 @@ export class AddOrgUnitComponent {
     }
 
     cancelDrawnOrgUnit(): void {
-        this.orgUnitService.endEditMode(false);
+        this.mapService.endEdit(false);
 
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.showAddOrgUnitPanel();
@@ -173,7 +169,7 @@ export class AddOrgUnitComponent {
     clearCoordinates(): void {
         this.orgUnit.coordinates = "";
         this.orgUnit.featureType = FeatureType.NONE;
-        this.orgUnitService.clearMapEditData();
+        this.mapService.clearMapEditData();
     }
 
 

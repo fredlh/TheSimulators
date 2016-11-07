@@ -3,6 +3,7 @@ import {AccordionComponent} from "./accordion.component";
 import {AccordionToggleComponent} from "./accordion-toggle.component";
 
 import {OrgUnitService} from "../../services/org-unit.service";
+import { MapService } from "../../services/map.service";
 
 @Component({
     selector: "accordion-group",
@@ -23,7 +24,9 @@ export class AccordionGroupComponent {
     @ContentChild(AccordionToggleComponent)
     toggler: ElementRef;
 
-    constructor(private orgUnitService: OrgUnitService, @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {
+    constructor(private orgUnitService: OrgUnitService,
+                private mapService: MapService, 
+                @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {
     }
 
     checkAndToggle() {
@@ -42,10 +45,10 @@ export class AccordionGroupComponent {
         this.isOpened = !isOpenedBeforeWeChange;
 
         if (this.isOpened) {
-            this.orgUnitService.callOnSideBarClick(this.orgUnitId);
+            this.mapService.selectMap(this.orgUnitId);
             $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"}); 
         } else {
-            this.orgUnitService.deselectMap();
+            this.mapService.deselectMap();
         }
     }
 

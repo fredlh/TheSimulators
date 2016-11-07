@@ -1,5 +1,11 @@
 import {Injectable} from "@angular/core";
+
 import {Location} from "../core/location.class";
+import { MapViewComponent } from "../components/map-view/map-view.component";
+import { MapEditComponent } from "../components/map-edit/map-edit.component";
+
+import { OrgUnit } from "../core/org-unit";
+
 import {Map} from "leaflet";
 
 @Injectable()
@@ -7,7 +13,12 @@ export class MapService {
     public map: Map;
     public baseMaps: any;
 
+    private mapView: MapViewComponent;
+    private mapEdit: MapEditComponent;
+
     constructor() {
+        let self = this;
+
         this.baseMaps = {
             OpenStreetMap: L.tileLayer("http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
                 attribution: `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>`
@@ -21,6 +32,14 @@ export class MapService {
         };
     }
 
+    registerMapView(mapView: MapViewComponent): void {
+        this.mapView = mapView;
+    }
+
+    registerMapEdit(mapEdit: MapEditComponent): void {
+        this.mapEdit = mapEdit;
+    }
+
     disableMouseEvent(elementId: string) {
         let element = <HTMLElement>document.getElementById(elementId);
 
@@ -29,33 +48,6 @@ export class MapService {
     };
 
     parsePolygonCoordinates(coordinatesAsString: string): any {
-        /*
-        let bracketsRemoved = coordinatesAsString.slice(4, coordinatesAsString.length - 4); // Remove brackets on each end (1)
-        let subfigures = bracketsRemoved.split("]]],[[["); // Split into subfigures (2)
-
-        let parsedCoordinates = [];
-
-        // For each subfigure within the figure
-        for (let subfig of subfigures) {
-
-            let subfigureBuildup = [];
-            let individualTuppels = subfig.split("],["); // Split into seperate x,y tuppels (3)
-
-            // For each x,y tupple within the subfigure
-            for (let tuppel of individualTuppels) {
-                let individualNumbers = tuppel.split(","); // Split into seperate number values (4)
-
-                let tuppelBuildup = [];
-                tuppelBuildup.push(Number(individualNumbers[0])); // Interpret data as number and
-                tuppelBuildup.push(Number(individualNumbers[1])); // create tupple (5)
-
-                subfigureBuildup.push(tuppelBuildup); // Combine tuppels into subfigures (6)
-            }
-
-            parsedCoordinates.push(subfigureBuildup); // Combine subfigures to create final array (7)
-        }
-        */
-
         let parsedCoordinates = [];
         let polygons = JSON.parse(coordinatesAsString);
 
@@ -66,29 +58,56 @@ export class MapService {
         return parsedCoordinates;
     }
 
-    createEditMarker(latlng): any {
-        let coords = JSON.parse(JSON.stringify(latlng));
-        return L.marker(coords, {
-            icon: L.icon({
-                iconUrl: require<any>("../../node_modules/leaflet/dist/images/marker-icon.png"),
-                shadowUrl: require<any>("../../node_modules/leaflet/dist/images/marker-shadow.png")
-            }),
-            draggable: true
-        })
-        .bindPopup("current organisation unit marker", {
-            offset: L.point(12, 6)
-        });
+    fireEvent(event: string): void {
+        this.mapView.fireEvent(event);
     }
 
-    createEditPolygon(latlngs): any {
-        return L.polygon(JSON.parse(JSON.stringify(latlngs)), {
-            color: "#f06eaa",
-            weight: 4,
-            opacity: 0.5,
-            fill: true,
-            fillColor: null,
-            fillOpacity: 0.2,
-        });
+    enableEvents(): void {
+        this.mapView.enableEvents();
+    }
+
+    disableEvents(): void {
+        this.mapView.disableEvents();
+    }
+
+    loadEditPolygon(arg: any): void {
+        this.mapEdit.loadEditPolygon(arg);
+    }
+
+    loadEditMarker(arg: any): void {
+        this.mapEdit.loadEditMarker(arg);
+    }
+
+    startEdit(orgUnitId: string, polygon: boolean): void {
+        this.mapView.setEditId(orgUnitId);
+        this.mapEdit.startEdit(orgUnitId, polygon);
+    }
+
+    endEdit(saved: boolean): number[] {
+        return this.mapEdit.endEdit(saved);
+    }
+
+    draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
+        this.mapView.draw(orgUnits, maxLevelReached, onSearch);
+    }
+
+    selectMap(orgUnitId: string): void {
+        this.mapView.selectMap(orgUnitId);
+    }
+
+    deselectMap(): void {
+        this.mapView.selectMap("");
+    }
+
+    onMapOptionSaved(): void {
+        this.mapView.onMapOptionsSaved();
+    }
+
+    endEditMode(): void {
+        this.mapEdit.endEditMode();
+    }
+
+    clearMapEditData(): void {
+        this.mapEdit.clearEditData();
     }
 }
-

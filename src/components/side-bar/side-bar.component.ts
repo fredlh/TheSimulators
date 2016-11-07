@@ -3,6 +3,7 @@ import { Component, OnInit, AfterViewInit, OnChanges, AfterContentChecked }    f
 import { OrgUnit }  from "../../core/org-unit";
 
 import { OrgUnitService } from "../../services/org-unit.service";
+import { MapService } from "../../services/map.service";
 
 import { SideBarInterface } from "../../core/side-bar.interface";
 import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
@@ -36,7 +37,8 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     private haveSubmitted = false;
     private saveSuccess = null;
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private orgUnitService: OrgUnitService,
+                private mapService: MapService) {}
 
     onOrganisationUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
@@ -203,7 +205,8 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     onEditOrgUnitCancel(tmpThis = this): void {
         this.closeEditOrgUnitPanel();
         tmpThis.unHideSideBar();
-        tmpThis.orgUnitService.endAddOrEditOrgUnit();
+        // tmpThis.orgUnitService.endAddOrEditOrgUnit();
+        tmpThis.mapService.endEditMode();
     }
 
     // The user has submited the edited org unit
@@ -254,7 +257,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.closeEditOrgUnitPanel();
 
         $("#editOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.startEditMode(this.selectedOrgUnit.id, true);
+        this.mapService.startEdit(this.selectedOrgUnit.id, true);
     }
 
     // Opens the draw org unit marker menu and closes the rest
@@ -263,13 +266,13 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.closeEditOrgUnitPanel();
 
         $("#editOrgUnitPanelArea").slideToggle("fast");
-        this.orgUnitService.startEditMode(this.selectedOrgUnit.id, false);
+        this.mapService.startEdit(this.selectedOrgUnit.id, false);
     }
 
     // Saves the drawn org unit
     saveDrawnOrgUnit(): void {
         // Retrieve the drawn coordinates from the map
-        this.selectedOrgUnit.coordinates = JSON.stringify(this.orgUnitService.endEditMode(true));
+        this.selectedOrgUnit.coordinates = JSON.stringify(this.mapService.endEdit(true));
 
         // Check which feature type it is
         if (this.selectedOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
@@ -293,7 +296,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     // Discards the drawn org unit
     cancelDrawnOrgUnit(): void {
-        this.orgUnitService.endEditMode(false);
+        this.mapService.endEdit(false);
         $("#editOrgUnitPanelArea").slideToggle("fast");
         this.onEditOrgUnitOpen();
     }
@@ -316,7 +319,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     clearCoordinates(): void {
         this.selectedOrgUnit.coordinates = "";
         this.selectedOrgUnit.featureType = FeatureType.NONE;
-        this.orgUnitService.clearMapEditData();
+        this.mapService.clearMapEditData();
     }
 
 

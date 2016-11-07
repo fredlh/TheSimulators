@@ -26,7 +26,7 @@ const leafletDraw = require("leaflet-draw");
     styles: [ require<any>("./map-view.component.less") ]
 })
 
-export class MapViewComponent implements OnInit, MapViewInterface {
+export class MapViewComponent implements OnInit {
     // private orgUnits: OrgUnit[];
     private levels: L.GeoJSON[][] = [];
     private layers = [];
@@ -40,24 +40,35 @@ export class MapViewComponent implements OnInit, MapViewInterface {
 
     private map;
 
-    private drawControl; // : L.Control;
-    private drawnItems = L.featureGroup();
+    // private drawControl; // : L.Control;
+    // private drawnItems = L.featureGroup();
     private editId;
-    private previousDrawnItems = [];
+    // private previousDrawnItems = [];
 
     private eventsEnabled = true;
 
-    private editTypePolygon: boolean;
-    private markerAdd: boolean = false;
-    private editOngoing: boolean = false;
-    private editMarker = null;
-    private previousEditMarker = null;
+    // private editTypePolygon: boolean;
+    // private markerAdd: boolean = false;
+    // private editOngoing: boolean = false;
+    // private editMarker = null;
+    // private previousEditMarker = null;
 
     @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
     constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {}
 
     ngOnInit(): void {
+        /*
+        this.map = L.map("map", {
+            zoomControl: false,
+            center: L.latLng(40.731253, -73.996139),
+            zoom: 12,
+            minZoom: 4,
+            maxZoom: 19,
+            layers: [this.mapService.baseMaps.OpenStreetMap]
+        });
+        */
+
         this.map = L.map("map", {
             zoomControl: false,
             center: L.latLng(40.731253, -73.996139),
@@ -67,21 +78,18 @@ export class MapViewComponent implements OnInit, MapViewInterface {
             layers: [this.mapService.baseMaps.OpenStreetMap]
         });
 
-        // Get number of levels from GLOBAL, 4 hardcoded atm
-        /*
-        for (let i = 0; i < 4; i++) {
-            this.levels.push([]);
-        }
-        */
+        this.mapService.map = this.map;
+
+        L.control.zoom({ position: "topright" }).addTo(this.map);
+        L.control.layers(this.mapService.baseMaps).addTo(this.map);
+        L.control.scale().addTo(this.map);
+
+        this.mapService.registerMapView(this);
 
         this.maxLevelReached = false;
         let map = this.map;
 
-        L.control.zoom({ position: "topright" }).addTo(map);
-        L.control.layers(this.mapService.baseMaps).addTo(map);
-        L.control.scale().addTo(map);
-
-        this.mapService.map = map;
+        // this.mapService.map = map;
         this.geocoder.getCurrentLocation()
             .subscribe(
                 // location => map.panTo([location.latitude, location.longitude]),
@@ -89,59 +97,21 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                 err => console.error(err)
             );
 
-        $("#marker-buttons").hide();
-
-        this.drawControl = new L.Control.Draw({
-            position: "topright",
-            edit: {
-                featureGroup: this.drawnItems,
-                poly: {
-                    allowIntersection: false
-                }
-            },
-            draw: {
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true
-                },
-                circle: false,
-                rectangle: false,
-                polyline: false,
-                marker: false
-            }
-        });
-
-        const ms = this;
-        this.map.on("draw:created", function(e: L.DrawEvents.Created) {
-            let type = e.layerType,
-                layer = e.layer;
-
-            ms.drawnItems.addLayer(layer);
-
-            // map.flyToBounds(ms.drawnItems.getBounds(), {paddingTopLeft: [350, 75]})
-        });
-
-        this.map.on("click", (e: MouseEvent) => {
-            if (this.markerAdd && this.drawnItems.getLayers().length === 0) {
-                ms.editMarker = ms.mapService.createEditMarker(e.latlng);
-                ms.drawnItems.addLayer(ms.editMarker);
-                ms.editMarker.openPopup();
-                ms.markerAdd = false;
-            }
-        });
+        // $("#marker-buttons").hide();
+        // this.hideMarkerButtons();
 
         map.clicked = 0;
     }
 
     ngAfterViewInit(): void {
         // this.markerComponent.Initialize();
-        this.orgUnitService.registerMapView(this);
+        // this.orgUnitService.registerMapView(this);
 
         // Used to set default values on initialization
-        this.onMapOptionsSave();
+        this.onMapOptionsSaved();
     }
 
-    onMapOptionsSave(): void {
+    onMapOptionsSaved(): void {
         this.mapOptions = OptionsComponent.getMapOptions();
         this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
         this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
@@ -151,186 +121,26 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.fireEvent("optionsChanged");
     }
 
-    startEditMode(orgUnitId: string, polygon: boolean): boolean {
-        if (this.drawnItems.getLayers().length > 0) {
-            let condition = this.drawnItems.getLayers()[0];
-
-            if ((polygon && condition instanceof L.Marker) || ((!polygon) && condition instanceof L.Polygon)) {
-                return false;
-            }
-        }
-        this.drawnItems.addTo(this.map);
-
-        this.editId = orgUnitId;
-        this.fireEvent("setEditStyle");
-        this.eventsEnabled = false;
-        this.editTypePolygon = polygon;
-
-        if (this.editTypePolygon) {
-            this.drawControl.addTo(this.map);
-
-            if (!((this.editOngoing) || (orgUnitId === ""))) {
-                this.editOngoing = true;
-                this.fireEvent("getPolygonCoordinates");
-            }
-
-        } else {
-            this.markerAdd = false;
-            $("#marker-buttons").show();
-            
-            if (!((this.editOngoing) || (orgUnitId === ""))) {
-                this.editOngoing = true;
-                this.fireEvent("getMarkerCoordinates");
-            }
-        }
-
-        return true;
+    /*
+    showMarkerButtons(): void {
+        $("#marker-buttons").show();
     }
 
-    private loadEditMarker(existing): void {
-        // Create "backup"
-        this.previousEditMarker = this.mapService.createEditMarker(existing);
-
-        this.editMarker = this.mapService.createEditMarker(existing);
-        this.drawnItems.addLayer(this.editMarker);
-        this.editMarker.openPopup();
+    hideMarkerButtons(): void {
+        $("#marker-buttons").hide();
     }
+    */
 
-    private loadEditPolygon(existingData): void {
-        const ms = this;
-
-        //if (existingData[0][0].length > 0) {
-            let swappedcoords = [];
-
-            for (let j of existingData) {
-                let innerJ = [];
-                for (let k of j) {
-                    let innerK = [];
-                    innerK.push(k[1]);
-                    innerK.push(k[0]);
-                    innerJ.push(innerK);
-                }
-
-                let addBracket = [];
-                addBracket.push(innerJ);
-                swappedcoords.push(addBracket);
-            }
-
-            for (let i of swappedcoords) {
-                this.drawnItems.addLayer(this.mapService.createEditPolygon(i));
-            }
-        //}
-
-        // Create a backup of the editable layers
-        this.previousDrawnItems = [];
-        for (let l of this.drawnItems.getLayers()) {
-            this.previousDrawnItems.push(this.mapService.createEditPolygon(l.getLatLngs()));
-        }
-    }
-
-    endEditMode(saved: boolean): number[] {
-        let coordinates = [];
-        if (this.editTypePolygon) {
-            if (saved) {
-                this.previousDrawnItems = [];
-                for (let lay of this.drawnItems.getLayers()) {
-                    this.previousDrawnItems.push(this.mapService.createEditPolygon(lay.getLatLngs()));
-                    let subfigure = [];
-
-                    // Export coords from layer
-                    let lats = lay.getLatLngs();
-                    for (let area of lats) {
-                        for (let point of area) {
-                            subfigure.push([point.lng, point.lat]);
-                        }
-                    }
-
-                    let pack1 = [];
-                    let pack2 = [];
-
-                    pack1.push(subfigure);
-                    pack2.push(pack1);
-                    coordinates.push(pack1);
-                }
-            } else {
-
-                this.drawnItems.clearLayers();
-                for (let prevLay of this.previousDrawnItems) {
-                    this.drawnItems.addLayer(this.mapService.createEditPolygon(prevLay.getLatLngs()));
-                }
-            }
-
-            this.drawControl.remove();
-
-        } else {
-            if (saved) {
-                // Update "backup" marker
-                if (this.drawnItems.getLayers().length > 0) {
-                    let coords = this.editMarker.getLatLng();
-                    this.previousEditMarker = this.mapService.createEditMarker(coords);
-
-                    // this.map.remove(this.editMarker);
-                    coordinates.push(coords.lng);
-                    coordinates.push(coords.lat);
-                } else {
-                    // Just in case
-                    this.editMarker = null;
-                    this.previousEditMarker = null;
-                }
-            } else {
-                this.drawnItems.clearLayers();
-
-                if (this.previousEditMarker !== null) {
-                    this.editMarker = this.mapService.createEditMarker(this.previousEditMarker.getLatLng());
-                    this.drawnItems.addLayer(this.editMarker);
-
-                } else {
-                    this.editMarker = null;
-                    this.previousEditMarker = null;
-                }
-            }
-
-            $("#marker-buttons").hide();
-        }
-
-        this.drawnItems.remove();
-        this.fireEvent("selectedChanged");
+    enableEvents(): void {
         this.eventsEnabled = true;
-
-        return coordinates;
     }
 
-    clearEditData(): void {
-        this.drawnItems.clearLayers();
-        this.previousDrawnItems = [];
-        this.editMarker = null;
-        this.previousEditMarker = null;
-        this.editOngoing = true;
+    disableEvents(): void {
+        this.eventsEnabled = false;
     }
 
-    endEdit(): void {
-        this.drawnItems.clearLayers();
-        this.previousDrawnItems = [];
-
-        this.markerAdd = false;
-        this.editMarker = null;
-        this.previousEditMarker = null;
-        this.editOngoing = false;
-    }
-
-    toggleAddMarker(): void {
-        if (this.drawnItems.getLayers().length === 0 && !this.markerAdd) {
-            this.markerAdd = true;
-        } else {
-            this.markerAdd = false;
-        }
-    }
-
-    removeMarker(): void {
-        if (this.editMarker !== null) {
-            this.drawnItems.clearLayers();
-            this.editMarker = null;
-        }
+    setEditId(orgUnitId: string): void {
+        this.editId = orgUnitId;
     }
 
     draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
@@ -354,11 +164,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         // Make polygon in seperate layer and display on map
     }
 
-    deselectMap(): void {
-        this.onSideBarClick("");
-    }
-
-    onSideBarClick(orgUnitId: string): void {
+    selectMap(orgUnitId: string): void {
         // Set selected
         this.selectedPolygon = orgUnitId;
 
@@ -366,7 +172,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
         this.fireEvent("selectedChanged");
     }
 
-    private fireEvent(event: string): void {
+    fireEvent(event: string): void {
         for (let l of this.levels) {
             for (let p of l) {
                 p.fire(event);
@@ -508,7 +314,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     .addEventListener("getPolygonCoordinates", function(e) {
                         this.setStyle(function(feature) {
                             if (id === ms.editId) {
-                                ms.loadEditPolygon(feature.geometry.coordinates);
+                                ms.mapService.loadEditPolygon(feature.geometry.coordinates);
                             }
                         });
                     });
@@ -568,7 +374,7 @@ export class MapViewComponent implements OnInit, MapViewInterface {
                     })
                     .addEventListener("getMarkerCoordinates", function(e) {
                         if (id === ms.editId) {
-                            ms.loadEditMarker(this.getLatLng());
+                            ms.mapService.loadEditMarker(this.getLatLng());
                         }
                     })
                     .addEventListener("setEditStyle", function(e) {

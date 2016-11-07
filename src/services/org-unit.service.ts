@@ -15,6 +15,8 @@ import { GlobalsUpdateInterface} from "../core/globals-update.interface";
 
 import { AccordionComponent } from "../components/accordion/accordion.component";
 
+import { MapService } from "./map.service";
+
 import {Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals"
 
 
@@ -37,7 +39,8 @@ export class OrgUnitService {
     private lastApiUrlCall: string = "";
     private lastApiSearch: string = null;
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private mapService: MapService) {
         // Get all the organisation unit levels
         this.getOrganisationUnitLevels().subscribe(res => {
             let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
@@ -131,14 +134,14 @@ export class OrgUnitService {
     }
 
 
-    startEditMode(orgUnitId: string, polygon: boolean): boolean {
+    startEditMode(orgUnitId: string, polygon: boolean): void {
         Globals.setInEditMode(polygon);
-        return this.mapView.startEditMode(orgUnitId, polygon);
+        this.mapService.startEdit(orgUnitId, polygon);
     }
 
-    endEditMode(saved: boolean): number[] {
+    endEdit(saved: boolean): number[] {
         Globals.endInEditMode();
-        return this.mapView.endEditMode(saved);
+        return this.mapService.endEdit(saved);
     }
 
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {
@@ -183,10 +186,10 @@ export class OrgUnitService {
             this.orgUnits = res.organisationUnits;
 
             if (this.orgUnits[0].level === Globals.getMaxLevel() - 1) {
-                this.mapView.draw(this.orgUnits, true, false);
+                this.mapService.draw(this.orgUnits, true, false);
 
             } else {
-                this.mapView.draw(this.orgUnits, false, false);
+                this.mapService.draw(this.orgUnits, false, false);
             }
 
             this.sideBar.updateList(this.orgUnits);
@@ -213,7 +216,7 @@ export class OrgUnitService {
         if (retValue !== undefined) {
             this.orgUnits = retValue;
 
-            this.mapView.draw(this.orgUnits, false, false);
+            this.mapService.draw(this.orgUnits, false, false);
             this.sideBar.updateList(this.orgUnits);
             this.lastApiUrlCall = "getOrgUnitWithChildren|" + this.orgUnits[0].id;
         }
@@ -235,7 +238,7 @@ export class OrgUnitService {
 
     private callOnSearch(): void {
         this.sideBar.updateList(this.orgUnits);
-        this.mapView.draw(this.orgUnits, false, true);
+        this.mapService.draw(this.orgUnits, false, true);
     }
 
     callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
@@ -275,7 +278,7 @@ export class OrgUnitService {
     }
 
     onFilter(orgUnits: OrgUnit[]): void {
-        this.mapView.draw(orgUnits, false, true);
+        this.mapService.draw(orgUnits, false, true);
     }
 
     endAddOrEditOrgUnit(): void {
@@ -299,11 +302,15 @@ export class OrgUnitService {
             this.getOrgUnits(this.lastApiSearch).subscribe(res => {
                 this.orgUnits = res.organisationUnits;
                 onSearch = true;
+                this.sideBar.updateList(this.orgUnits);
+                this.mapService.draw(this.orgUnits, false, onSearch);
             });
         }
 
-        this.sideBar.updateList(this.orgUnits);
-        this.mapView.draw(this.orgUnits, false, onSearch);
+        if (!onSearch) {
+            this.sideBar.updateList(this.orgUnits);
+            this.mapService.draw(this.orgUnits, false, onSearch);
+        }
     }
 
     containsSameOrgUnits(a: OrgUnit[], b: OrgUnit[]): boolean {
