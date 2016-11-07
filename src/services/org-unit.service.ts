@@ -228,14 +228,8 @@ export class OrgUnitService {
         this.mapService.draw(this.orgUnits, false, true);
     }
 
-    callOnMapClick(orgUnitId: string, doubleClick: boolean): void {
-        if (doubleClick) {
-            this.getOrgUnitAndChildren(orgUnitId);
-        } else {
-            this.accordion.toggleOrgUnitInSideBar(orgUnitId);
-            this.sideBar.scrollToOrgUnit(orgUnitId);
-        }
-        
+    mapGetChildren(orgUnitId: string): void {
+        this.getOrgUnitAndChildren(orgUnitId);
     }
 
     callOnGlobalsUpdate(): void {

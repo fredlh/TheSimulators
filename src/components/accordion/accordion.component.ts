@@ -1,7 +1,7 @@
 import {ContentChildren, Component, QueryList, Input, forwardRef, AfterContentInit} from "@angular/core";
 import {AccordionGroupComponent} from "./accordion-group.component";
 
-import { OrgUnitService }   from "../../services/org-unit.service";
+import { MapService }       from "../../services/map.service";
 
 @Component({
     selector: "accordion",
@@ -13,7 +13,7 @@ import { OrgUnitService }   from "../../services/org-unit.service";
 })
 export class AccordionComponent implements AfterContentInit {
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    constructor(private mapService: MapService) {}
 
     @Input()
     closeOthers = true;
@@ -34,7 +34,8 @@ export class AccordionComponent implements AfterContentInit {
                 group.isOpened = true;
             });
         }
-        this.orgUnitService.registerAccordion(this);
+        
+        this.mapService.registerAccordion(this);
     }
 
     closeAll() {

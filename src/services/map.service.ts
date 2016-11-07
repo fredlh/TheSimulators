@@ -3,6 +3,10 @@ import {Injectable} from "@angular/core";
 import {Location} from "../core/location.class";
 import { MapViewComponent } from "../components/map-view/map-view.component";
 import { MapEditComponent } from "../components/map-edit/map-edit.component";
+import { SideBarComponent } from "../components/side-bar/side-bar.component";
+import { AccordionComponent } from "../components/accordion/accordion.component";
+
+import { Globals } from "../globals/globals";
 
 import { OrgUnit } from "../core/org-unit";
 
@@ -15,6 +19,8 @@ export class MapService {
 
     private mapView: MapViewComponent;
     private mapEdit: MapEditComponent;
+    private sideBar: SideBarComponent;
+    private accordion: AccordionComponent;
 
     constructor() {
         let self = this;
@@ -36,8 +42,16 @@ export class MapService {
         this.mapView = mapView;
     }
 
+    registerSideBar(sideBar: SideBarComponent): void {
+        this.sideBar = sideBar;
+    }
+
     registerMapEdit(mapEdit: MapEditComponent): void {
         this.mapEdit = mapEdit;
+    }
+
+    registerAccordion(accordion: AccordionComponent): void {
+        this.accordion = accordion;
     }
 
     disableMouseEvent(elementId: string) {
@@ -113,5 +127,10 @@ export class MapService {
 
     onFilter(orgUnits: OrgUnit[]): void {
         this.draw(orgUnits, false, true);
+    }
+
+    mapSelect(orgUnitId: string): void {
+        this.accordion.toggleOrgUnitInSideBar(orgUnitId);
+        this.sideBar.scrollToOrgUnit(orgUnitId);
     }
 }

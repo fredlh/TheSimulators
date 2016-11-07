@@ -47,6 +47,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
         this.orgUnitService.registerGlobalsUpdateListener(this);
+        this.mapService.registerSideBar(this);
     }
 
     //

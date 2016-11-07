@@ -69,7 +69,7 @@ export class MapViewComponent implements OnInit {
         });
         */
 
-        this.map = L.map("map", {
+        this.mapService.map = L.map("map", {
             zoomControl: false,
             center: L.latLng(40.731253, -73.996139),
             zoom: 12,
@@ -78,7 +78,7 @@ export class MapViewComponent implements OnInit {
             layers: [this.mapService.baseMaps.OpenStreetMap]
         });
 
-        this.mapService.map = this.map;
+        this.map = this.mapService.map;
 
         L.control.zoom({ position: "topright" }).addTo(this.map);
         L.control.layers(this.mapService.baseMaps).addTo(this.map);
@@ -253,7 +253,7 @@ export class MapViewComponent implements OnInit {
                             setTimeout(function() {
                                 if (map.clicked === 1 && ms.selectedPolygon !== id) {
                                     ms.selectedPolygon = id;
-                                    ms.orgUnitService.callOnMapClick(id, false);
+                                    ms.mapService.mapSelect(id);
                                     ms.fireEvent("selectedChanged");
                                 }
 
@@ -267,7 +267,7 @@ export class MapViewComponent implements OnInit {
 
                             if (!(maxLevelReached)) {
                                 ms.selectedPolygon = "";
-                                ms.orgUnitService.callOnMapClick(id, true);
+                                ms.orgUnitService.mapGetChildren(id);
                                 ms.fireEvent("selectedChanged");
                             }
                         }
@@ -352,7 +352,7 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("click", function(e) {
                         if (ms.eventsEnabled) {
                             ms.selectedPolygon = id;
-                            ms.orgUnitService.callOnMapClick(id, false);
+                            ms.mapService.mapSelect(id);
                             ms.fireEvent("selectedChanged");
                         }
                     })

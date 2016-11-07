@@ -2,7 +2,6 @@ import {Component, Input, Host, forwardRef, Inject, ContentChild, ElementRef} fr
 import {AccordionComponent} from "./accordion.component";
 import {AccordionToggleComponent} from "./accordion-toggle.component";
 
-import {OrgUnitService} from "../../services/org-unit.service";
 import { MapService } from "../../services/map.service";
 
 @Component({
@@ -24,8 +23,7 @@ export class AccordionGroupComponent {
     @ContentChild(AccordionToggleComponent)
     toggler: ElementRef;
 
-    constructor(private orgUnitService: OrgUnitService,
-                private mapService: MapService, 
+    constructor(private mapService: MapService, 
                 @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {
     }
 
