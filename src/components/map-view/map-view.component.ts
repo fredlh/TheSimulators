@@ -72,11 +72,11 @@ export class MapViewComponent implements OnInit {
         this.map = this.mapService.map;
 
         // Use either on zoom or zoomend,
-        // zoom produces prettier results, zoomend is more kind to the system 
+        // zoom produces prettier results, zoomend is more kind to the system
         this.map.on("zoom", function() {
             self.fireEvent("zoomIcon");
         });
-
+        
         /*
         this.map.on("zoomend", function() {
             self.fireEvent("zoomIcon");
