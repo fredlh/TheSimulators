@@ -69,6 +69,14 @@ export class Globals {
         return "";
     }
 
+    public static getOrgGroupName(id: string): string {
+        for (let elem of Globals.organisationUnitGroups) {
+            if (elem.id === id) return elem.name;
+        }
+
+        return "";
+    }
+
     public static getLevel(name: string): number {
         for (let elem of Globals.organisationUnitLevels) {
             if (elem.name === name) return elem.level;
@@ -98,5 +106,9 @@ export class Globals {
         Globals.IN_EDIT_MODE_MARKER = false;
     }
 
- 
+    public static formatDate(date: string): string {
+        let formatedDate = date.split(".");
+        formatedDate = formatedDate[0].split("T");
+        return formatedDate[0] + " " + formatedDate[1];
+    }
 }

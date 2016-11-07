@@ -39,10 +39,20 @@
                                 <button id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
                                 <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
                                 <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
-                                <ul>
-                                    <li>ID: {{orgUnit.id}}</li>
-                                    <li>Level: {{orgUnit.level}}</li>
-                                    <li>Coordinates: {{orgUnit.coordinates}}</li>
+                                <ul style="margin-top: 10px;">
+                                    <li><strong>ID:</strong> {{orgUnit.id}}</li>
+                                    <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getName(orgUnit.level)}}</li>
+                                    <li><strong>Feature type:</strong> {{orgUnit.featureType}}</li>
+                                    <li><strong>Created:</strong> {{globals.formatDate(orgUnit.created)}}</li>
+                                    <li><strong>Opening:</strong> {{globals.formatDate(orgUnit.openingDate)}}</li>
+                                    <li><strong>Updated:</strong> {{globals.formatDate(orgUnit.lastUpdated)}}</li>
+                                    <li><strong>Groups:</strong><br>
+                                        <ul>
+                                            <div *ngFor="let group of orgUnit.organisationUnitGroups">
+                                                <li>{{globals.getOrgGroupName(group.id)}}</li>
+                                            </div>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </span>
                         </accordion-group>
