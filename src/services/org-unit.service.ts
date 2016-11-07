@@ -42,15 +42,7 @@ export class OrgUnitService {
     constructor(private http: Http,
                 private mapService: MapService) {
         // Get all the organisation unit levels
-        this.getOrganisationUnitLevels().subscribe(res => {
-            let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
-
-            levels = levels.sort((a, b) => (a.level - b.level));
-            for (let level of levels) {
-                Globals.organisationUnitLevels.push(level);
-            }
-            this.callOnGlobalsUpdate();
-        });
+        this.checkForUpdatedOrganisationUnitLevels();
 
         // Get all the organisation unit groups
         this.getOrganisationUnitGroups().subscribe(res => {
@@ -58,6 +50,20 @@ export class OrgUnitService {
             for (let group of groups) {
                 Globals.organisationUnitGroups.push(group);
             }
+        });
+    }
+
+    checkForUpdatedOrganisationUnitLevels(): void {
+        this.getOrganisationUnitLevels().subscribe(res => {
+
+            let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
+            levels = levels.sort((a, b) => (a.level - b.level));
+
+            Globals.organisationUnitLevels = [];
+            for (let level of levels) {
+                Globals.organisationUnitLevels.push(level);
+            }
+            this.callOnGlobalsUpdate();
         });
     }
 
@@ -85,9 +91,9 @@ export class OrgUnitService {
             .catch((error: any) => Observable.throw(error));
     }
 
-    deleteOrganisationUnitLevel(orgUnitLevel: OrganisationUnitLevel): any {
+    deleteOrganisationUnitLevel(orgUnitLevelId: string): any {
         return this.http
-            .delete(`${this.serverUrl}/organisationUnitLevels/${orgUnitLevel.id}`, {headers: this.headers})
+            .delete(`${this.serverUrl}/organisationUnitLevels/${orgUnitLevelId}`, {headers: this.headers})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }

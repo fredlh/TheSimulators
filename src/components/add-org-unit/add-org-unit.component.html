@@ -89,7 +89,7 @@
                 <div class="form-group row">
                     <label class="col-lg-2 col-form-label">Level</label>
                     <div class="col-lg-10">
-                        <input class="form-control" type="number" min="1" required 
+                        <input class="form-control" type="number" min="1" required readonly
                             [(ngModel)]="orgUnitLevel.level" name="orgUnitLevelLevel">
                     </div>
                 </div>
@@ -100,6 +100,15 @@
                         <input class="form-control" type="text" required 
                             [(ngModel)]="orgUnitLevel.name" name="orgUnitLevelname">
                     </div>
+                </div>
+
+                <div *ngIf="saveOrgUnitLevelSuccess === false" class="alert alert-danger">
+                    <strong>Error:</strong> {{orgUnitLevelErrormessage}}
+                </div>
+
+                <div *ngIf="saveOrgUnitLevelSuccess === true" class="alert alert-success">
+                    <strong>Success:</strong> The organisation unit level has been saved.
+                    You can now add the organisation unit level.
                 </div>
 
                 <input type="submit" id="submitOrgUnitLevelButton" value="Add org unit level" 

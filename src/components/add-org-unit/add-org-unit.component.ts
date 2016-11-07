@@ -27,7 +27,12 @@ export class AddOrgUnitComponent {
     private newOrgUnitLevelNeeded = false;
 
     private savedOrgUnitId: string = "";
+    private savedOrgUnitLevelId: string = "";
+
     private errorMessage: string = "";
+
+    private saveOrgUnitLevelSuccess = null;
+    private orgUnitLevelErrormessage: string = "";
 
     constructor(private orgUnitService: OrgUnitService,
                 private mapService: MapService) {
@@ -35,14 +40,20 @@ export class AddOrgUnitComponent {
     }
 
     openAddOrgUnitForm(): void {
-        this.showAddOrgUnitPanel();
+        this.orgUnitService.checkForUpdatedOrganisationUnitLevels();
+        this.showAddOrgUnitPanel();        
 
         // Reset the form
         this.orgUnit = new OrgUnit();
+        this.orgUnitLevel = new OrganisationUnitLevel();
         this.orgUnit.featureType = FeatureType.NONE;
         this.haveSubmitted = false;
         this.saveSuccess = null;
         this.newOrgUnitLevelNeeded = false;   
+        this.saveOrgUnitLevelSuccess = null;
+        this.savedOrgUnitId = "";
+        this.savedOrgUnitLevelId = "";
+        $("#submitOrgUnitLevelButton").removeClass("disabled");
         $("#submitOrgUnitButton").removeClass("disabled");
         $("#orgUnitCancelButton").prop("value", "Cancel");
 
@@ -74,6 +85,17 @@ export class AddOrgUnitComponent {
     onCancel(tmpThis = this): void {
         tmpThis.hideAddOrgUnitPanel();
         this.mapService.endEditMode();
+
+        if (this.newOrgUnitLevelNeeded && this.savedOrgUnitLevelId != "") {
+            this.orgUnitService.deleteOrganisationUnitLevel(this.savedOrgUnitLevelId).subscribe(
+                res => {
+                    console.log("Deleted org unit level that the user added but canceled");
+                },
+                error => {
+                    alert("Failed to delete org unit level on cancel");
+                }
+            );
+        }
     }
 
 
@@ -98,18 +120,18 @@ export class AddOrgUnitComponent {
             let org = await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id);
             return org;
         }
-        let parentOrgUnit = await getOrgUnitParent();
+        let parentOrgUnit: OrgUnit = await getOrgUnitParent();
 
         // Check if a new org unit level is needed
         if (parentOrgUnit.level === Globals.getMaxLevel()) {
             this.newOrgUnitLevelNeeded = true;
+            this.orgUnitLevel.level = parentOrgUnit.level + 1;
             this.haveSubmitted = true;
             $("#submitOrgUnitButton").addClass("disabled");
         }
-        console.log("parent level: " + parentOrgUnit.level + " , globals level: " + Globals.getMaxLevel());
-        return;
 
-       
+        if (this.saveOrgUnitLevelSuccess !== true) return;
+
         // Save the org unit
         this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(
             res => {
@@ -117,6 +139,7 @@ export class AddOrgUnitComponent {
                 $("#submitOrgUnitButton").addClass("disabled");
                 tmpThis.saveSuccess = true;
                 tmpThis.haveSubmitted = true;
+                tmpThis.newOrgUnitLevelNeeded = false;
                 tmpThis.savedOrgUnitId = res.response.uid;
             },
             error => {
@@ -136,14 +159,20 @@ export class AddOrgUnitComponent {
         this.orgUnitLevel.created = new Date();
         this.orgUnitLevel.displayName = this.orgUnitLevel.name;
 
+        let tmpThis = this;
         this.orgUnitService.saveOrganisationUnitLevel(this.orgUnitLevel).subscribe(
             res => {
-                console.log("YAY");
-                console.log(res);
+                tmpThis.orgUnitService.checkForUpdatedOrganisationUnitLevels();
+                tmpThis.haveSubmitted = false;
+                tmpThis.saveOrgUnitLevelSuccess = true;
+                tmpThis.savedOrgUnitLevelId = res.response.uid;
+                $("#submitOrgUnitButton").removeClass("disabled");
+                $("#submitOrgUnitLevelButton").addClass("disabled");
+                console.log("GOT HERE");
             }, 
             error => {
-                console.log("NAY");
-                console.log(error);
+                tmpThis.orgUnitLevelErrormessage = "Failed to save the org unit level";
+                tmpThis.saveOrgUnitLevelSuccess = false;
             }
         );
     }
