@@ -15,7 +15,7 @@ export class AccordionGroupComponent {
     heading: string;
 
     @Input()
-    orgUnitId: string;
+    orgUnitId: string = "";
 
     @Input()
     isOpened: boolean = false;
@@ -42,11 +42,13 @@ export class AccordionGroupComponent {
 
         this.isOpened = !isOpenedBeforeWeChange;
 
+        if (this.orgUnitId === "") return;
+
         if (this.isOpened) {
-            this.mapService.selectMap(this.orgUnitId);
+            if (this.orgUnitId !== "") this.mapService.selectMap(this.orgUnitId);
             $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"}); 
         } else {
-            this.mapService.deselectMap();
+           if (this.orgUnitId !== "") this.mapService.deselectMap();
         }
     }
 
