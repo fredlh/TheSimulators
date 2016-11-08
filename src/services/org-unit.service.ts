@@ -39,6 +39,8 @@ export class OrgUnitService {
     private mapView: MapViewInterface;
     private accordion: AccordionComponent;
 
+    private appComponent: AppComponent;
+
     constructor(private http: Http) {}
 
     registerSideBar(sideBar: SideBarInterface) {
@@ -56,6 +58,9 @@ export class OrgUnitService {
     toggleSideBar(orgUnitId: string) {
         this.accordion.toggleSideBar(orgUnitId);
     }
+    /*abc(){
+    this.appComponent.saveorgunits();
+    }*/
 // https://play.dhis2.org/demo/api/organisationUnits.json?fields=:all
 
     getOrgUnits(query: string): any {
@@ -102,6 +107,7 @@ export class OrgUnitService {
     //}
     saveNewOrgUnits1(): void {
     this.appComponent.saveNewOrgUnits()
+    //    this.abc();
     }
 
 
