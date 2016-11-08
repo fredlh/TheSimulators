@@ -75,6 +75,13 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
     }
 
     ngOnInit(): void {
+        let mapOption = 
+            {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
+             opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
+             borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0};
+
+        OptionsComponent.defaultOptions.mapOptions.push(mapOption);
+
         this.orgUnitService.registerGlobalsUpdateListener(this);
     }
 
