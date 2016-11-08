@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { OrgUnitService } from "../../services/org-unit.service";
 import { MapService } from "../../services/map.service";
 
-import { Globals }            from "../../globals/globals";
+import { Globals, OrganisationUnitLevel }            from "../../globals/globals";
 
 import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
 
@@ -26,6 +26,7 @@ export interface MapOptions {
     borderOpacity: number;
     borderHoverOpacity: number;
     borderSelectedOpacity: number;
+    level: number;
 }
 
 class Options {
@@ -42,8 +43,8 @@ class Options {
 })
 
 
-export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
-    private orgUnitLevels = [];
+export class OptionsComponent implements GlobalsUpdateInterface  {
+    private static orgUnitLevels: OrganisationUnitLevel [] = [];
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
 
@@ -51,35 +52,36 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
         {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", 
         borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
         opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
-        borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0};
+        borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0, level: -1};
 
     private static defaultOptions = new Options();
     private static tempOptions = new Options();
     private static currentOptions = new Options();
 
-    constructor(private orgUnitService: OrgUnitService,
-                private mapService: MapService) {}
+    constructor(private orgUnitService: OrgUnitService, private mapService: MapService) {
+        OptionsComponent.defaultOptions.mapOptions.push(this.mapOptions);
+        this.orgUnitService.registerGlobalsUpdateListener(this);     
+    }
 
     onOrganisationUnitLevelsUpdate(): void {
-        this.orgUnitLevels = Globals.organisationUnitLevels;
-        
+        OptionsComponent.orgUnitLevels = Globals.organisationUnitLevels;
+
         OptionsComponent.currentOptions.mapOptions = [];
         OptionsComponent.tempOptions.mapOptions = [];
         OptionsComponent.defaultOptions.mapOptions = [];
 
-        for (let i = 0; i < this.orgUnitLevels.length; i++) {
-            OptionsComponent.tempOptions.mapOptions.push(this.mapOptions);
-            OptionsComponent.currentOptions.mapOptions.push(this.mapOptions);
+        for (let i = 0; i < OptionsComponent.orgUnitLevels.length; i++) {
+            OptionsComponent.tempOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
+            OptionsComponent.tempOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;
+            
+            OptionsComponent.currentOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
+            OptionsComponent.currentOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;
+            
         }
-
-        OptionsComponent.defaultOptions.mapOptions.push(this.mapOptions);
+        
+        OptionsComponent.defaultOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
     }
 
-    ngOnInit(): void {
-        OptionsComponent.defaultOptions.mapOptions.push(this.mapOptions);
-
-        this.orgUnitService.registerGlobalsUpdateListener(this);
-    }
 
     public static getAutoZoomOnSearch(): boolean {
         return OptionsComponent.currentOptions.autoZoomOnSearch === "Yes";
@@ -100,6 +102,57 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
     public static getDefaultMapOptions(): MapOptions {
         return OptionsComponent.defaultOptions.mapOptions[0];
     }
+
+
+    // Returns the maptions on default of the corresponding level
+    public static getMapOptionsDefault(level: number) {
+        let option = OptionsComponent.getDefaultMapOptions();
+        
+        for (let elem of OptionsComponent.currentOptions.mapOptions) {
+            if (elem.level === level) {
+                option = elem;
+                break;
+            }
+        }
+
+        return {color: option.borderColor, fillColor: option.color, 
+                weight: option.borderWeight, 
+                fillOpacity: option.opacity, opacity: option.borderOpacity};
+  
+    }
+
+    // Returns the maptions on selected of the corresponding level
+    public static getMapOptionsSelected(level: number) {
+        let option = OptionsComponent.getDefaultMapOptions();
+
+        for (let elem of OptionsComponent.currentOptions.mapOptions) {
+            if (elem.level === level) {
+                option = elem;
+                break;
+            }
+        }
+
+        return {color: option.borderSelectedColor, fillColor: option.selectedColor, 
+                weight: option.borderSelectedWeight, 
+                fillOpacity: option.selectedOpacity, opacity: option.borderSelectedOpacity};
+    }
+
+    // Returns the maptions on hover of the corresponding level
+    public static getMapOptionsHover(level: number) {
+        let option = OptionsComponent.getDefaultMapOptions();
+        
+        for (let elem of OptionsComponent.currentOptions.mapOptions) {
+            if (elem.level === level) {
+                option = elem;
+                break;
+            }
+        }
+
+        return {color: option.borderHoverColor, fillColor: option.hoverColor, 
+                        weight: option.borderHoverWeight, 
+                        fillOpacity: option.hoverOpacity, opacity: option.borderHoverOpacity};
+    }
+
 
     toggleOptionsWindow(): void {
         this.showOptionsPanel();

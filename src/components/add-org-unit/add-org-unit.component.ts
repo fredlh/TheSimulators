@@ -41,7 +41,20 @@ export class AddOrgUnitComponent {
 
     openAddOrgUnitForm(): void {
         this.orgUnitService.checkForUpdatedOrganisationUnitLevels();
-        this.showAddOrgUnitPanel();        
+        this.showAddOrgUnitPanel();
+
+        
+        /*
+        this.orgUnitService.deleteOrganisationUnitLevel("rMNZZezHvcG").subscribe(
+            res => {
+                console.log(res);
+            },
+            error => {
+                console.log(error);
+            }
+        );
+        */
+        
 
         // Reset the form
         this.orgUnit = new OrgUnit();
