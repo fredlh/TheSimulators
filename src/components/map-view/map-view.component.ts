@@ -27,13 +27,11 @@ const leafletDraw = require("leaflet-draw");
 })
 
 export class MapViewComponent implements OnInit {
-    // private orgUnits: OrgUnit[];
     private levels: L.GeoJSON[][] = [];
     private layers = [];
     private selectedPolygon;
     private maxLevelReached: boolean;
 
-    // private mapOptions: MapOptions[];
     private autoZoomOnSearch: boolean;
     private autoZoomOnGetChildren: boolean;
     private autoZoomOnSelect: boolean;
@@ -86,10 +84,8 @@ export class MapViewComponent implements OnInit {
         this.maxLevelReached = false;
         let map = this.map;
 
-        // this.mapService.map = map;
         this.geocoder.getCurrentLocation()
             .subscribe(
-                // location => map.panTo([location.latitude, location.longitude]),
                 location => map.panTo([8.0, -12.5]).zoomOut(4),
                 err => console.error(err)
             );
@@ -98,25 +94,10 @@ export class MapViewComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        // this.markerComponent.Initialize();
-        // this.orgUnitService.registerMapView(this);
-        /*
-        let defaultMapOptions = OptionsComponent.getDefaultMapOptions();
-
-        this.defaultStyle = {color: defaultMapOptions.borderColor, fillColor: defaultMapOptions.color, weight: defaultMapOptions.borderWeight, fillOpacity: defaultMapOptions.opacity, opacity: defaultMapOptions.borderOpacity};
-
-        this.defaultHoverStyle = {color: defaultMapOptions.borderHoverColor, fillColor: defaultMapOptions.hoverColor, weight: defaultMapOptions.borderHoverWeight, fillOpacity: defaultMapOptions.hoverOpacity, opacity: defaultMapOptions.borderHoverOpacity};
-
-        this.defaultSelectedStyle = {color: defaultMapOptions.borderSelectedColor, fillColor: defaultMapOptions.selectedColor, weight: defaultMapOptions.borderSelectedWeight, fillOpacity: defaultMapOptions.selectedOpacity, opacity: defaultMapOptions.borderSelectedOpacity};
-        // Used to set default values on initialization
         this.onMapOptionsSaved();
-        */
     }
 
     onMapOptionsSaved(): void {
-        /*
-        this.mapOptions = OptionsComponent.getMapOptions();
-        */
         this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
         this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
         this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
@@ -175,7 +156,6 @@ export class MapViewComponent implements OnInit {
     }
 
     private addMapElement(orgUnits: OrgUnit[], maxLevelReached: boolean, doFly: boolean) {
-        // this.orgUnits = orgUnits;
         let map = this.map;
         let allCoords = [];
         const ms = this;
@@ -214,14 +194,6 @@ export class MapViewComponent implements OnInit {
                             layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
-                            /*
-                            if (levelIndex < ms.mapOptions.length) {
-                                return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
-                            } else {
-                                return ms.defaultStyle;
-                            }
-                            */
-
                             return OptionsComponent.getMapOptionsDefault(levelIndex);
                         }
                     })
@@ -229,13 +201,6 @@ export class MapViewComponent implements OnInit {
                         if (ms.eventsEnabled) {
                             this.setStyle(function(feature) {
                                 if (ms.selectedPolygon !== feature.properties.id) {
-                                    /*
-                                    if (levelIndex < ms.mapOptions.length) {
-                                        return {color: ms.mapOptions[levelIndex].borderHoverColor, fillColor: ms.mapOptions[levelIndex].hoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
-                                    } else {
-                                        return ms.defaultHoverStyle;
-                                    }
-                                    */
                                     return OptionsComponent.getMapOptionsHover(levelIndex);
                                 }
                             });
@@ -246,15 +211,7 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("mouseout", function(e) {
                         if (ms.eventsEnabled) {
                             this.setStyle(function(feature) {
-
                                 if (ms.selectedPolygon !== feature.properties.id) {
-                                    /*
-                                    if (levelIndex < ms.mapOptions.length) {
-                                        return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
-                                    } else {
-                                        return ms.defaultStyle;
-                                    }
-                                    */
                                     return OptionsComponent.getMapOptionsDefault(levelIndex);
                                 }
                             });
@@ -294,23 +251,9 @@ export class MapViewComponent implements OnInit {
                                     map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
                                 }
 
-                                /*
-                                if (levelIndex < ms.mapOptions.length) {
-                                    return {color: ms.mapOptions[levelIndex].borderSelectedColor, fillColor: ms.mapOptions[levelIndex].selectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
-                                } else {
-                                    return ms.defaultSelectedStyle;
-                                }
-                                */
                                 return OptionsComponent.getMapOptionsSelected(levelIndex);
 
                             } else {
-                                /*
-                                if (levelIndex < ms.mapOptions.length) {
-                                    return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
-                                } else {
-                                    ms.defaultStyle;
-                                }
-                                */
                                 return OptionsComponent.getMapOptionsDefault(levelIndex);
                             }
                         });
@@ -318,23 +261,9 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("optionsChanged", function(e) {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
-                                /*
-                                if (levelIndex < ms.mapOptions.length) {
-                                    return {color: ms.mapOptions[levelIndex].borderSelectedColor, fillColor: ms.mapOptions[levelIndex].selectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
-                                } else {
-                                    return ms.defaultSelectedStyle;
-                                }
-                                */
                                 return OptionsComponent.getMapOptionsSelected(levelIndex);
 
                             } else {
-                                /*
-                                if (levelIndex < ms.mapOptions.length) {
-                                    return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
-                                } else {
-                                    ms.defaultStyle;
-                                }
-                                */
                                 return OptionsComponent.getMapOptionsDefault(levelIndex);
                             }
                         });
@@ -472,13 +401,6 @@ export class MapViewComponent implements OnInit {
         for (let l of ms.levels) {
             ms.layers.push(L.layerGroup(l));
         }
-
-        /*
-        ms.layers.push(L.layerGroup(ms.levels[0]));
-        ms.layers.push(L.layerGroup(ms.levels[1]));
-        ms.layers.push(L.layerGroup(ms.levels[2]));
-        ms.layers.push(L.layerGroup(ms.levels[3]));
-        */
 
         for (let l of ms.layers) {
             l.addTo(ms.map);
