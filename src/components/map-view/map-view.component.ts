@@ -307,8 +307,8 @@ export class MapViewComponent implements OnInit {
 
                     let defIcon = L.icon({
                         iconUrl: "../../../images/ambulance_green.png",
-                        iconSize: [3 * currentZoom, 3 * currentZoom],
-                        iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                        iconSize: [4 * currentZoom, 4 * currentZoom],
+                        iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                     });
 
                     // Set up marker information
@@ -333,8 +333,8 @@ export class MapViewComponent implements OnInit {
                         if (id === ms.selectedPolygon) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
-                                iconSize: [3 * currentZoom, 3 * currentZoom],
-                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                                iconSize: [4 * currentZoom, 4 * currentZoom],
+                                iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
 
                             if (ms.autoZoomOnSelect) {
@@ -345,8 +345,8 @@ export class MapViewComponent implements OnInit {
                         } else {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_green.png",
-                                iconSize: [3 * currentZoom, 3 * currentZoom],
-                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                                iconSize: [4 * currentZoom, 4 * currentZoom],
+                                iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
                         }
 
@@ -372,14 +372,14 @@ export class MapViewComponent implements OnInit {
                         if (id === ms.selectedPolygon) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
-                                iconSize: [3 * currentZoom, 3 * currentZoom],
-                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                                iconSize: [4 * currentZoom, 4 * currentZoom],
+                                iconAnchor: [(currentZoom * 3) / 2, 4 * currentZoom]
                             }));
                         } else {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_green.png",
-                                iconSize: [3 * currentZoom, 3 * currentZoom],
-                                iconAnchor: [(currentZoom * 3) / 2, 3 * currentZoom]
+                                iconSize: [4 * currentZoom, 4 * currentZoom],
+                                iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
                         }
                     });
