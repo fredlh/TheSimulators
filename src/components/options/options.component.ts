@@ -66,8 +66,8 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
     onOrganisationUnitLevelsUpdate(): void {
         OptionsComponent.orgUnitLevels = Globals.organisationUnitLevels;
 
-        OptionsComponent.currentOptions.mapOptions = [];
         OptionsComponent.tempOptions.mapOptions = [];
+        OptionsComponent.currentOptions.mapOptions = [];
         OptionsComponent.defaultOptions.mapOptions = [];
 
         for (let i = 0; i < OptionsComponent.orgUnitLevels.length; i++) {
@@ -76,10 +76,10 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
             
             OptionsComponent.currentOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
             OptionsComponent.currentOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;
-            
+
+            OptionsComponent.defaultOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
+            OptionsComponent.defaultOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;   
         }
-        
-        OptionsComponent.defaultOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
     }
 
 
