@@ -194,7 +194,6 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
 
     onReset(): void {
         OptionsComponent.tempOptions = JSON.parse(JSON.stringify(OptionsComponent.defaultOptions));
-        OptionsComponent.currentOptions = JSON.parse(JSON.stringify(OptionsComponent.defaultOptions));
     }
 
 }
