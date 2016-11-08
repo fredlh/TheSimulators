@@ -10,7 +10,6 @@ import {NavigatorComponent} from "./components/navigator/navigator.component";
 import {MarkerComponent} from "./components/marker/marker.component";
 import {MapViewComponent } from "./components/map-view/map-view.component";
 import { MapEditComponent } from "./components/map-edit/map-edit.component";
-import {NavBarComponent} from "./components/nav-bar/nav-bar.component";
 import {OrgUnitSearchComponent} from "./components/org-unit-search/org-unit-search.component";
 import {SideBarComponent} from "./components/side-bar/side-bar.component";
 import {OptionsComponent} from "./components/options/options.component";
@@ -34,7 +33,6 @@ import { AccordionHeadingComponent} from "./components/accordion/accordion-headi
         MarkerComponent,
         MapViewComponent,
         MapEditComponent,
-        NavBarComponent,
         OrgUnitSearchComponent,
         SideBarComponent,
         AccordionComponent,
