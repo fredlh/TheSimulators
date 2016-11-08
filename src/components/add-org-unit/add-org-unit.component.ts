@@ -129,11 +129,14 @@ export class AddOrgUnitComponent {
         let tmpThis = this;
 
         // Get the parent
+        console.log("FIRST");
         async function getOrgUnitParent() {
             let org = await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id);
             return org;
         }
         let parentOrgUnit: OrgUnit = await getOrgUnitParent();
+        console.log(parentOrgUnit);
+        
 
         // Check if a new org unit level is needed
         if (parentOrgUnit.level === Globals.getMaxLevel()) {
@@ -143,7 +146,7 @@ export class AddOrgUnitComponent {
             $("#submitOrgUnitButton").addClass("disabled");
         }
 
-        if (this.saveOrgUnitLevelSuccess !== true) return;
+        if (this.newOrgUnitLevelNeeded && !this.saveOrgUnitLevelSuccess) return;
 
         // Save the org unit
         this.orgUnitService.saveOrganisationUnit(this.orgUnit).subscribe(
@@ -178,14 +181,15 @@ export class AddOrgUnitComponent {
                 tmpThis.orgUnitService.checkForUpdatedOrganisationUnitLevels();
                 tmpThis.haveSubmitted = false;
                 tmpThis.saveOrgUnitLevelSuccess = true;
+                tmpThis.newOrgUnitLevelNeeded = false;
                 tmpThis.savedOrgUnitLevelId = res.response.uid;
                 $("#submitOrgUnitButton").removeClass("disabled");
                 $("#submitOrgUnitLevelButton").addClass("disabled");
-                console.log("GOT HERE");
             }, 
             error => {
                 tmpThis.orgUnitLevelErrormessage = "Failed to save the org unit level";
                 tmpThis.saveOrgUnitLevelSuccess = false;
+                tmpThis.newOrgUnitLevelNeeded = true;                
             }
         );
     }

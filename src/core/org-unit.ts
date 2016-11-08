@@ -13,6 +13,7 @@ export class OrgUnit {
     created: string;
     openingDate: Date;
     coordinates;
+    path: string;
 
     featureType: string;
     dimensionItem: string;

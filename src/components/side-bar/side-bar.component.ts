@@ -330,22 +330,21 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     // Deletes the orgUnit with the given id
     deleteOrgUnit(orgUnitId: string) {
-        if (confirm("Are you sure you want to delete the organisation unit with id '" + orgUnitId + "'")) {
-            this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(
-                // All good, just refresh the page so the deleted orgUnit dissapairs
-                res => {
-                    this.refreshOrgUnits();
-                },
-                // An error occured, display appropiat error message if known else general error message
-                error => {
-                    if (error.status === 404) {
-                        alert("Error: Organisation unit with id '" + orgUnitId + "' has already been deleted");
-                    } else {
-                        alert("Unknown error during deletion. Please refresh and try again");
-                    }
+        this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(
+            // All good, just refresh the page so the deleted orgUnit dissapairs
+            res => {
+                this.refreshOrgUnits();
+            },
+            // An error occured, display appropiat error message if known else general error message
+            error => {
+                if (error.status === 404) {
+                    alert("Error: Organisation unit with id '" + orgUnitId + "' has already been deleted");
+                } else {
+                    alert("Unknown error during deletion. Please refresh and try again");
                 }
-            );
-        }
+                console.log(error);
+            }
+        );
     }
 
 

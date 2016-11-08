@@ -7,216 +7,209 @@
 
 
 <div id="optionsArea" class="options container-fluid">
-        <div class="options-content">
-            <span class="close">x</span>
-            <h1>Options</h1>
-            <p>Here you can change the fault behaviour of some parts of the application</p>
-            <br>
+    <div class="options-content">
+        <span class="close">x</span>
+        <h1>Options</h1>
+        <p>Here you can change the fault behaviour of some parts of the application</p>
+        <br>
             
-            <form (ngSubmit)="onSave()" #optionsForm="ngForm">
-                <h3>Zoom Options</h3>
-                <hr>
-                <div class="form-group row">
-                    <label class="col-xs-5 col-form-label">Auto zoom on search</label>
-                    <div class="col-xs-7">
-                        <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSearch" name="zoomOnSearchAnswer">
-                            <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
-                        </select>
-                    </div>
+        <form (ngSubmit)="onSave()" #optionsForm="ngForm">
+            <h3>Zoom Options</h3>
+            <hr>
+            <div class="form-group row">
+                <label class="col-xs-5 col-form-label">Auto zoom on search</label>
+                <div class="col-xs-7">
+                    <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSearch" name="zoomOnSearchAnswer">
+                        <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
+                    </select>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-xs-5 col-form-label">Auto zoom when retrieving children</label>
-                    <div class="col-xs-7">
-                        <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnGetChildren" name="zoomOnGetChildrenAnswer">
-                            <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
-                        </select>
-                    </div>
+            <div class="form-group row">
+                <label class="col-xs-5 col-form-label">Auto zoom when retrieving children</label>
+                <div class="col-xs-7">
+                    <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnGetChildren" name="zoomOnGetChildrenAnswer">
+                        <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
+                    </select>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-xs-5 col-form-label">Auto zoom when selecting an org unit</label>
-                    <div class="col-xs-7">
-                        <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSelect" name="zoomOnSelectAnswer">
-                            <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
-                        </select>
-                    </div>
+            <div class="form-group row">
+                <label class="col-xs-5 col-form-label">Auto zoom when selecting an org unit</label>
+                <div class="col-xs-7">
+                    <select class="form-control" [(ngModel)]="self.tempOptions.autoZoomOnSelect" name="zoomOnSelectAnswer">
+                        <option *ngFor="let option of booleanOptions" [value]="option">{{option}}</option>
+                    </select>
                 </div>
+            </div>
 
-                <br>
-                <br>
-                <h3>Map Options</h3>
-                <hr>
+            <br>
+            <br>
+            <h3>Map Options</h3>
+            <hr>
 
-                <div *ngIf="self.orgUnitLevels.length > 2">
 
-                    <accordion [closeOthers]="false">
-                        <accordion-group>
-                            <accordion-heading>Color</accordion-heading>
+            <accordion [closeOthers]="false">
 
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label"></label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
-                            </div>
+                <accordion-group>
+                    <accordion-heading>Color</accordion-heading>
+
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label"></label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                    </div>
                             
-                            <div class="form-group row">
-                                <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
+                    <div class="form-group row">
+                        <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
 
-                                    <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
+                            <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
 
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].color" name="{{myIndex + (self.orgUnitLevels.length * 1)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverColor" name="{{myIndex + (self.orgUnitLevels.length * 2)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedColor" name="{{myIndex + (self.orgUnitLevels.length * 3)}}">
-                                    </div>
-                                </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="color"
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].color" name="{{myIndex + (self.orgUnitLevels.length * 1)}}">
                             </div>
-                        </accordion-group>
-
-
-                        <accordion-group>
-                            <accordion-heading>Border color</accordion-heading>
-
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label"></label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="color"
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverColor" name="{{myIndex + (self.orgUnitLevels.length * 2)}}">
                             </div>
-                            <div class="form-group row">
-                                <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
-
-                                    <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
-
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderColor" name="{{myIndex + (self.orgUnitLevels.length * 4)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverColor" name="{{myIndex + (self.orgUnitLevels.length * 5)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="color"
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedColor" name="{{myIndex + (self.orgUnitLevels.length * 6)}}">
-                                    </div>
-                                </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="color"
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedColor" name="{{myIndex + (self.orgUnitLevels.length * 3)}}">
                             </div>
-                        </accordion-group>
+                        </div>
+                    </div>
+                </accordion-group>
 
+                <accordion-group>
+                    <accordion-heading>Border color</accordion-heading>
 
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label"></label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                    </div>
+                    <div class="form-group row">
+                        <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
 
-                        <accordion-group>
-                            <accordion-heading>Opacity</accordion-heading>
+                            <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
 
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label"></label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="color"
+                                        [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderColor" name="{{myIndex + (self.orgUnitLevels.length * 4)}}">
                             </div>
-                            <div class="form-group row">
-                                <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
-
-                                    <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
-
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="{{myIndex + (self.orgUnitLevels.length * 7)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="{{myIndex + (self.orgUnitLevels.length * 8)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="{{myIndex + (self.orgUnitLevels.length * 9)}}">
-                                    </div>
-                                </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="color"
+                                        [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverColor" name="{{myIndex + (self.orgUnitLevels.length * 5)}}">
                             </div>
-                        </accordion-group>
-
-
-                        <accordion-group>
-                            <accordion-heading>Border opacity</accordion-heading>
-
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label"></label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="color"
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedColor" name="{{myIndex + (self.orgUnitLevels.length * 6)}}">
                             </div>
-                            <div class="form-group row">
-                                <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
+                        </div>
+                    </div>
+                </accordion-group>
 
-                                    <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
+                <accordion-group>
+                    <accordion-heading>Opacity</accordion-heading>
 
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="{{myIndex + (self.orgUnitLevels.length * 10)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="{{myIndex + (self.orgUnitLevels.length * 11)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" max="1" step="0.05" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{myIndex + (self.orgUnitLevels.length * 12)}}">
-                                    </div>
-                                </div>
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label"></label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                    </div>
+                    <div class="form-group row">
+                        <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
+
+                            <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
+
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" max="1" step="0.05" required
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].opacity" name="{{myIndex + (self.orgUnitLevels.length * 7)}}">
                             </div>
-                        </accordion-group>
-
-
-                        <accordion-group>
-                            <accordion-heading>Border weight</accordion-heading>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label"></label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
-                                <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" max="1" step="0.05" required
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].hoverOpacity" name="{{myIndex + (self.orgUnitLevels.length * 8)}}">
                             </div>
-                            <div class="form-group row">
-                                <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
-
-                                    <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
-
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" step="1" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="{{myIndex + (self.orgUnitLevels.length * 13)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" step="1" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="{{myIndex + (self.orgUnitLevels.length * 14)}}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="number" min="0" step="1" required
-                                            [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="{{myIndex + (self.orgUnitLevels.length * 15)}}">
-                                    </div>
-                                </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" max="1" step="0.05" required
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].selectedOpacity" name="{{myIndex + (self.orgUnitLevels.length * 9)}}">
                             </div>
-                        </accordion-group>
+                        </div>
+                    </div>
+                </accordion-group>
 
-                    </accordion>
+                <accordion-group>
+                    <accordion-heading>Border opacity</accordion-heading>
 
-                </div>
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label"></label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                    </div>
+                    <div class="form-group row">
+                        <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
 
-                <input type="button" value="Close" class="btn btn-primary" (click)="onCancel()">
-                <input type="button" value="Reset to default options" class="btn btn-primary" (click)="onReset()">
-                <input style="float: right;" type="submit" value="Save" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
-    
-            </form>
+                            <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
+
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" max="1" step="0.05" required
+                                        [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderOpacity" name="{{myIndex + (self.orgUnitLevels.length * 10)}}">
+                            </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" max="1" step="0.05" required
+                                        [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverOpacity" name="{{myIndex + (self.orgUnitLevels.length * 11)}}">
+                            </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" max="1" step="0.05" required
+                                     [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedOpacity" name="{{myIndex + (self.orgUnitLevels.length * 12)}}">
+                            </div>
+                        </div>
+                    </div>
+                </accordion-group>
+
+                <accordion-group>
+                    <accordion-heading>Border weight</accordion-heading>
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label"></label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Default</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Hover</label>
+                        <label class="col-lg-3 col-form-label" style="text-align: center;">Selected</label>
+                    </div>
+                    <div class="form-group row">
+                        <div *ngFor="let orgUnit of self.orgUnitLevels; let myIndex = index">
+
+                            <label class="col-lg-3 col-form-label">{{orgUnit.name}}</label>
+
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" step="1" required
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderWeight" name="{{myIndex + (self.orgUnitLevels.length * 13)}}">
+                            </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" step="1" required
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderHoverWeight" name="{{myIndex + (self.orgUnitLevels.length * 14)}}">
+                            </div>
+                            <div class="col-lg-3">
+                                <input class="form-control" type="number" min="0" step="1" required
+                                    [(ngModel)]="self.tempOptions.mapOptions[myIndex].borderSelectedWeight" name="{{myIndex + (self.orgUnitLevels.length * 15)}}">
+                            </div>
+                        </div>
+                    </div>
+                </accordion-group>
+
+            </accordion>
+
+
+            <input type="button" value="Close" class="btn btn-primary" (click)="onCancel()">
+            <input type="button" value="Reset to default options" class="btn btn-primary" (click)="onReset()">
+            <input style="float: right;" type="submit" value="Save" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+        </form>
                 
-        </div>
     </div>
+</div>
 
 
