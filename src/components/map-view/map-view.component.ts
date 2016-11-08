@@ -222,7 +222,7 @@ export class MapViewComponent implements OnInit {
                             }
                             */
 
-                            return ms.mapOptions.getMapOptionsDefault(levelIndex);
+                            return OptionsComponent.getMapOptionsDefault(levelIndex);
                         }
                     })
                     .addEventListener("mouseover", function(e) {
@@ -236,7 +236,7 @@ export class MapViewComponent implements OnInit {
                                         return ms.defaultHoverStyle;
                                     }
                                     */
-                                    return ms.mapOptions.getMapOptionsHover(levelIndex);
+                                    return OptionsComponent.getMapOptionsHover(levelIndex);
                                 }
                             });
 
@@ -255,7 +255,7 @@ export class MapViewComponent implements OnInit {
                                         return ms.defaultStyle;
                                     }
                                     */
-                                    return ms.mapOptions.getMapOptionsDefault(levelIndex);
+                                    return OptionsComponent.getMapOptionsDefault(levelIndex);
                                 }
                             });
                         }
@@ -301,7 +301,7 @@ export class MapViewComponent implements OnInit {
                                     return ms.defaultSelectedStyle;
                                 }
                                 */
-                                return ms.mapOptions.getMapOptionsSelected(levelIndex);
+                                return OptionsComponent.getMapOptionsSelected(levelIndex);
 
                             } else {
                                 /*
@@ -311,7 +311,7 @@ export class MapViewComponent implements OnInit {
                                     ms.defaultStyle;
                                 }
                                 */
-                                return ms.mapOptions.getMapOptionsDefault(levelIndex);
+                                return OptionsComponent.getMapOptionsDefault(levelIndex);
                             }
                         });
                     })
@@ -325,7 +325,7 @@ export class MapViewComponent implements OnInit {
                                     return ms.defaultSelectedStyle;
                                 }
                                 */
-                                return ms.mapOptions.getMapOptionsSelected(levelIndex);
+                                return OptionsComponent.getMapOptionsSelected(levelIndex);
 
                             } else {
                                 /*
@@ -335,7 +335,7 @@ export class MapViewComponent implements OnInit {
                                     ms.defaultStyle;
                                 }
                                 */
-                                return ms.mapOptions.getMapOptionsDefault(levelIndex);
+                                return OptionsComponent.getMapOptionsDefault(levelIndex);
                             }
                         });
                     })
