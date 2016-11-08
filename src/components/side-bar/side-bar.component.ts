@@ -330,6 +330,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     // Deletes the orgUnit with the given id
     deleteOrgUnit(orgUnitId: string) {
+        
         this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(
             // All good, just refresh the page so the deleted orgUnit dissapairs
             res => {
@@ -338,13 +339,28 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
             // An error occured, display appropiat error message if known else general error message
             error => {
                 if (error.status === 404) {
-                    alert("Error: Organisation unit with id '" + orgUnitId + "' has already been deleted");
+                    console.error("Error: Organisation unit with id '" + orgUnitId + "' has already been deleted");
                 } else {
-                    alert("Unknown error during deletion. Please refresh and try again");
+                    console.error("Unknown error during deletion. Please refresh and try again");
                 }
                 console.log(error);
             }
         );
+        
+        /*
+        let orgUnit = this.getOrgUnitById(orgUnitId);
+        for (let group of orgUnit.organisationUnitGroups) {
+            this.orgUnitService.deleteOrgUnitFromOrgUnitGroup(group.id, orgUnit.id).subscribe(
+                res => {
+                    console.log(res);
+                },
+                error => {
+                    console.log(error);
+                }
+            );
+            break;
+        }
+        */
     }
 
 

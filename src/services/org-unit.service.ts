@@ -152,6 +152,13 @@ export class OrgUnitService {
             .catch((error: any) => Observable.throw(error));
     }
 
+    deleteOrgUnitFromOrgUnitGroup(orgUnitGroupId: string, orgUnitId: string): any {
+        return this.http
+            .delete(`${this.serverUrl}/organisationUnitGroups/${orgUnitGroupId}/organisationUnits/${orgUnitId}`, {headers: this.headers})
+            .map((res: Response) => res)
+            .catch((error: any) => Observable.throw(error));
+    }
+
     updateOrgUnit(orgUnit: OrgUnit): any {
         return this.http
             .put(`${this.serverUrl}/organisationUnits/${orgUnit.id}`, JSON.stringify(orgUnit), {headers: this.headers})

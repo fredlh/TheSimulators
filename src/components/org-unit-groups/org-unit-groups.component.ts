@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {Globals, OrganisationUnitGroup} from "../../globals/globals";
 
 import {OrgUnitService} from "../../services/org-unit.service";
+import {GlobalsUpdateInterface} from "../../core/globals-update.interface";
 
 @Component({
     selector: "org-unit-groups",
@@ -11,10 +12,17 @@ import {OrgUnitService} from "../../services/org-unit.service";
 
 export class OrgUnitGroupsComponent {
 
-    constructor(private orgUnitService: OrgUnitService) {}
+    private orgUnitGroups: OrganisationUnitGroup[] = [];
 
+    constructor(private orgUnitService: OrgUnitService) {
+
+    }
+
+   
 
     toggleOrgUnitGroups(): void {
+        this.orgUnitGroups = Globals.organisationUnitGroups;
+
         this.showOrgUnitGroupsPanel();
 
         let tmpThis = this;

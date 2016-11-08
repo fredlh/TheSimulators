@@ -118,24 +118,27 @@ export class AddOrgUnitComponent {
         if (this.haveSubmitted) return;
 
         // Display warning if no coordinates are entered
+        /*
         if (this.orgUnit.featureType === FeatureType.NONE) {
             if (!confirm("The are no coordinates entered. Sure you want to save?")) return;
         }
+        */
 
         // Save the required info in the org unit
+        console.log("FIRST");
         this.orgUnit.openingDate = new Date();
         this.orgUnit.displayName = this.orgUnit.name;
         this.orgUnit.shortName = this.orgUnit.name;
+        //this.orgUnit.organisationUnitGroups = [{id : "GGghZsfu7qV"}];
         let tmpThis = this;
 
         // Get the parent
-        console.log("FIRST");
         async function getOrgUnitParent() {
             let org = await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id);
             return org;
         }
         let parentOrgUnit: OrgUnit = await getOrgUnitParent();
-        console.log(parentOrgUnit);
+        console.log(this.orgUnit);
         
 
         // Check if a new org unit level is needed

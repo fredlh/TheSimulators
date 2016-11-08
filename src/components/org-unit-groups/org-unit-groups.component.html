@@ -7,6 +7,37 @@
 <div id="orgUnitGroupsArea" class="org-unit-groups">
     <div class="org-unit-groups-content">
         <span class="org-unit-groups-close">x</span>
-        <p>yo</p>
+        
+        <h1>Manage organisation unit groups</h1>
+        <p>Here you can view, edit, delete and add organisation unit groups</p>
+
+        
+        
+        <accordion [closeOthers]="false">
+
+            <div *ngFor="let group of orgUnitGroups">
+
+                <accordion-group>
+                    <accordion-heading>{{group.name}}</accordion-heading>
+
+
+                    <ul>
+                        <li>code: {{group.code}}</li>
+                        <li>id: {{group.id}}</li><br>Org units
+
+                        <ul *ngFor="let orgUnit of group.organisationUnits">
+                            <li>{{orgUnit.id}}</li>
+                        </ul>
+                    </ul>         
+        
+                </accordion-group>
+
+            </div>
+
+        </accordion>
+
+
+
+
     </div>
 </div>
