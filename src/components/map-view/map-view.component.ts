@@ -113,6 +113,11 @@ export class MapViewComponent implements OnInit {
     }
 
     onMapOptionsSaved(): void {
+        this.mapOptions = OptionsComponent.getMapOptions();
+        this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
+        this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
+        this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
+
         // Fire changed options event
         this.fireEvent("optionsChanged");
     }
@@ -172,14 +177,8 @@ export class MapViewComponent implements OnInit {
         let allCoords = [];
         const ms = this;
 
-        this.mapOptions = OptionsComponent.getMapOptions();
-        this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
-        this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
-        this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
-
         // For each orgUnit in the argument array
         for (let org of orgUnits) {
-
             let levelIndex = org.level - 1;
             let id = org.id;
 
@@ -190,12 +189,10 @@ export class MapViewComponent implements OnInit {
             }
 
             // Check if orgUnit contains coordinates
-            //if (org.coordinates !== undefined) {
             if (org.featureType !== FeatureType.NONE) {
                 // Coordinates is gathered in the form of a string, needs to parse it into [[[x,y],[x,y]],[[x,y]]] number array
 
                 // Check if coordinate indicate a polygon (and not a single point --- marker)
-                //if (org.coordinates[1] === "[") {
                 if (org.featureType === FeatureType.MULTI_POLYGON || org.featureType === FeatureType.POLYGON) {
 
                     // Set up polygon information
