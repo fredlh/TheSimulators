@@ -32,7 +32,7 @@ class Options {
     autoZoomOnSearch = "Yes";
     autoZoomOnGetChildren = "Yes";
     autoZoomOnSelect = "Yes";
-    mapOptions = [];
+    mapOptions: MapOptions[] = [];
 }
 
 @Component({
@@ -56,6 +56,10 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
 
     onOrganisationUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
+        
+        OptionsComponent.currentOptions.mapOptions = [];
+        OptionsComponent.tempOptions.mapOptions = [];
+        OptionsComponent.defaultOptions.mapOptions = [];
 
         let mapOption = 
             {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
@@ -66,6 +70,8 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
             OptionsComponent.tempOptions.mapOptions.push(mapOption);
             OptionsComponent.currentOptions.mapOptions.push(mapOption);
         }
+
+        OptionsComponent.defaultOptions.mapOptions.push(mapOption);
     }
 
     ngOnInit(): void {
@@ -86,6 +92,10 @@ export class OptionsComponent implements GlobalsUpdateInterface, OnInit  {
 
     public static getMapOptions(): MapOptions[] {
         return OptionsComponent.currentOptions.mapOptions;
+    }
+
+    public static getDefaultMapOptions(): MapOptions {
+        return OptionsComponent.defaultOptions.mapOptions[0];
     }
 
     toggleOptionsWindow(): void {
