@@ -33,7 +33,7 @@ export class MapViewComponent implements OnInit {
     private selectedPolygon;
     private maxLevelReached: boolean;
 
-    private mapOptions: MapOptions[];
+    // private mapOptions: MapOptions[];
     private autoZoomOnSearch: boolean;
     private autoZoomOnGetChildren: boolean;
     private autoZoomOnSelect: boolean;
@@ -100,6 +100,7 @@ export class MapViewComponent implements OnInit {
     ngAfterViewInit(): void {
         // this.markerComponent.Initialize();
         // this.orgUnitService.registerMapView(this);
+        /*
         let defaultMapOptions = OptionsComponent.getDefaultMapOptions();
 
         this.defaultStyle = {color: defaultMapOptions.borderColor, fillColor: defaultMapOptions.color, weight: defaultMapOptions.borderWeight, fillOpacity: defaultMapOptions.opacity, opacity: defaultMapOptions.borderOpacity};
@@ -107,13 +108,15 @@ export class MapViewComponent implements OnInit {
         this.defaultHoverStyle = {color: defaultMapOptions.borderHoverColor, fillColor: defaultMapOptions.hoverColor, weight: defaultMapOptions.borderHoverWeight, fillOpacity: defaultMapOptions.hoverOpacity, opacity: defaultMapOptions.borderHoverOpacity};
 
         this.defaultSelectedStyle = {color: defaultMapOptions.borderSelectedColor, fillColor: defaultMapOptions.selectedColor, weight: defaultMapOptions.borderSelectedWeight, fillOpacity: defaultMapOptions.selectedOpacity, opacity: defaultMapOptions.borderSelectedOpacity};
-
         // Used to set default values on initialization
         this.onMapOptionsSaved();
+        */
     }
 
     onMapOptionsSaved(): void {
+        /*
         this.mapOptions = OptionsComponent.getMapOptions();
+        */
         this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
         this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
         this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
@@ -179,7 +182,7 @@ export class MapViewComponent implements OnInit {
 
         // For each orgUnit in the argument array
         for (let org of orgUnits) {
-            let levelIndex = org.level - 1;
+            let levelIndex = org.level;
             let id = org.id;
 
             if (org.level > this.levels.length) {
@@ -211,22 +214,29 @@ export class MapViewComponent implements OnInit {
                             layer.bindTooltip(feature.properties.name);
                         },
                         style: function(feature) {
+                            /*
                             if (levelIndex < ms.mapOptions.length) {
                                 return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                             } else {
                                 return ms.defaultStyle;
                             }
+                            */
+
+                            return ms.mapOptions.getMapOptionsDefault(levelIndex);
                         }
                     })
                     .addEventListener("mouseover", function(e) {
                         if (ms.eventsEnabled) {
                             this.setStyle(function(feature) {
                                 if (ms.selectedPolygon !== feature.properties.id) {
+                                    /*
                                     if (levelIndex < ms.mapOptions.length) {
                                         return {color: ms.mapOptions[levelIndex].borderHoverColor, fillColor: ms.mapOptions[levelIndex].hoverColor, weight: +ms.mapOptions[levelIndex].borderHoverWeight, fillOpacity: +ms.mapOptions[levelIndex].hoverOpacity, opacity: +ms.mapOptions[levelIndex].borderHoverOpacity};
                                     } else {
                                         return ms.defaultHoverStyle;
                                     }
+                                    */
+                                    return ms.mapOptions.getMapOptionsHover(levelIndex);
                                 }
                             });
 
@@ -238,11 +248,14 @@ export class MapViewComponent implements OnInit {
                             this.setStyle(function(feature) {
 
                                 if (ms.selectedPolygon !== feature.properties.id) {
+                                    /*
                                     if (levelIndex < ms.mapOptions.length) {
                                         return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                                     } else {
                                         return ms.defaultStyle;
                                     }
+                                    */
+                                    return ms.mapOptions.getMapOptionsDefault(levelIndex);
                                 }
                             });
                         }
@@ -281,36 +294,48 @@ export class MapViewComponent implements OnInit {
                                     map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
                                 }
 
+                                /*
                                 if (levelIndex < ms.mapOptions.length) {
                                     return {color: ms.mapOptions[levelIndex].borderSelectedColor, fillColor: ms.mapOptions[levelIndex].selectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
                                 } else {
                                     return ms.defaultSelectedStyle;
                                 }
+                                */
+                                return ms.mapOptions.getMapOptionsSelected(levelIndex);
 
                             } else {
+                                /*
                                 if (levelIndex < ms.mapOptions.length) {
                                     return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                                 } else {
                                     ms.defaultStyle;
                                 }
+                                */
+                                return ms.mapOptions.getMapOptionsDefault(levelIndex);
                             }
                         });
                     })
                     .addEventListener("optionsChanged", function(e) {
                         this.setStyle(function(feature) {
                             if (ms.selectedPolygon === feature.properties.id) {
+                                /*
                                 if (levelIndex < ms.mapOptions.length) {
                                     return {color: ms.mapOptions[levelIndex].borderSelectedColor, fillColor: ms.mapOptions[levelIndex].selectedColor, weight: +ms.mapOptions[levelIndex].borderSelectedWeight, fillOpacity: +ms.mapOptions[levelIndex].selectedOpacity, opacity: +ms.mapOptions[levelIndex].borderSelectedOpacity};
                                 } else {
                                     return ms.defaultSelectedStyle;
                                 }
+                                */
+                                return ms.mapOptions.getMapOptionsSelected(levelIndex);
 
                             } else {
+                                /*
                                 if (levelIndex < ms.mapOptions.length) {
                                     return {color: ms.mapOptions[levelIndex].borderColor, fillColor: ms.mapOptions[levelIndex].color, weight: +ms.mapOptions[levelIndex].borderWeight, fillOpacity: +ms.mapOptions[levelIndex].opacity, opacity: +ms.mapOptions[levelIndex].borderOpacity};
                                 } else {
                                     ms.defaultStyle;
                                 }
+                                */
+                                return ms.mapOptions.getMapOptionsDefault(levelIndex);
                             }
                         });
                     })
@@ -337,7 +362,7 @@ export class MapViewComponent implements OnInit {
                     });
 
                     allCoords.push(tempGeo.getBounds());
-                    ms.levels[levelIndex].push(tempGeo);
+                    ms.levels[levelIndex - 1].push(tempGeo);
 
                 } else if (org.featureType === FeatureType.POINT) {
                     // Markers for single point locations
