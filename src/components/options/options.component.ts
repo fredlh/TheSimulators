@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit }                from "@angular/core";
 
-import { OrgUnitService } from "../../services/org-unit.service";
-import { MapService } from "../../services/map.service";
+import { OrgUnitService }                   from "../../services/org-unit.service";
+import { SideBarService }                   from "../../services/side-bar.service";
+import { MapService }                       from "../../services/map.service";
 
-import { Globals, OrganisationUnitLevel }            from "../../globals/globals";
+import { GlobalsUpdateInterface}            from "../../core/globals-update.interface";
 
-import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
-
+import { Globals, OrganisationUnitLevel }   from "../../globals/globals";
 
 declare var $: any;
 
@@ -48,8 +48,8 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
 
-    private mapOptions: MapOptions = 
-        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C", 
+    private mapOptions: MapOptions =
+        {color: "#000000", hoverColor: "#1E90FF", selectedColor: "#DC143C",
         borderColor: "#000000", borderHoverColor: "#000000", borderSelectedColor: "#000000",
         opacity: 0.2, hoverOpacity: 0.2, selectedOpacity: 0.2, borderWeight: 1, borderHoverWeight: 1, borderSelectedWeight: 1,
         borderOpacity: 1.0, borderHoverOpacity: 1.0, borderSelectedOpacity: 1.0, level: -1};
@@ -58,9 +58,11 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
     private static tempOptions = new Options();
     private static currentOptions = new Options();
 
-    constructor(private orgUnitService: OrgUnitService, private mapService: MapService) {
+    constructor(private orgUnitService: OrgUnitService,
+                private mapService: MapService,
+                private sideBarService: SideBarService) {
         OptionsComponent.defaultOptions.mapOptions.push(this.mapOptions);
-        this.orgUnitService.registerGlobalsUpdateListener(this);     
+        this.orgUnitService.registerGlobalsUpdateListener(this);
     }
 
     onOrganisationUnitLevelsUpdate(): void {
@@ -73,15 +75,14 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
         for (let i = 0; i < OptionsComponent.orgUnitLevels.length; i++) {
             OptionsComponent.tempOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
             OptionsComponent.tempOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;
-            
+
             OptionsComponent.currentOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
             OptionsComponent.currentOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;
 
             OptionsComponent.defaultOptions.mapOptions.push(JSON.parse(JSON.stringify(this.mapOptions)));
-            OptionsComponent.defaultOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;   
+            OptionsComponent.defaultOptions.mapOptions[i].level = OptionsComponent.orgUnitLevels[i].level;
         }
     }
-
 
     public static getAutoZoomOnSearch(): boolean {
         return OptionsComponent.currentOptions.autoZoomOnSearch === "Yes";
@@ -107,7 +108,7 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
     // Returns the maptions on default of the corresponding level
     public static getMapOptionsDefault(level: number) {
         let option = OptionsComponent.getDefaultMapOptions();
-        
+
         for (let elem of OptionsComponent.currentOptions.mapOptions) {
             if (elem.level === level) {
                 option = elem;
@@ -115,10 +116,9 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
             }
         }
 
-        return {color: option.borderColor, fillColor: option.color, 
-                weight: option.borderWeight, 
+        return {color: option.borderColor, fillColor: option.color,
+                weight: option.borderWeight,
                 fillOpacity: option.opacity, opacity: option.borderOpacity};
-  
     }
 
     // Returns the maptions on selected of the corresponding level
@@ -132,15 +132,15 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
             }
         }
 
-        return {color: option.borderSelectedColor, fillColor: option.selectedColor, 
-                weight: option.borderSelectedWeight, 
+        return {color: option.borderSelectedColor, fillColor: option.selectedColor,
+                weight: option.borderSelectedWeight,
                 fillOpacity: option.selectedOpacity, opacity: option.borderSelectedOpacity};
     }
 
     // Returns the maptions on hover of the corresponding level
     public static getMapOptionsHover(level: number) {
         let option = OptionsComponent.getDefaultMapOptions();
-        
+
         for (let elem of OptionsComponent.currentOptions.mapOptions) {
             if (elem.level === level) {
                 option = elem;
@@ -148,8 +148,8 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
             }
         }
 
-        return {color: option.borderHoverColor, fillColor: option.hoverColor, 
-                        weight: option.borderHoverWeight, 
+        return {color: option.borderHoverColor, fillColor: option.hoverColor,
+                        weight: option.borderHoverWeight,
                         fillOpacity: option.hoverOpacity, opacity: option.borderHoverOpacity};
     }
 
@@ -171,12 +171,12 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
 
     showOptionsPanel(): void {
         document.getElementById("optionsArea").style.display = "block";
-        this.orgUnitService.hideSideBar();
+        this.sideBarService.hideSideBar();
     }
 
     hideOptionsPanel(): void {
         document.getElementById("optionsArea").style.display = "none";
-        this.orgUnitService.unHideSideBar();
+        this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {

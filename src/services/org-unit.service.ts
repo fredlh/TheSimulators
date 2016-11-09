@@ -1,29 +1,23 @@
-import { Injectable, OnInit }   from "@angular/core";
-import { Headers, Http, Response} from "@angular/http";
-import { Observable } from "rxjs/Observable";
+import { Injectable }                                           from "@angular/core";
+import { Headers, Http, Response }                              from "@angular/http";
+import { Observable }                                           from "rxjs/Observable";
 
 import "rxjs/add/operator/toPromise";
 import "rxjs/add/operator/map";
 import "rxjs/Rx";
 
-
-import { OrgUnit }  from "../core/org-unit";
-
-import { SideBarInterface } from "../core/side-bar.interface";
-// import { MapViewInterface }      from "../core/map-view.interface";
-import { GlobalsUpdateInterface} from "../core/globals-update.interface";
-
-import { AccordionComponent } from "../components/accordion/accordion.component";
-
-import { MapService } from "./map.service";
-
-import {Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals"
+import { MapService }                                           from "./map.service";
+import { GlobalsUpdateInterface }                               from "../core/globals-update.interface";
+import { AccordionComponent }                                   from "../components/accordion/accordion.component";
+import { SideBarComponent }                                     from "../components/side-bar/side-bar.component";
+import { OrgUnit }                                              from "../core/org-unit";
+import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals";
 
 
 @Injectable()
 export class OrgUnitService {
 
-    //private serverUrl = "http://localhost:8082/api/";
+    // private serverUrl = "http://localhost:8082/api/";
     private serverUrl = "https://play.dhis2.org/demo/api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
@@ -31,16 +25,14 @@ export class OrgUnitService {
     private orgUnits: OrgUnit[] = [];
     private orgUnitStack: OrgUnit[][] = [];
 
-    private sideBar: SideBarInterface;
-    // private mapView: MapViewInterface;
+    private sideBar: SideBarComponent;
     private accordion: AccordionComponent;
     private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
 
     private lastApiUrlCall: string = "";
     private lastApiSearch: string = null;
 
-    constructor(private http: Http,
-                private mapService: MapService) {
+    constructor(private http: Http, private mapService: MapService) {
         // Get all the organisation unit levels
         this.checkForUpdatedOrganisationUnitLevels();
 
@@ -71,7 +63,7 @@ export class OrgUnitService {
         this.globalsUpdateListeners.push(listener);
     }
 
-    registerSideBar(sideBar: SideBarInterface) {
+    registerSideBar(sideBar: SideBarComponent) {
         this.sideBar = sideBar;
     }
 
@@ -81,7 +73,7 @@ export class OrgUnitService {
 
     // Retrieves all the organisation groups levels
     getOrganisationUnitLevels(): any {
-        return this.getRequest(`organisationUnitLevels?fields=:all&paging=false`);            
+        return this.getRequest(`organisationUnitLevels?fields=:all&paging=false`);
     }
 
     saveOrganisationUnitLevel(orgUnitLevel: OrganisationUnitLevel): any {
@@ -100,7 +92,7 @@ export class OrgUnitService {
 
     // Retrives all the organisation unit groups
     getOrganisationUnitGroups(): any {
-        return this.getRequest(`organisationUnitGroups?fields=:all&paging=false`);                
+        return this.getRequest(`organisationUnitGroups?fields=:all&paging=false`);
     }
 
     // Retrives the organisation unit with the given id
@@ -119,7 +111,7 @@ export class OrgUnitService {
 
     // Retrives the organisation unit with the given id and all its children
     getOrgUnitWithChildren(orgUnitId: string): any {
-        this.lastApiUrlCall = `getOrgUnitWithChildren|${orgUnitId}`
+        this.lastApiUrlCall = `getOrgUnitWithChildren|${orgUnitId}`;
         return this.getRequest(`organisationUnits/${orgUnitId}?includeChildren=true&fields=:all&paging=false`);
     }
 
@@ -127,7 +119,7 @@ export class OrgUnitService {
     getOrgUnits(query: string): any {
         this.lastApiUrlCall = `getOrgUnits|${query}`;
         this.lastApiSearch = query;
-        return this.getRequest(`organisationUnits?paging=false&fields=:all${query}`);      
+        return this.getRequest(`organisationUnits?paging=false&fields=:all${query}`);
     }
 
     // A general http.get request with a request parameter to retrieve a specific thing
@@ -155,7 +147,7 @@ export class OrgUnitService {
     deleteOrgUnitFromOrgUnitGroup(orgUnitGroupId: string, orgUnitId: string): any {
         return this.http
             .delete(`${this.serverUrl}/organisationUnitGroups/${orgUnitGroupId}/organisationUnits/${orgUnitId}`, {headers: this.headers})
-            .map((res: Response) => res)
+            .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }
 
@@ -223,13 +215,13 @@ export class OrgUnitService {
     gotoOrgUnit(parentId: string, orgUnitId: string): void {
         this.mapService.endEditMode();
         this.getOrgUnitAndChildren(parentId, false);
-        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`
+        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`;
     }
 
     gotoParent(parentId: string): void {
         this.mapService.endEditMode();
         this.getOrgUnitAndChildren(parentId, false);
-        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`        
+        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`;
     }
 
     returnToLastStackFrame(): void {
@@ -271,14 +263,6 @@ export class OrgUnitService {
         for (let listener of this.globalsUpdateListeners) {
             listener.onOrganisationUnitLevelsUpdate();
         }
-    }
-
-    hideSideBar(): void {
-        this.sideBar.hideSideBar();
-    }
-
-    unHideSideBar(): void {
-        this.sideBar.unHideSideBar();
     }
 
     refreshOrgUnits(): void {

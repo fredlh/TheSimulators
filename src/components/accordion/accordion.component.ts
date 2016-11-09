@@ -34,7 +34,7 @@ export class AccordionComponent implements AfterContentInit {
                 group.isOpened = true;
             });
         }
-        
+
         this.mapService.registerAccordion(this);
     }
 

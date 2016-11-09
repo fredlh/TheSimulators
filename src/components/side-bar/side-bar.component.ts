@@ -1,14 +1,16 @@
-import { Component, OnInit, AfterViewInit, OnChanges, AfterContentChecked }    from "@angular/core";
+import { Component, OnInit }        from "@angular/core";
 
-import { OrgUnit }  from "../../core/org-unit";
+import { OrgUnitService }           from "../../services/org-unit.service";
+import { MapService }               from "../../services/map.service";
+import { SideBarService}            from "../../services/side-bar.service";
 
-import { OrgUnitService } from "../../services/org-unit.service";
-import { MapService } from "../../services/map.service";
+import { SideBarInterface }         from "../../core/side-bar.interface";
+import { GlobalsUpdateInterface}    from "../../core/globals-update.interface";
 
-import { SideBarInterface } from "../../core/side-bar.interface";
-import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
+import { OrgUnit }                  from "../../core/org-unit";
 
-import { Globals, FeatureType } from "../../globals/globals";
+import { Globals, FeatureType }     from "../../globals/globals";
+
 
 declare var $: any;
 
@@ -18,7 +20,7 @@ declare var $: any;
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterface, OnInit {
+export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
     private orgUnits: OrgUnit[] = null;
     private displayedOrgUnits = null;
     private globals = Globals;
@@ -38,7 +40,8 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     private saveSuccess = null;
 
     constructor(private orgUnitService: OrgUnitService,
-                private mapService: MapService) {}
+                private mapService: MapService,
+                private sideBarService: SideBarService) {}
 
     onOrganisationUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
@@ -48,6 +51,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         this.orgUnitService.registerSideBar(this);
         this.orgUnitService.registerGlobalsUpdateListener(this);
         this.mapService.registerSideBar(this);
+        this.sideBarService.registerSideBar(this);
     }
 
     //
@@ -92,7 +96,7 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
             $("#filterArea").show();
         } else {
             $("#filterArea").hide();
-        }        
+        }
     }
 
     // Hides the side bar
@@ -101,7 +105,6 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         $("#sideBar").hide();
         $("#filterArea").hide();
         $("#toggleSideBar").hide();
-        
     }
 
     // Reopens the side bar
@@ -177,19 +180,19 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
     onEditOrgUnitOpen(orgUnitId = "") {
         this.hideSideBar();
         this.showEditOrgUnitPanel();
-        
+
         if (orgUnitId !== "") {
             this.selectedOrgUnit = JSON.parse(JSON.stringify(this.getOrgUnitById(orgUnitId)));
         }
 
         // Clear the form
         this.haveSubmitted = false;
-        this.saveSuccess = null;      
+        this.saveSuccess = null;
         $("#editOrgUnitButton").removeClass("disabled");
         $("#cancelOrgUnitButton").prop("value", "Cancel");
 
         let tmpThis = this;
-        
+
         $(".edit-org-unit-close").click(function() {
             tmpThis.onEditOrgUnitCancel(tmpThis);
         });
@@ -278,13 +281,13 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
         // Check which feature type it is
         if (this.selectedOrgUnit.coordinates.lastIndexOf("[[[") > 4) {
             this.selectedOrgUnit.featureType = FeatureType.MULTI_POLYGON;
-        
+
         } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") >= 0) {
             this.selectedOrgUnit.featureType = FeatureType.POLYGON;
-        
+
         } else if (this.selectedOrgUnit.coordinates.indexOf("[[[[") === -1 && this.selectedOrgUnit.coordinates !== "[]") {
             this.selectedOrgUnit.featureType = FeatureType.POINT;
-            
+
         } else {
             this.selectedOrgUnit.featureType = FeatureType.NONE;
             this.selectedOrgUnit.coordinates = "";
@@ -304,12 +307,12 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     canDrawOrgUnitPolygon(): boolean {
         return this.selectedOrgUnit.featureType === FeatureType.POLYGON ||
-               this.selectedOrgUnit.featureType === FeatureType.MULTI_POLYGON ||  
+               this.selectedOrgUnit.featureType === FeatureType.MULTI_POLYGON ||
                this.selectedOrgUnit.featureType === FeatureType.NONE;
     }
 
     canDrawOrgUnitMarker(): boolean {
-        return this.selectedOrgUnit.featureType === FeatureType.POINT || 
+        return this.selectedOrgUnit.featureType === FeatureType.POINT ||
                this.selectedOrgUnit.featureType === FeatureType.NONE;
     }
 
@@ -330,7 +333,8 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
 
     // Deletes the orgUnit with the given id
     deleteOrgUnit(orgUnitId: string) {
-        
+        console.log("Temporarily disabled");
+        /*
         this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(
             // All good, just refresh the page so the deleted orgUnit dissapairs
             res => {
@@ -346,20 +350,6 @@ export class SideBarComponent implements SideBarInterface, GlobalsUpdateInterfac
                 console.log(error);
             }
         );
-        
-        /*
-        let orgUnit = this.getOrgUnitById(orgUnitId);
-        for (let group of orgUnit.organisationUnitGroups) {
-            this.orgUnitService.deleteOrgUnitFromOrgUnitGroup(group.id, orgUnit.id).subscribe(
-                res => {
-                    console.log(res);
-                },
-                error => {
-                    console.log(error);
-                }
-            );
-            break;
-        }
         */
     }
 

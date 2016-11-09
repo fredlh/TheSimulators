@@ -120,7 +120,7 @@ export class MapEditComponent implements OnInit {
         } else {
             this.markerAdd = false;
             $("#marker-buttons").show();
-            
+
             if (!((this.editOngoing) || (orgUnitId === ""))) {
                 this.editOngoing = true;
                 this.mapService.fireEvent("getMarkerCoordinates");
@@ -140,7 +140,7 @@ export class MapEditComponent implements OnInit {
     loadEditPolygon(existingData): void {
         const ms = this;
 
-        //if (existingData[0][0].length > 0) {
+        // if (existingData[0][0].length > 0) {
             let swappedcoords = [];
 
             for (let j of existingData) {
@@ -160,7 +160,7 @@ export class MapEditComponent implements OnInit {
             for (let i of swappedcoords) {
                 this.drawnItems.addLayer(this.createEditPolygon(i));
             }
-        //}
+        // }
 
         // Create a backup of the editable layers
         this.previousDrawnItems = [];

@@ -7,7 +7,7 @@ export class FeatureType {
     public static MULTI_POLYGON = "MULTI_POLYGON";
     public static POLYGON = "POLYGON";
     public static POINT = "POINT";
-    public static SYMBOL = "SYMBOL";   
+    public static SYMBOL = "SYMBOL";
 }
 
 export class OrganisationUnitLevel {
@@ -40,9 +40,6 @@ export class Globals {
     public static organisationUnitLevels: OrganisationUnitLevel[] = [];
     public static organisationUnitGroups: OrganisationUnitGroup[] = [];
 
-    public static IN_EDIT_MODE = false;
-    public static IN_EDIT_MODE_POLYGON = false;
-    public static IN_EDIT_MODE_MARKER = false;
 
     // Returns the highest organisation unit level, or -1 on error
     public static getMaxLevel(): number {
@@ -59,6 +56,7 @@ export class Globals {
         for (let orgUnit of Globals.organisationUnitLevels) {
             if (orgUnit.level < minLevel) minLevel = orgUnit.level;
         }
+
         return minLevel === Number.MAX_SAFE_INTEGER ? -1 : minLevel;
     }
 
@@ -67,7 +65,7 @@ export class Globals {
         for (let elem of Globals.organisationUnitLevels) {
             if (elem.level === level) return elem.name;
         }
-        
+
         return "";
     }
 
@@ -87,25 +85,8 @@ export class Globals {
         return -1;
     }
 
-
     public static getNumOrgUnitLevels(): number {
         return Globals.organisationUnitLevels.length;
-    }
-
-
-    public static setInEditMode(polygon: boolean) {
-        Globals.IN_EDIT_MODE = true;
-
-        if (polygon) 
-            Globals.IN_EDIT_MODE_POLYGON = true;
-        else 
-            Globals.IN_EDIT_MODE_MARKER = true;
-    }
-
-    public static endInEditMode(): void {
-        Globals.IN_EDIT_MODE = false;
-        Globals.IN_EDIT_MODE_POLYGON = false;
-        Globals.IN_EDIT_MODE_MARKER = false;
     }
 
     public static formatDate(date: string): string {

@@ -1,11 +1,12 @@
-import { Component } from "@angular/core";
+import { Component }                                    from "@angular/core";
 
-import {OrgUnit} from "../../core/org-unit";
+import { OrgUnitService }                               from "../../services/org-unit.service";
+import { SideBarService }                               from "../../services/side-bar.service";
+import { MapService }                                   from "../../services/map.service";
 
-import {OrgUnitService} from "../../services/org-unit.service";
-import { MapService } from "../../services/map.service";
+import {OrgUnit}                                        from "../../core/org-unit";
 
-import {Globals, FeatureType, OrganisationUnitLevel} from "../../globals/globals";
+import {Globals, FeatureType, OrganisationUnitLevel}    from "../../globals/globals";
 
 
 declare var $: any;
@@ -35,7 +36,8 @@ export class AddOrgUnitComponent {
     private orgUnitLevelErrormessage: string = "";
 
     constructor(private orgUnitService: OrgUnitService,
-                private mapService: MapService) {
+                private mapService: MapService,
+                private sideBarService: SideBarService) {
         this.orgUnit.featureType = FeatureType.NONE;
     }
 
@@ -43,7 +45,7 @@ export class AddOrgUnitComponent {
         this.orgUnitService.checkForUpdatedOrganisationUnitLevels();
         this.showAddOrgUnitPanel();
 
-        
+        // Temp thing to delete an orgUnitLevel
         /*
         this.orgUnitService.deleteOrganisationUnitLevel("rMNZZezHvcG").subscribe(
             res => {
@@ -54,7 +56,6 @@ export class AddOrgUnitComponent {
             }
         );
         */
-        
 
         // Reset the form
         this.orgUnit = new OrgUnit();
@@ -62,7 +63,7 @@ export class AddOrgUnitComponent {
         this.orgUnit.featureType = FeatureType.NONE;
         this.haveSubmitted = false;
         this.saveSuccess = null;
-        this.newOrgUnitLevelNeeded = false;   
+        this.newOrgUnitLevelNeeded = false;
         this.saveOrgUnitLevelSuccess = null;
         this.savedOrgUnitId = "";
         this.savedOrgUnitLevelId = "";
@@ -85,13 +86,13 @@ export class AddOrgUnitComponent {
 
     showAddOrgUnitPanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "block";
-        this.orgUnitService.hideSideBar();
+        this.sideBarService.hideSideBar();
     }
 
     hideAddOrgUnitPanel(unHideSideBar = true): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
         if (unHideSideBar) {
-            this.orgUnitService.unHideSideBar();
+            this.sideBarService.unHideSideBar();
         }
     }
 
@@ -99,37 +100,26 @@ export class AddOrgUnitComponent {
         tmpThis.hideAddOrgUnitPanel();
         this.mapService.endEditMode();
 
-        if (this.newOrgUnitLevelNeeded && this.savedOrgUnitLevelId != "") {
+        if (this.newOrgUnitLevelNeeded && this.savedOrgUnitLevelId !== "") {
             this.orgUnitService.deleteOrganisationUnitLevel(this.savedOrgUnitLevelId).subscribe(
                 res => {
                     console.log("Deleted org unit level that the user added but canceled");
                 },
                 error => {
-                    alert("Failed to delete org unit level on cancel");
+                    console.log("Failed to delete org unit level on cancel");
                 }
             );
         }
     }
 
-
-    // TODO: Check if valid parent on retrievel of parent, rather than the errro code
     async onSubmit() {
         // Ignore if user alreayd have submitted successfully
         if (this.haveSubmitted) return;
 
-        // Display warning if no coordinates are entered
-        /*
-        if (this.orgUnit.featureType === FeatureType.NONE) {
-            if (!confirm("The are no coordinates entered. Sure you want to save?")) return;
-        }
-        */
-
         // Save the required info in the org unit
-        console.log("FIRST");
         this.orgUnit.openingDate = new Date();
         this.orgUnit.displayName = this.orgUnit.name;
         this.orgUnit.shortName = this.orgUnit.name;
-        //this.orgUnit.organisationUnitGroups = [{id : "GGghZsfu7qV"}];
         let tmpThis = this;
 
         // Get the parent
@@ -138,17 +128,23 @@ export class AddOrgUnitComponent {
             return org;
         }
         let parentOrgUnit: OrgUnit = await getOrgUnitParent();
-        console.log(this.orgUnit);
-        
+
+        // Display error and return if the parent wasn't found
+        if (parentOrgUnit === undefined) {
+            this.saveSuccess = false;
+            tmpThis.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
+            return;
+        }
 
         // Check if a new org unit level is needed
-        if (parentOrgUnit.level === Globals.getMaxLevel()) {
+        if (parentOrgUnit.level >= Globals.getMaxLevel()) {
             this.newOrgUnitLevelNeeded = true;
             this.orgUnitLevel.level = parentOrgUnit.level + 1;
             this.haveSubmitted = true;
             $("#submitOrgUnitButton").addClass("disabled");
         }
 
+        // Return if the parent was needed
         if (this.newOrgUnitLevelNeeded && !this.saveOrgUnitLevelSuccess) return;
 
         // Save the org unit
@@ -188,11 +184,11 @@ export class AddOrgUnitComponent {
                 tmpThis.savedOrgUnitLevelId = res.response.uid;
                 $("#submitOrgUnitButton").removeClass("disabled");
                 $("#submitOrgUnitLevelButton").addClass("disabled");
-            }, 
+            },
             error => {
                 tmpThis.orgUnitLevelErrormessage = "Failed to save the org unit level";
                 tmpThis.saveOrgUnitLevelSuccess = false;
-                tmpThis.newOrgUnitLevelNeeded = true;                
+                tmpThis.newOrgUnitLevelNeeded = true;
             }
         );
     }
@@ -216,13 +212,13 @@ export class AddOrgUnitComponent {
         // Check which feature type it is
         if (this.orgUnit.coordinates.lastIndexOf("[[[") > 4) {
             this.orgUnit.featureType = FeatureType.MULTI_POLYGON;
-        
+
         } else if (this.orgUnit.coordinates.indexOf("[[[[") >= 0) {
             this.orgUnit.featureType = FeatureType.POLYGON;
-        
+
         } else if (this.orgUnit.coordinates.indexOf("[[[[") === -1 && this.orgUnit.coordinates !== "[]") {
             this.orgUnit.featureType = FeatureType.POINT;
-            
+
         } else {
             this.orgUnit.featureType = FeatureType.NONE;
             this.orgUnit.coordinates = "";
@@ -242,12 +238,12 @@ export class AddOrgUnitComponent {
 
     canDrawOrgUnitPolygon(): boolean {
         return this.orgUnit.featureType === FeatureType.POLYGON ||
-               this.orgUnit.featureType === FeatureType.MULTI_POLYGON ||  
+               this.orgUnit.featureType === FeatureType.MULTI_POLYGON ||
                this.orgUnit.featureType === FeatureType.NONE;
     }
 
     canDrawOrgUnitMarker(): boolean {
-        return this.orgUnit.featureType === FeatureType.POINT || 
+        return this.orgUnit.featureType === FeatureType.POINT ||
                this.orgUnit.featureType === FeatureType.NONE;
     }
 
@@ -260,7 +256,6 @@ export class AddOrgUnitComponent {
         this.orgUnit.featureType = FeatureType.NONE;
         this.mapService.clearMapEditData();
     }
-
 
     gotoOrgUnit(): void {
         this.hideAddOrgUnitPanel();

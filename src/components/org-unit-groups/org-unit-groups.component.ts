@@ -1,8 +1,12 @@
-import {Component} from "@angular/core";
-import {Globals, OrganisationUnitGroup} from "../../globals/globals";
+import { Component}                         from "@angular/core";
 
-import {OrgUnitService} from "../../services/org-unit.service";
-import {GlobalsUpdateInterface} from "../../core/globals-update.interface";
+import { OrgUnitService}                    from "../../services/org-unit.service";
+import { SideBarService}                    from "../../services/side-bar.service";
+
+import { GlobalsUpdateInterface}            from "../../core/globals-update.interface";
+
+import { Globals, OrganisationUnitGroup}    from "../../globals/globals";
+
 
 @Component({
     selector: "org-unit-groups",
@@ -14,11 +18,8 @@ export class OrgUnitGroupsComponent {
 
     private orgUnitGroups: OrganisationUnitGroup[] = [];
 
-    constructor(private orgUnitService: OrgUnitService) {
-
-    }
-
-   
+    constructor(private orgUnitService: OrgUnitService,
+                private sideBarService: SideBarService) {}
 
     toggleOrgUnitGroups(): void {
         this.orgUnitGroups = Globals.organisationUnitGroups;
@@ -39,12 +40,12 @@ export class OrgUnitGroupsComponent {
 
     showOrgUnitGroupsPanel(): void {
         document.getElementById("orgUnitGroupsArea").style.display = "block";
-        this.orgUnitService.hideSideBar();
+        this.sideBarService.hideSideBar();
     }
 
     hideOrgUnitGroupsPanel(): void {
         document.getElementById("orgUnitGroupsArea").style.display = "none";
-        this.orgUnitService.unHideSideBar();
+        this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {

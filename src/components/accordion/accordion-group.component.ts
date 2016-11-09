@@ -23,9 +23,8 @@ export class AccordionGroupComponent {
     @ContentChild(AccordionToggleComponent)
     toggler: ElementRef;
 
-    constructor(private mapService: MapService, 
-                @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {
-    }
+    constructor(private mapService: MapService,
+                @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {}
 
     checkAndToggle() {
         // if custom toggle element is supplied, then do nothing, custom toggler will take care of it
@@ -46,7 +45,8 @@ export class AccordionGroupComponent {
 
         if (this.isOpened) {
             if (this.orgUnitId !== "") this.mapService.selectMap(this.orgUnitId);
-            $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"}); 
+            $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"});
+
         } else {
            if (this.orgUnitId !== "") this.mapService.deselectMap();
         }
@@ -54,7 +54,7 @@ export class AccordionGroupComponent {
 
     toggleOpen() {
         if (this.isOpened) return;
-        
+
         const isOpenedBeforeWeChange = this.isOpened;
         if (this.accordion.closeOthers)
             this.accordion.closeAll();

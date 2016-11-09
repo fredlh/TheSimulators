@@ -68,7 +68,7 @@ export class MapService {
         for (let poly of polygons) {
             parsedCoordinates.push(poly[0]);
         }
-        
+
         return parsedCoordinates;
     }
 

@@ -68,7 +68,7 @@ export class MapViewComponent implements OnInit {
         this.map.on("zoom", function() {
             self.fireEvent("zoomIcon");
         });
-        
+
         /*
         this.map.on("zoomend", function() {
             self.fireEvent("zoomIcon");
@@ -297,6 +297,10 @@ export class MapViewComponent implements OnInit {
                     // Markers for single point locations
                     let level: any = ms.levels[org.level - 1]; // Hack to force L.Markers into array
 
+                    // Fredrik: Ugly fix right now
+                    // as it can have FeatureType.POINT and have undefined coordinates
+                    if (org.coordinates === undefined) continue;
+
                     let markerCoordinate = JSON.parse(org.coordinates);
                     allCoords.push([markerCoordinate[1], markerCoordinate[0]]);
 
@@ -368,7 +372,7 @@ export class MapViewComponent implements OnInit {
                     })
                     .addEventListener("zoomIcon", function (e) {
                         let currentZoom = ms.map.getZoom();
-                        
+
                         if (id === ms.selectedPolygon) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
