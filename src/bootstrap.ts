@@ -15,6 +15,7 @@ import { SideBarComponent }           from "./components/side-bar/side-bar.compo
 import { OptionsComponent }           from "./components/options/options.component";
 import { AddOrgUnitComponent }        from "./components/add-org-unit/add-org-unit.component";
 import { OrgUnitGroupsComponent }     from "./components/org-unit-groups/org-unit-groups.component";
+import { OrgUnitLevelsComponent }     from "./components/org-unit-levels/org-unit-levels.component";
 import { AccordionComponent }         from "./components/accordion/accordion.component";
 import { AccordionGroupComponent }    from "./components/accordion/accordion-group.component";
 import { AccordionToggleComponent }   from "./components/accordion/accordion-toggle.component";
@@ -43,7 +44,8 @@ import { SideBarService }             from "./services/side-bar.service";
         AccordionHeadingComponent,
         OptionsComponent,
         AddOrgUnitComponent,
-        OrgUnitGroupsComponent
+        OrgUnitGroupsComponent,
+        OrgUnitLevelsComponent
     ],
     providers: [
         MapService,

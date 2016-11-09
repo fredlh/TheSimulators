@@ -1,0 +1,88 @@
+<div id="toggleOrgUnitLevelsButton">
+    <button type="button" class="btn btn-warning" aria-label="Left Align" (click)="toggleOrgUnitLevels()">
+        Organisation unit levels
+    </button>
+</div>
+
+<div id="orgUnitLevelsArea" class="org-unit-levels">
+    <div class="org-unit-levels-content">
+        <span class="org-unit-levels-close">x</span>
+        
+        <h1>Manage organisation unit levels</h1>
+        <p>Here you can view, edit, delete and add organisation unit levels</p>
+
+        <br>
+    
+        
+        <table class="table table-striped table-hover" id="orgUnitLevelTable">
+                <tr>
+                    <th>Level</th>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Created</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                <tr *ngFor="let level of orgUnitLevels">
+                    <td>{{level.level}}</td>
+                    <td>{{level.name}}</td>
+                    <td>{{level.id}}</td>
+                    <td>{{globals.formatDate(level.created)}}</td>
+                    <td><button type="button" class="btn btn-warning" aria-label="Left Align" (click)="editOrgUnitLevel(level.id)">Edit</button></td>
+                    <td><button type="button" class="btn btn-danger" aria-label="Left Align" (click)="deleteOrgUnitLevel(level.id)">Delete</button></td>
+                </tr>
+        </table>
+        <hr>
+
+
+        <form (ngSubmit)="onSaveOrgUnit()" #orgUnitLevelsForm="ngForm">
+            <h3>{{typeMessage}}</h3>
+            <div class="form-group row">
+                <label class="col-lg-1 col-form-label">Name: </label>
+                <div class="col-lg-4">
+                    <input class="form-control" type="text" required
+                        [(ngModel)]="orgUnitLevel.name" name="orgUnitLevelName">
+                </div>
+                <label class="col-lg-1 col-form-label">Level: </label>
+                <div class="col-lg-2">
+                    <input class="form-control" type="number" min="0" step="1" required
+                        [(ngModel)]="orgUnitLevel.level" name="orgUnitLevelLevel">
+                </div>
+                
+                <input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
+                <input *ngIf="isEditing()" type="button" value="Cancel edit" class="btn btn-primary" (click)="onCancelEdit()">
+                
+                <input *ngIf="isEditing()" type="submit" value="Save" class="btn btn-success" [disabled]="!orgUnitLevelsForm.form.valid">
+                <input *ngIf="!isEditing()" type="submit" value="Add" class="btn btn-success" [disabled]="!orgUnitLevelsForm.form.valid">
+            </div>
+
+            
+            <br/>
+        </form>
+        
+        
+        <div *ngIf="formStatus === false" class="alert alert-danger">
+            <strong>Error:</strong> {{statusMessage}}
+        </div>
+
+        <div *ngIf="formStatus === true" class="alert alert-success">
+            <strong>Success:</strong> {{statusMessage}}
+        </div>
+        
+
+
+        <div id="confirmDeleteArea" class="confirm-delete">
+            <div class="confirm-delete-content">
+                <div class="alert alert-danger" role="alert">
+                    Are you sure you want to delete {{orgUnitLevel.name}} with id '{{orgUnitLevel.id}}'?
+                    <span style="float: right; margin-top: -7px;">
+                        <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDelete(false)">No</button>
+                        <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDelete(true)">Yes</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

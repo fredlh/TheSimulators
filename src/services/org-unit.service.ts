@@ -34,7 +34,7 @@ export class OrgUnitService {
 
     constructor(private http: Http, private mapService: MapService) {
         // Get all the organisation unit levels
-        this.checkForUpdatedOrganisationUnitLevels();
+        this.refreshOrganisationUnitLevels();
 
         // Get all the organisation unit groups
         this.getOrganisationUnitGroups().subscribe(res => {
@@ -45,7 +45,7 @@ export class OrgUnitService {
         });
     }
 
-    checkForUpdatedOrganisationUnitLevels(): void {
+    refreshOrganisationUnitLevels(): void {
         this.getOrganisationUnitLevels().subscribe(res => {
 
             let levels: OrganisationUnitLevel[] = res.organisationUnitLevels;
@@ -86,6 +86,13 @@ export class OrgUnitService {
     deleteOrganisationUnitLevel(orgUnitLevelId: string): any {
         return this.http
             .delete(`${this.serverUrl}/organisationUnitLevels/${orgUnitLevelId}`, {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error));
+    }
+
+    updateOrganisationUnitLevel(orgUnitLevel: OrganisationUnitLevel): any {
+        return this.http
+            .put(`${this.serverUrl}/organisationUnitLevels/${orgUnitLevel.id}`, JSON.stringify(orgUnitLevel), {headers: this.headers})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }
@@ -144,11 +151,29 @@ export class OrgUnitService {
             .catch((error: any) => Observable.throw(error));
     }
 
-    deleteOrgUnitFromOrgUnitGroup(orgUnitGroupId: string, orgUnitId: string): any {
+    saveOrganisationUnitGroup(orgUnitGroup): any {
         return this.http
-            .delete(`${this.serverUrl}/organisationUnitGroups/${orgUnitGroupId}/organisationUnits/${orgUnitId}`, {headers: this.headers})
+            .post(`${this.serverUrl}/organisationUnitGroups`, JSON.stringify(orgUnitGroup), {headers: this.headers})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
+    }
+
+    deleteOrganisationUnitGroup(orgUnitGroupId: string): any {
+        return this.http
+            .delete(`${this.serverUrl}/organisationUnitGroups/${orgUnitGroupId}`, {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error));
+    }
+
+    updateOrganisationUnitGroup(orgUnitGroup: OrganisationUnitGroup): any {
+        return this.http
+            .put(`${this.serverUrl}/organisationUnitGroups/${orgUnitGroup.id}`, JSON.stringify(orgUnitGroup), {headers: this.headers})
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error));
+    }
+
+    getOrganisationUnitGroup(orgUnitId: string): any {
+        return this.getRequest(`organisationUnitGroups/${orgUnitId}?fields=:all&paging=false`);
     }
 
     updateOrgUnit(orgUnit: OrgUnit): any {

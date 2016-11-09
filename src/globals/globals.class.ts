@@ -22,6 +22,9 @@ export class OrganisationUnitGroup {
     code: string;
     id: string;
     name: string;
+    shortName: string;
+    displayName: string;
+    created: Date;
     symbol: string;
     dimensionItem: string;
     dimensionItentType: string;

@@ -42,7 +42,7 @@ export class AddOrgUnitComponent {
     }
 
     openAddOrgUnitForm(): void {
-        this.orgUnitService.checkForUpdatedOrganisationUnitLevels();
+        this.orgUnitService.refreshOrganisationUnitLevels();
         this.showAddOrgUnitPanel();
 
         // Temp thing to delete an orgUnitLevel
@@ -177,7 +177,7 @@ export class AddOrgUnitComponent {
         let tmpThis = this;
         this.orgUnitService.saveOrganisationUnitLevel(this.orgUnitLevel).subscribe(
             res => {
-                tmpThis.orgUnitService.checkForUpdatedOrganisationUnitLevels();
+                tmpThis.orgUnitService.refreshOrganisationUnitLevels();
                 tmpThis.haveSubmitted = false;
                 tmpThis.saveOrgUnitLevelSuccess = true;
                 tmpThis.newOrgUnitLevelNeeded = false;

@@ -10,11 +10,6 @@ OrganisationUnitGroups:
 - How to add and remove groups from an orgUnit?
 
 
-OrganisationUnitLevels:
------------------------
-- Implement a manage OrganisationUnitLevels panel where a user can view info, add and delete orgUnitLevels
-
-
 Search:
 ------
 - Auto search on each new word, rather than a button?
@@ -48,3 +43,4 @@ API notes/suggestions:
     - Isn't it enoug that each orgUnit knows their group, and the OrganisationUnitGroups is just a lookup object?
 - Why doesn't the API require a OrganisationUnitLevel for each level an orgUnit can have?
 - Why do delete error compalin about "DataObject" and not specify which binding it fails on?
+- Why can parent be undefined? Why not require and just have empty string if no parent (level 1)?
