@@ -1,7 +1,7 @@
 import {Component, OnInit } from "@angular/core";
 import {MapService} from "../../services/map.service";
 import {Map, MouseEvent, Marker} from "leaflet";
-import {Globals} from "../../globals/globals";
+import {Globals} from "../../globals/globals.class";
 
 @Component({
     selector: "marker",

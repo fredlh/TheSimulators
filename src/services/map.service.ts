@@ -6,9 +6,9 @@ import { MapEditComponent } from "../components/map-edit/map-edit.component";
 import { SideBarComponent } from "../components/side-bar/side-bar.component";
 import { AccordionComponent } from "../components/accordion/accordion.component";
 
-import { Globals } from "../globals/globals";
+import { Globals } from "../globals/globals.class";
 
-import { OrgUnit } from "../core/org-unit";
+import { OrgUnit } from "../core/org-unit.class";
 
 import {Map} from "leaflet";
 

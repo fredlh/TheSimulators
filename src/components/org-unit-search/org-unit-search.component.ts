@@ -3,11 +3,11 @@ import { FormControl }          from "@angular/forms";
 import { Subject }              from "rxjs/Subject";
 import { Observable }           from "rxjs/Observable";
 
-import { OrgUnit }              from "../../core/org-unit";
+import { OrgUnit }              from "../../core/org-unit.class";
 
 import { OrgUnitService }       from "../../services/org-unit.service";
 
-import { Globals }            from "../../globals/globals";
+import { Globals }            from "../../globals/globals.class";
 
 import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
 

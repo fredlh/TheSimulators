@@ -6,7 +6,7 @@ import { MapService }                       from "../../services/map.service";
 
 import { GlobalsUpdateInterface}            from "../../core/globals-update.interface";
 
-import { Globals, OrganisationUnitLevel }   from "../../globals/globals";
+import { Globals, OrganisationUnitLevel }   from "../../globals/globals.class";
 
 declare var $: any;
 

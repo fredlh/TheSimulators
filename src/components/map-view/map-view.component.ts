@@ -5,9 +5,7 @@ import {MapService} from "../../services/map.service";
 import {GeocodingService} from "../../services/geocoding.service";
 import {Location} from "../../core/location.class";
 
-import { MapViewInterface } from "../../core/map-view.interface";
-
-import { OrgUnit } from "../../core/org-unit";
+import { OrgUnit } from "../../core/org-unit.class";
 
 import { OrgUnitService } from "../../services/org-unit.service";
 
@@ -15,7 +13,7 @@ import { OptionsComponent, MapOptions } from "../options/options.component";
 
 import { MouseEvent } from "leaflet";
 
-import { Globals, FeatureType } from "../../globals/globals";
+import { Globals, FeatureType } from "../../globals/globals.class";
 
 const leafletDraw = require("leaflet-draw");
 

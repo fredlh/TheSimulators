@@ -5,7 +5,7 @@ import { SideBarService}                    from "../../services/side-bar.servic
 
 import { GlobalsUpdateInterface}            from "../../core/globals-update.interface";
 
-import { Globals, OrganisationUnitGroup}    from "../../globals/globals";
+import { Globals, OrganisationUnitGroup}    from "../../globals/globals.class";
 
 
 @Component({

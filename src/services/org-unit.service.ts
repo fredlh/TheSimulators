@@ -10,8 +10,8 @@ import { MapService }                                           from "./map.serv
 import { GlobalsUpdateInterface }                               from "../core/globals-update.interface";
 import { AccordionComponent }                                   from "../components/accordion/accordion.component";
 import { SideBarComponent }                                     from "../components/side-bar/side-bar.component";
-import { OrgUnit }                                              from "../core/org-unit";
-import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals";
+import { OrgUnit }                                              from "../core/org-unit.class";
+import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals.class";
 
 
 @Injectable()

@@ -4,12 +4,11 @@ import { OrgUnitService }           from "../../services/org-unit.service";
 import { MapService }               from "../../services/map.service";
 import { SideBarService}            from "../../services/side-bar.service";
 
-import { SideBarInterface }         from "../../core/side-bar.interface";
 import { GlobalsUpdateInterface}    from "../../core/globals-update.interface";
 
-import { OrgUnit }                  from "../../core/org-unit";
+import { OrgUnit }                  from "../../core/org-unit.class";
 
-import { Globals, FeatureType }     from "../../globals/globals";
+import { Globals, FeatureType }     from "../../globals/globals.class";
 
 
 declare var $: any;

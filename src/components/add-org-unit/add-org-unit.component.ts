@@ -4,9 +4,9 @@ import { OrgUnitService }                               from "../../services/org
 import { SideBarService }                               from "../../services/side-bar.service";
 import { MapService }                                   from "../../services/map.service";
 
-import {OrgUnit}                                        from "../../core/org-unit";
+import {OrgUnit}                                        from "../../core/org-unit.class";
 
-import {Globals, FeatureType, OrganisationUnitLevel}    from "../../globals/globals";
+import {Globals, FeatureType, OrganisationUnitLevel}    from "../../globals/globals.class";
 
 
 declare var $: any;
