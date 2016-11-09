@@ -1,9 +1,3 @@
-OrgUnit:
---------
-- Check whether all fields are implemented correctly
-- Any use of OrganisationUnitGroups?
-
-
 OrganisationUnitGroups:
 -----------------------
 - Need to be able to manage them?
@@ -28,6 +22,14 @@ Delete:
 Filter:
 -------
 - Add filter option on OrganisationUnitGroups with a multiple select or such
+- Move the filter when the side bar is resized
+- New placement?
+
+
+Side bar:
+---------
+- Display the parent name as well as the ID?
+    - If yes, how to? A button to retrieve the info or retrive when clicked on in the side bar?
 
 
 General:
