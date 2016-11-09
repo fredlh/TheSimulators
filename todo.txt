@@ -4,10 +4,15 @@ OrgUnit:
 - Any use of OrganisationUnitGroups?
 
 
-OrgUnitService:
----------------
-- Split parts to mapService and communicationSerice(or something)
-- Cleanup: remove unneeded functions, re-order and such
+OrganisationUnitGroups:
+-----------------------
+- Need to be able to manage them?
+- How to add and remove groups from an orgUnit?
+
+
+OrganisationUnitLevels:
+-----------------------
+- Implement a manage OrganisationUnitLevels panel where a user can view info, add and delete orgUnitLevels
 
 
 Search:
@@ -15,8 +20,31 @@ Search:
 - Auto search on each new word, rather than a button?
 - Combine the orgUnit and place search into same place, with a switch under advanced settings or so?
 - Able to place a marker and say "get all orgUnits (filter too?) within x distance"
+- Implement the local filters here too? (filter on name and orgUnitGroup)
+
+
+Delete:
+-------
+- Check further how to delete orgUnits with groups?
+- Only able to delete orgUnits with no groups?
+- Remove the functionality?
+
+
+Filter:
+-------
+- Add filter option on OrganisationUnitGroups with a multiple select or such
 
 
 General:
 --------
-- Cleanup of imports
+- Commenting
+- Decide on final design (placement of things and color)
+- Go through all HTML & CSS, fix naming conventions and as much as hard coded of pixels as possible
+
+
+API notes/suggestions:
+----------------------
+- Why the need of two-way binding of orgUnitGroups?
+    - Isn't it enoug that each orgUnit knows their group, and the OrganisationUnitGroups is just a lookup object?
+- Why doesn't the API require a OrganisationUnitLevel for each level an orgUnit can have?
+- Why do delete error compalin about "DataObject" and not specify which binding it fails on?
