@@ -1,6 +1,6 @@
 import { Component, OnInit }        from "@angular/core";
 
-import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts}         from "angular-2-dropdown-multiselect/src/multiselect-dropdown";
+import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts}         from "../../modules/multiselect-dropdown";
 
 
 import { OrgUnitService }           from "../../services/org-unit.service";

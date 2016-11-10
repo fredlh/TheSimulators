@@ -206,8 +206,8 @@ export class OrgUnitService {
         }
 
         let searchUrl = "&query=" + term;
-        if (level !== "") searchUrl += "&level=" + level;
-        if (maxLevel !== "") searchUrl += "&maxLevel=" + maxLevel;
+        if (level !== "All") searchUrl += "&level=" + level;
+        if (maxLevel !== "None") searchUrl += "&maxLevel=" + maxLevel;
 
         this.orgUnitStack = [];
 

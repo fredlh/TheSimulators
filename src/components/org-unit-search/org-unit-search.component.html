@@ -1,9 +1,10 @@
 <div id="search-component">
     <div class="form-group">
         <form id="searchForm">
-            <input type="text" class="form-control" #searchBox id="search-box" placeholder="Search for an origanisation unit ...">
-            <input type="submit" value="Search" id="search-button" class="btn btn-primary" 
-                  (click)="search(searchBox.value, level.value, maxLevel.value)">
+            <input type="text" class="form-control" id="search-box" placeholder=" Enter name of an organisation unit ..."
+                   [(ngModel)]="searchOptions.term" name="searchTerm">
+
+            <input type="submit" value="Search" id="search-button" class="btn btn-primary" (click)="search()">
         </form>
         <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Search</button>
     </div>
@@ -11,22 +12,34 @@
     <div id="advancedSearchDiv" style="display: none;">
         <div class="form-group row">
             <form id="advancedSearchForm">
-                <label id="labelText" class="col-sm-4 col-form-label-lg">Level</label>
-                <div class="col-xs-8">
-                    <select class="form-control" id="exampleSelect1" #level>
-                        <option value="">All</option>
+                <label id="labelText" class="col-sm-5 col-form-label-lg">Level</label>
+                <div class="col-xs-7">
+                    <select class="form-control" [(ngModel)]="searchOptions.level" name="searchOptionsLevel">
+                        <option value="All">All</option>
                         <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
                     </select>
                 </div>
-                <label id="labelText" class="col-sm-4 col-form-label-lg">Max level</label>
-                <div class="col-xs-8">
-                    <select class="form-control" id="exampleSelect1" #maxLevel>
-                        <option value="">None</option> 
-                        <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>              
+
+                <label id="labelText" class="col-sm-5 col-form-label-lg">Max level</label>
+                <div class="col-xs-7">
+                    <select class="form-control" [(ngModel)]="searchOptions.maxLevel" name="searchOptionsMaxLevel">
+                        <option value="None">None</option>
+                        <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
                     </select>
                 </div>
-                <input type="submit" value="Get all org units" id="empty-search-button" class="btn btn-primary" 
+
+                <label id="labelText" class="col-sm-5 col-form-label-lg">Search type</label>
+                <div class="col-xs-7">
+                    <select class="form-control" [(ngModel)]="searchOptions.searchType" name="searchType">
+                        <option value="Organisation units">Organisation units</option> 
+                        <option value="Locations">Locations</option>              
+                    </select>
+                </div>
+
+                <!--
+                <input type="submit" value="Get all org units" class="btn btn-primary" 
                   (click)="getAllOrgUnits()">
+                -->
             </form>
         </div>
     </div>

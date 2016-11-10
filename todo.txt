@@ -7,7 +7,6 @@ OrganisationUnitGroups:
 Search:
 ------
 - Auto search on each new word, rather than a button?
-- Combine the orgUnit and place search into same place, with a switch under advanced settings or so?
 - Able to place a marker and say "get all orgUnits (filter too?) within x distance"
 - Implement the local filters here too? (filter on name and orgUnitGroup)
 
@@ -21,7 +20,6 @@ Delete:
 
 Filter:
 -------
-- Add filter option on OrganisationUnitGroups with a multiple select or such
 - Move the filter when the side bar is resized
 - New placement?
 
