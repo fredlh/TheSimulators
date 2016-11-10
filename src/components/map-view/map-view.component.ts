@@ -1,19 +1,19 @@
-import {Component, ViewChild, OnInit} from "@angular/core";
-import {NavigatorComponent} from "../navigator/navigator.component";
-import {MarkerComponent} from "../marker/marker.component";
-import {MapService} from "../../services/map.service";
-import {GeocodingService} from "../../services/geocoding.service";
-import {Location} from "../../core/location.class";
+import { Component, ViewChild, OnInit } from "@angular/core";
 
-import { OrgUnit } from "../../core/org-unit.class";
+import { OrgUnitService }               from "../../services/org-unit.service";
+import { MapService }                   from "../../services/map.service";
+import { GeocodingService }             from "../../services/geocoding.service";
 
-import { OrgUnitService } from "../../services/org-unit.service";
+import { NavigatorComponent }           from "../navigator/navigator.component";
+import { MarkerComponent }              from "../marker/marker.component";
+
+import { Location }                     from "../../core/location.class";
+import { OrgUnit }                      from "../../core/org-unit.class";
 
 import { OptionsComponent, MapOptions } from "../options/options.component";
+import { Globals, FeatureType }         from "../../globals/globals.class";
 
-import { MouseEvent } from "leaflet";
-
-import { Globals, FeatureType } from "../../globals/globals.class";
+import { MouseEvent }                   from "leaflet";
 
 const leafletDraw = require("leaflet-draw");
 
@@ -25,20 +25,32 @@ const leafletDraw = require("leaflet-draw");
 })
 
 export class MapViewComponent implements OnInit {
+    // Holds all markers and polygons
+    // [level][marker/polygon]
     private levels: L.GeoJSON[][] = [];
-    private layers = [];
-    private selectedPolygon;
-    private maxLevelReached: boolean;
 
+    // Markers/Polygons are put in seperate layers depending on level
+    // Makes sure higher levels are "on top of" lower levels
+    private layers = [];
+
+    // User selected element, either through map click or selected in side bar
+    private selectedElement;
+
+    // Do zoom or not, set using options panel in the UI
     private autoZoomOnSearch: boolean;
     private autoZoomOnGetChildren: boolean;
     private autoZoomOnSelect: boolean;
 
     private map;
 
+    // Used as part of editing
+    // When editing:
+    //   -  Element with id = editId should be hidden
+    //   -  Click and doubleclick events need to be disabled
     private editId;
     private eventsEnabled = true;
 
+    // Locally stored styles for polygons, updated through the options panel in the UI
     private defaultStyle;
     private defaultHoverStyle;
     private defaultSelectedStyle;
@@ -61,8 +73,11 @@ export class MapViewComponent implements OnInit {
 
         this.map = this.mapService.map;
 
-        // Use either on zoom or zoomend,
-        // zoom produces prettier results, zoomend is more kind to the system
+        L.control.zoom({ position: "topright" }).addTo(this.map);
+        L.control.layers(this.mapService.baseMaps).addTo(this.map);
+        L.control.scale().addTo(this.map);
+
+        // Fire event to resize icons depending on zoom
         this.map.on("zoom", function() {
             self.fireEvent("zoomIcon");
         });
@@ -73,13 +88,7 @@ export class MapViewComponent implements OnInit {
         });
         */
 
-        L.control.zoom({ position: "topright" }).addTo(this.map);
-        L.control.layers(this.mapService.baseMaps).addTo(this.map);
-        L.control.scale().addTo(this.map);
-
         this.mapService.registerMapView(this);
-
-        this.maxLevelReached = false;
         let map = this.map;
 
         this.geocoder.getCurrentLocation()
@@ -88,6 +97,8 @@ export class MapViewComponent implements OnInit {
                 err => console.error(err)
             );
 
+        // Initialize click counter
+        // Used to prevent single click action for doubleclicks
         map.clicked = 0;
     }
 
@@ -116,21 +127,20 @@ export class MapViewComponent implements OnInit {
         this.editId = orgUnitId;
     }
 
-    draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
+    draw(orgUnits: OrgUnit[], onSearch: boolean): void {
         this.levels = [[], [], [], []];
-        this.selectedPolygon = "";
-        this.maxLevelReached = maxLevelReached;
+        this.selectedElement = "";
 
         let doFly = ((this.autoZoomOnSearch && onSearch) || (this.autoZoomOnGetChildren && !onSearch));
 
-        this.addMapElement(orgUnits, maxLevelReached, doFly);
+        this.addMapElement(orgUnits, doFly);
     }
 
     drawAdditionalOrgUnits(orgUnits: OrgUnit[]): void {
         // Should it include max level from something else?
         // Should it fly to, according to parameter?
 
-        this.addMapElement(orgUnits, this.maxLevelReached, false);
+        this.addMapElement(orgUnits, false);
     }
 
     previewCoordinates(coords: number[][][][]): void {
@@ -139,7 +149,7 @@ export class MapViewComponent implements OnInit {
 
     selectMap(orgUnitId: string): void {
         // Set selected
-        this.selectedPolygon = orgUnitId;
+        this.selectedElement = orgUnitId;
 
         // Tell all polygons to check, could also result in a fly to depending on settings
         this.fireEvent("selectedChanged");
@@ -153,7 +163,7 @@ export class MapViewComponent implements OnInit {
         }
     }
 
-    private addMapElement(orgUnits: OrgUnit[], maxLevelReached: boolean, doFly: boolean) {
+    private addMapElement(orgUnits: OrgUnit[], doFly: boolean) {
         let map = this.map;
         let allCoords = [];
         const ms = this;
@@ -198,7 +208,7 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("mouseover", function(e) {
                         if (ms.eventsEnabled) {
                             this.setStyle(function(feature) {
-                                if (ms.selectedPolygon !== feature.properties.id) {
+                                if (ms.selectedElement !== feature.properties.id) {
                                     return OptionsComponent.getMapOptionsHover(levelIndex);
                                 }
                             });
@@ -209,7 +219,7 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("mouseout", function(e) {
                         if (ms.eventsEnabled) {
                             this.setStyle(function(feature) {
-                                if (ms.selectedPolygon !== feature.properties.id) {
+                                if (ms.selectedElement !== feature.properties.id) {
                                     return OptionsComponent.getMapOptionsDefault(levelIndex);
                                 }
                             });
@@ -219,8 +229,8 @@ export class MapViewComponent implements OnInit {
                         if (ms.eventsEnabled) {
                             map.clicked = map.clicked + 1;
                             setTimeout(function() {
-                                if (map.clicked === 1 && ms.selectedPolygon !== id) {
-                                    ms.selectedPolygon = id;
+                                if (map.clicked === 1 && ms.selectedElement !== id) {
+                                    ms.selectedElement = id;
                                     ms.mapService.mapSelect(id);
                                     ms.fireEvent("selectedChanged");
                                 }
@@ -233,17 +243,15 @@ export class MapViewComponent implements OnInit {
                         if (ms.eventsEnabled) {
                             map.clicked = 0;
 
-                            if (!(maxLevelReached)) {
-                                ms.selectedPolygon = "";
-                                ms.orgUnitService.mapGetChildren(id);
-                                ms.fireEvent("selectedChanged");
-                            }
+                            ms.selectedElement = "";
+                            ms.orgUnitService.mapGetChildren(id);
+                            ms.fireEvent("selectedChanged");
                         }
                     })
                     .addEventListener("selectedChanged", function(e) {
                         let geo = this;
                         this.setStyle(function(feature) {
-                            if (ms.selectedPolygon === feature.properties.id) {
+                            if (ms.selectedElement === feature.properties.id) {
 
                                 if (ms.autoZoomOnSelect) {
                                     map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
@@ -258,7 +266,7 @@ export class MapViewComponent implements OnInit {
                     })
                     .addEventListener("optionsChanged", function(e) {
                         this.setStyle(function(feature) {
-                            if (ms.selectedPolygon === feature.properties.id) {
+                            if (ms.selectedElement === feature.properties.id) {
                                 return OptionsComponent.getMapOptionsSelected(levelIndex);
 
                             } else {
@@ -324,7 +332,7 @@ export class MapViewComponent implements OnInit {
                     let tempMark = L.marker(markerlatlng, markOptions)
                     .addEventListener("click", function(e) {
                         if (ms.eventsEnabled) {
-                            ms.selectedPolygon = id;
+                            ms.selectedElement = id;
                             ms.mapService.mapSelect(id);
                             ms.fireEvent("selectedChanged");
                         }
@@ -332,7 +340,7 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("selectedChanged", function(e) {
                         let currentZoom = ms.map.getZoom();
 
-                        if (id === ms.selectedPolygon) {
+                        if (id === ms.selectedElement) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
@@ -371,7 +379,7 @@ export class MapViewComponent implements OnInit {
                     .addEventListener("zoomIcon", function (e) {
                         let currentZoom = ms.map.getZoom();
 
-                        if (id === ms.selectedPolygon) {
+                        if (id === ms.selectedElement) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
