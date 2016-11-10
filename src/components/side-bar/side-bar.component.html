@@ -196,7 +196,7 @@
 
 
         <label id="labelText" class="col-form-label-lg">Organisation unit groups</label>
-                <select id="groupSelect" class="selectpicker" id="exampleSelect1" multiple 
+                <select id="groupSelect" size=10 style="height: 100%;" multiple 
                         [(ngModel)]="filterOptions.orgUnitGroups" name="filterOptionsorgUnitGroups">
                     <option *ngFor="let group of orgUnitGroups; let i = index" value="{{group.id}}">{{group.name}}</option>              
                 </select>

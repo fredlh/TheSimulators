@@ -383,17 +383,16 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     // Applies the filter on displayedOrgUnits
     // Called when apply filter button is clicked
-    // TODO: Rewrite it, too ugly atm
     applyFilter(): void {
         let options = this.filterOptions;
 
-        console.log(options);
-
+        // Save the values in a short variable to avoid very long lines
         let name = this.filterOptions.name;
         let type = this.filterOptions.nameFilterType;
         let level = this.filterOptions.level;
         let groups = this.filterOptions.orgUnitGroups;
 
+        // Filter on name
         let filteredName = [];
         if (name !== "") {
             filteredName = this.orgUnits.filter(function(orgUnit) {
@@ -405,6 +404,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             })
         }
 
+        // Filter on level
         let filteredLevel = [];
         if (level !== "All") {
             filteredLevel = this.orgUnits.filter(function(orgUnit) {
@@ -413,6 +413,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             })
         }
 
+        // Filter on orgUnitGroups
         let filteredGroups = [];
         if (groups.length > 0) {
             filteredGroups = this.orgUnits.filter(function(orgUnit) {
@@ -428,24 +429,30 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             })
         }
 
-        let tempArray = [];
-        if (filteredName.length > 1) {
-            outer: for (let group of filteredGroups) {
-                for (let name of filteredName) {
-                    if (group === name) {
-                        tempArray.push(group);
-                        continue outer;
-                    }
+        // Merge the 3 filtered arrys on duplicates
+        let tmpArray = this.mergeArraysOnDuplicates(filteredName, filteredLevel);
+        let filteredArray = this.mergeArraysOnDuplicates(tmpArray, filteredGroups);
+
+        // Set displayOrgUnits and call the mapService so the map draws only the filtered orgUnits
+        this.displayedOrgUnits = JSON.parse(JSON.stringify(filteredArray));
+        this.filterApplied = true;
+        this.mapService.onFilter(this.displayedOrgUnits);
+    }
+
+
+    mergeArraysOnDuplicates(array1: any[], array2: any[]): any[] {
+        if (array1.length === 0) return array2;
+        if (array2.length === 0) return array1;
+
+        let newArray = [];
+        for (let a of array1) {
+            for (let b of array2) {
+                if (a.id === b.id) {
+                    newArray.push(a);
                 }
             }
         }
-
-        this.displayedOrgUnits = tempArray.filter(function(item, pos) {
-            return tempArray.indexOf(item) == pos;
-        })
-        
-        this.filterApplied = true;
-        this.mapService.onFilter(this.displayedOrgUnits);
+        return newArray;
     }
 
     // Clears the filter
