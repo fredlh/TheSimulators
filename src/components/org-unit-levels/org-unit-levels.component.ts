@@ -25,7 +25,7 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
     private formStatus: boolean;
 
     // The status message when the user performs an action
-    private statusMessage: string;;
+    private statusMessage: string;
 
     // The type, either add or edit
     private typeMessage: string = "Add new organisation unit level";
@@ -84,7 +84,7 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
         let tmpThis = this;
         $("td").filter(function() {
-            return $(this).text() == tmpThis.lastEditId;
+            return $(this).text() === tmpThis.lastEditId;
         }).closest("tr").css({"background-color": ""});
     }
 
@@ -97,11 +97,11 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
         let tmpThis = this;
         $("td").filter(function() {
-            return $(this).text() == tmpThis.lastEditId;
+            return $(this).text() === tmpThis.lastEditId;
         }).closest("tr").css({"background-color": ""});
 
         $("td").filter(function() {
-            return $(this).text() == orgUnitLevelId;
+            return $(this).text() === orgUnitLevelId;
         }).closest("tr").css({"background-color": "lightblue"});
 
         this.lastEditId = orgUnitLevelId;
@@ -133,7 +133,7 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
                 tmpThis.formStatus = false;
                 tmpThis.statusMessage = "Failed to delete the organisation unit level. Please refresh and try again";
             }
-        )
+        );
 
         /*
         let orgUnitGroup = new OrganisationUnitGroup();

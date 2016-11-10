@@ -39,7 +39,7 @@ export class OrgUnitService {
     constructor(private http: Http, private mapService: MapService) {
         // Get all the organisation unit groups
         this.refreshOrganisationUniGroups();
-        
+
          // Get all the organisation unit levels
         this.refreshOrganisationUnitLevels();
     }
@@ -268,7 +268,7 @@ export class OrgUnitService {
         if (retValue !== undefined) {
             this.orgUnits = retValue;
 
-            this.mapService.draw(this.orgUnits, false, false);
+            this.mapService.draw(this.orgUnits, false);
             this.sideBar.updateList(this.orgUnits);
             this.lastApiUrlCall = "getOrgUnitWithChildren|" + this.orgUnits[0].id;
         }
@@ -290,7 +290,7 @@ export class OrgUnitService {
 
     private callOnSearch(): void {
         this.sideBar.updateList(this.orgUnits);
-        this.mapService.draw(this.orgUnits, false, true);
+        this.mapService.draw(this.orgUnits, true);
     }
 
     mapGetChildren(orgUnitId: string): void {
@@ -324,13 +324,13 @@ export class OrgUnitService {
                 this.orgUnits = res.organisationUnits;
                 onSearch = true;
                 this.sideBar.updateList(this.orgUnits);
-                this.mapService.draw(this.orgUnits, false, onSearch);
+                this.mapService.draw(this.orgUnits, onSearch);
             });
         }
 
         if (!onSearch) {
             this.sideBar.updateList(this.orgUnits);
-            this.mapService.draw(this.orgUnits, false, onSearch);
+            this.mapService.draw(this.orgUnits, onSearch);
         }
     }
 

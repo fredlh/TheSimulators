@@ -1,6 +1,6 @@
 import { Component, OnInit }        from "@angular/core";
 
-import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts}         from 'angular-2-dropdown-multiselect/src/multiselect-dropdown';
+import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts}         from "angular-2-dropdown-multiselect/src/multiselect-dropdown";
 
 
 import { OrgUnitService }           from "../../services/org-unit.service";
@@ -56,23 +56,23 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     private selectBoxSettings: IMultiSelectSettings = {
         pullRight: true,
         enableSearch: true,
-        checkedStyle: 'checkboxes',
-        buttonClasses: 'btn btn-default',
+        checkedStyle: "checkboxes",
+        buttonClasses: "btn btn-default",
         selectionLimit: 0,
         closeOnSelect: false,
         showCheckAll: true,
         showUncheckAll: true,
         dynamicTitleMaxItems: 4,
-        maxHeight: '300px',
+        maxHeight: "300px",
     };
 
     private selectBoxTexts: IMultiSelectTexts = {
-        checkAll: 'Check all',
-        uncheckAll: 'Uncheck all',
-        checked: 'checked',
-        checkedPlural: 'checked',
-        searchPlaceholder: 'Search...',
-        defaultTitle: 'Select',
+        checkAll: "Check all",
+        uncheckAll: "Uncheck all",
+        checked: "checked",
+        checkedPlural: "checked",
+        searchPlaceholder: "Search...",
+        defaultTitle: "Select",
     };
 
     constructor(private orgUnitService: OrgUnitService,
@@ -429,7 +429,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
                 if (type === "includes" && orgUnit.displayName.includes(name)) return true;
                 if (type === "equals" && orgUnit.displayName === name) return true;
                 else return false;
-            })
+            });
         }
 
         // Filter on level
@@ -438,7 +438,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             tmpOrgUnits = tmpOrgUnits.filter(function(orgUnit) {
                 if (+level === orgUnit.level) return true;
                 else return false;
-            })
+            });
         }
 
         // Filter on orgUnitGroups
@@ -454,7 +454,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
                     return false;
                 }
                 return true;
-            })
+            });
         }
 
         // Set displayOrgUnits and call the mapService so the map draws only the filtered orgUnits

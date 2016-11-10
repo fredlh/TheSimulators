@@ -4,7 +4,7 @@ import { HttpModule }                 from "@angular/http";
 import { NgModule }                   from "@angular/core";
 import { FormsModule }                from "@angular/forms";
 import { BrowserModule }              from "@angular/platform-browser";
-import { MultiselectDropdownModule }  from 'angular-2-dropdown-multiselect/src/multiselect-dropdown';
+import { MultiselectDropdownModule }  from "angular-2-dropdown-multiselect/src/multiselect-dropdown";
 
 import { AppComponent }               from "./components/app/app.component";
 import { NavigatorComponent }         from "./components/navigator/navigator.component";
@@ -30,10 +30,10 @@ import { SideBarService }             from "./services/side-bar.service";
 
 @NgModule({
     imports: [
-        HttpModule, 
-        FormsModule, 
-        BrowserModule, 
-        CommonModule, 
+        HttpModule,
+        FormsModule,
+        BrowserModule,
+        CommonModule,
         MultiselectDropdownModule
     ],
     bootstrap: [AppComponent],
