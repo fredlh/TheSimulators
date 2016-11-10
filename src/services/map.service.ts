@@ -101,8 +101,8 @@ export class MapService {
         return this.mapEdit.endEdit(saved);
     }
 
-    draw(orgUnits: OrgUnit[], maxLevelReached: boolean, onSearch: boolean): void {
-        this.mapView.draw(orgUnits, maxLevelReached, onSearch);
+    draw(orgUnits: OrgUnit[], onSearch: boolean): void {
+        this.mapView.draw(orgUnits, onSearch);
     }
 
     selectMap(orgUnitId: string): void {
@@ -126,7 +126,7 @@ export class MapService {
     }
 
     onFilter(orgUnits: OrgUnit[]): void {
-        this.draw(orgUnits, false, true);
+        this.draw(orgUnits, true);
     }
 
     mapSelect(orgUnitId: string): void {
