@@ -24,12 +24,6 @@ Filter:
 - New placement?
 
 
-Side bar:
----------
-- Display the parent name as well as the ID?
-    - If yes, how to? A button to retrieve the info or retrive when clicked on in the side bar?
-
-
 General:
 --------
 - Commenting

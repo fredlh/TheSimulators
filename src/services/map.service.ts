@@ -132,5 +132,6 @@ export class MapService {
     mapSelect(orgUnitId: string): void {
         this.accordion.toggleOrgUnitInSideBar(orgUnitId);
         this.sideBar.scrollToOrgUnit(orgUnitId);
+        this.sideBar.appendParent(orgUnitId);
     }
 }

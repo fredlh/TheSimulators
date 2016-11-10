@@ -68,8 +68,6 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
     }
 
     search(): void {
-        console.log(this.searchOptions);
-        
         if (this.searchOptions.searchType === "Organisation units") {
             this.orgUnitService.search(this.searchOptions.term, this.searchOptions.level, this.searchOptions.maxLevel);
         } else {

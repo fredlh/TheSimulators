@@ -3,6 +3,7 @@ import {AccordionComponent} from "./accordion.component";
 import {AccordionToggleComponent} from "./accordion-toggle.component";
 
 import { MapService } from "../../services/map.service";
+import {SideBarService} from "../../services/side-bar.service";
 
 @Component({
     selector: "accordion-group",
@@ -23,7 +24,7 @@ export class AccordionGroupComponent {
     @ContentChild(AccordionToggleComponent)
     toggler: ElementRef;
 
-    constructor(private mapService: MapService,
+    constructor(private mapService: MapService, private sideBarService: SideBarService,
                 @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {}
 
     checkAndToggle() {
@@ -44,11 +45,12 @@ export class AccordionGroupComponent {
         if (this.orgUnitId === "") return;
 
         if (this.isOpened) {
-            if (this.orgUnitId !== "") this.mapService.selectMap(this.orgUnitId);
+            this.mapService.selectMap(this.orgUnitId);
+            this.sideBarService.appendParent(this.orgUnitId);
             $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"});
 
         } else {
-           if (this.orgUnitId !== "") this.mapService.deselectMap();
+            this.mapService.deselectMap();
         }
     }
 

@@ -43,7 +43,11 @@
                                     <li><strong>ID:</strong> {{orgUnit.id}}</li>
                                     <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getName(orgUnit.level)}}</li>
                                     <li><strong>Feature type:</strong> {{orgUnit.featureType}}</li>
-                                    <li *ngIf="orgUnit.parent"><strong>Parent ID:</strong> {{orgUnit.parent.id}}</li>
+                                    <li *ngIf="orgUnit.parent"><strong>Parent:</strong><br/>
+                                        <ul>
+                                            <li><strong>ID: </strong>{{orgUnit.parent.id}}</li>
+                                        </ul>
+                                    </li>
                                     <li><strong>Created:</strong> {{globals.formatDate(orgUnit.created)}}</li>
                                     <li><strong>Opening:</strong> {{globals.formatDate(orgUnit.openingDate)}}</li>
                                     <li><strong>Updated:</strong> {{globals.formatDate(orgUnit.lastUpdated)}}</li>

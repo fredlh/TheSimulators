@@ -19,4 +19,8 @@ export class SideBarService {
         this.sideBar.unHideSideBar();
     }
 
+    appendParent(orgUnitId: string): void {
+        this.sideBar.appendParent(orgUnitId);
+    }
+
 }

@@ -502,4 +502,24 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         }
     }
 
+
+
+
+    appendParent(orgUnitId: string): void {
+        let orgUnit = this.getOrgUnitById(orgUnitId);
+
+        this.orgUnitService.getOrgUnit(orgUnit.parent.id).subscribe(
+            res => {
+                $("#" + orgUnitId).find("li:last-child").each(function(){
+                    if ($(this).text().includes(orgUnit.parent.id)) {
+                       $(this).append("<li><strong>Name: </strong>" + res.name + "</li>");
+                    }
+                });
+            },
+            error => {
+                console.error(error);
+            }
+        )
+    }
+
 }
