@@ -196,12 +196,15 @@
 
 
         <label id="labelText" class="col-form-label-lg">Organisation unit groups</label>
-                <select id="groupSelect" size=10 style="height: 100%;" multiple 
-                        [(ngModel)]="filterOptions.orgUnitGroups" name="filterOptionsorgUnitGroups">
-                    <option *ngFor="let group of orgUnitGroups; let i = index" value="{{group.id}}">{{group.name}}</option>              
-                </select>
+        <br/>
 
-      
+
+            <ss-multiselect-dropdown [options]="orgUnitGroups" [texts]="selectBoxTexts" [settings]="selectBoxSettings" 
+                                     [(ngModel)]="filterOptions.orgUnitGroups" name="orgUnitGroups">
+            </ss-multiselect-dropdown>
+
+
+                  
 
 
         <hr style="height:1px ;border:none; color:silver; background-color: silver;" />

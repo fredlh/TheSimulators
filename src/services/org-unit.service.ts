@@ -239,17 +239,13 @@ export class OrgUnitService {
             }
 
             if (pushToStack) this.orgUnitStack.push(this.orgUnits);
+
             this.orgUnits = res.organisationUnits;
 
-            if (this.orgUnits[0].level === Globals.getMaxLevel() - 1) {
-                this.mapService.draw(this.orgUnits, true, false);
-
-            } else {
-                this.mapService.draw(this.orgUnits, false, false);
+            if (pushToStack) {
+                this.mapService.draw(this.orgUnits, false);
+                this.sideBar.updateList(this.orgUnits);
             }
-
-            this.sideBar.updateList(this.orgUnits);
-
         });
         return;
     }
