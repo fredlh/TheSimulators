@@ -88,6 +88,8 @@ export class OrgUnitLevelsComponent implements GlobalsUpdateInterface {
         this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
+    onOrganisationUnitGroupsUpdate(): void {}
+
     editOrgUnitLevel(orgUnitLevelId: string): void {
         this.formStatus = null;
         this.statusMessage = "";

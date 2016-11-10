@@ -15,10 +15,10 @@
         
         <accordion [closeOthers]="false">
 
-            <div *ngFor="let group of orgUnitGroups">
+            <div *ngFor="let group of orgUnitGroups; let myIndex = index">
 
                 <accordion-group>
-                    <accordion-heading>{{group.name}}</accordion-heading>
+                    <accordion-heading>{{myIndex + 1}} - {{group.name}}</accordion-heading>
 
 
                     <ul>

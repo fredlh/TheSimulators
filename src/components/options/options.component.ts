@@ -84,6 +84,8 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
         }
     }
 
+    onOrganisationUnitGroupsUpdate(): void {}
+
     public static getAutoZoomOnSearch(): boolean {
         return OptionsComponent.currentOptions.autoZoomOnSearch === "Yes";
     }

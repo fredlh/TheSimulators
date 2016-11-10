@@ -14,16 +14,23 @@ import { Globals, OrganisationUnitGroup}    from "../../globals/globals.class";
     styles: [ require<any>("./org-unit-groups.component.less")]
 })
 
-export class OrgUnitGroupsComponent {
+export class OrgUnitGroupsComponent implements GlobalsUpdateInterface {
 
     private orgUnitGroups: OrganisationUnitGroup[] = [];
 
     constructor(private orgUnitService: OrgUnitService,
-                private sideBarService: SideBarService) {}
+                private sideBarService: SideBarService) {
+        this.orgUnitService.registerGlobalsUpdateListener(this);
+                }
+
+    onOrganisationUnitLevelsUpdate(): void {}
+
+    onOrganisationUnitGroupsUpdate(): void {
+        this.orgUnitGroups = Globals.organisationUnitGroups;
+        console.log(Globals.organisationUnitGroups);
+    }
 
     toggleOrgUnitGroups(): void {
-        this.orgUnitGroups = Globals.organisationUnitGroups;
-
         this.showOrgUnitGroupsPanel();
 
         let tmpThis = this;

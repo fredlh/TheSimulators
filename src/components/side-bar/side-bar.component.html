@@ -155,13 +155,15 @@
 
 <div id="filterArea" style="display: none;">
     <h2>Filter search results</h2>
+
+    <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
     
-    <form (ngSubmit)="applyFilter(name.value, nameFilter.value, level.value)" #optionsForm="ngForm">
+    <form (ngSubmit)="applyFilter()" #optionsForm="ngForm">
     
         <div class="form-group row">
             <label for="example-text-input" class="col-xs-2 col-form-label">Name: </label>
             <div class="col-xs-10">
-                <input class="form-control" type="text" #name>
+                <input class="form-control" type="text" [(ngModel)]="filterOptions.name" name="filterOptionsName">
             </div>
         </div>
 
@@ -169,7 +171,7 @@
         <div class="form-group row">
             <label for="example-text-input" class="col-sm-2 col-form-label">Filter: </label>
             <div class="col-xs-10">
-                <select class="form-control" id="exampleSelect1" #nameFilter>
+                <select class="form-control" [(ngModel)]="filterOptions.nameFilterType" name="filterOptionsNameFilterType">
                     <option value="startsWith">Starts with</option> 
                     <option value="endsWith">Ends with</option> 
                     <option value="includes">Includes</option> 
@@ -178,19 +180,31 @@
             </div>
         </div>
 
-        <hr>
+        <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
 
         <div class="form-group row">
             <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
             <div class="col-xs-10">
-                <select class="form-control" id="exampleSelect1" #level>
+                <select class="form-control" id="exampleSelect1" [(ngModel)]="filterOptions.level" name="filterOptionsLevel">
                     <option value="All">All</option> 
                     <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
                 </select>
             </div>
         </div>
 
-        <hr>
+        <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
+
+
+        <label id="labelText" class="col-form-label-lg">Organisation unit groups</label>
+                <select id="groupSelect" class="selectpicker" id="exampleSelect1" multiple 
+                        [(ngModel)]="filterOptions.orgUnitGroups" name="filterOptionsorgUnitGroups">
+                    <option *ngFor="let group of orgUnitGroups; let i = index" value="{{group.id}}">{{group.name}}</option>              
+                </select>
+
+      
+
+
+        <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
 
         <button *ngIf="filterApplied" type="reset" class="btn btn-danger" (click)="clearFilter()">
             Clear filter

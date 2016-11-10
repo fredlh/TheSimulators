@@ -6,12 +6,20 @@ import { SideBarService}            from "../../services/side-bar.service";
 
 import { GlobalsUpdateInterface}    from "../../core/globals-update.interface";
 
-import { OrgUnit }                  from "../../core/org-unit.class";
+import { OrgUnit, ID }              from "../../core/org-unit.class";
 
-import { Globals, FeatureType }     from "../../globals/globals.class";
+import { Globals, FeatureType, OrganisationUnitGroup }     from "../../globals/globals.class";
 
 
 declare var $: any;
+
+class FilterOptions {
+    name: string = "";
+    nameFilterType: string = "startsWith";
+    level: string = "All";
+    orgUnitGroups: string[] = [];
+}
+
 
 @Component({
     selector: "side-bar",
@@ -32,6 +40,9 @@ export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
     private filterApplied: boolean = false;
 
     private orgUnitLevels = [];
+    private orgUnitGroups = [];
+
+    private filterOptions = new FilterOptions();
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
 
@@ -44,6 +55,10 @@ export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
 
     onOrganisationUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
+    }
+
+    onOrganisationUnitGroupsUpdate(): void {
+        this.orgUnitGroups = Globals.organisationUnitGroups;
     }
 
     ngOnInit(): void {
@@ -367,45 +382,66 @@ export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
     // Applies the filter on displayedOrgUnits
     // Called when apply filter button is clicked
     // TODO: Rewrite it, too ugly atm
-    applyFilter(name: string, nameFilter: string, level: string): void {
-        this.displayedOrgUnits = this.orgUnits.filter(function(orgUnit){
-            if (nameFilter === "startsWith" && orgUnit.displayName.startsWith(name)) {
-                if (level !== "All") {
-                    if (+level === orgUnit.level) return true;
-                    else return false;
-                } else {
-                    return true;
+    applyFilter(): void {
+        let options = this.filterOptions;
+
+        console.log(options);
+
+        let name = this.filterOptions.name;
+        let type = this.filterOptions.nameFilterType;
+        let level = this.filterOptions.level;
+        let groups = this.filterOptions.orgUnitGroups;
+
+        let filteredName = [];
+        if (name !== "") {
+            filteredName = this.orgUnits.filter(function(orgUnit) {
+                if (type === "startsWith" && orgUnit.displayName.startsWith(name)) return true;
+                if (type === "endsWith" && orgUnit.displayName.endsWith(name)) return true;
+                if (type === "includes" && orgUnit.displayName.includes(name)) return true;
+                if (type === "equals" && orgUnit.displayName === name) return true;
+                else return false;
+            })
+        }
+
+        let filteredLevel = [];
+        if (level !== "All") {
+            filteredLevel = this.orgUnits.filter(function(orgUnit) {
+                if (+level === orgUnit.level) return true;
+                else return false;
+            })
+        }
+
+        let filteredGroups = [];
+        if (groups.length > 0) {
+            filteredGroups = this.orgUnits.filter(function(orgUnit) {
+                outer: for (let g of groups) {
+                    for (let o of orgUnit.organisationUnitGroups) {
+                        if (g === o.id) {
+                            continue outer;
+                        }
+                    }
+                    return false;
+                }
+                return true;
+            })
+        }
+
+        let tempArray = [];
+        if (filteredName.length > 1) {
+            outer: for (let group of filteredGroups) {
+                for (let name of filteredName) {
+                    if (group === name) {
+                        tempArray.push(group);
+                        continue outer;
+                    }
                 }
             }
+        }
 
-            else if (nameFilter === "endsWith" && orgUnit.displayName.endsWith(name)) {
-                if (level !== "All") {
-                    if (+level === orgUnit.level) return true;
-                    else return false;
-                } else {
-                    return true;
-                }
-            }
-
-            else if (nameFilter === "includes" && orgUnit.displayName.includes(name)) {
-                if (level !== "All") {
-                    if (+level === orgUnit.level) return true;
-                    else return false;
-                } else {
-                    return true;
-                }
-            }
-
-            else if (nameFilter === "equals" && orgUnit.displayName === name) {
-                if (level !== "All") {
-                    if (+level === orgUnit.level) return true;
-                    else return false;
-                } else {
-                    return true;
-                }
-            }
-        });
-
+        this.displayedOrgUnits = tempArray.filter(function(item, pos) {
+            return tempArray.indexOf(item) == pos;
+        })
+        
         this.filterApplied = true;
         this.mapService.onFilter(this.displayedOrgUnits);
     }
@@ -432,7 +468,7 @@ export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
             this.filterAreaVisible = false;
         }
 
-        $("#filterArea").find("form")[0].reset();
+        this.filterOptions = new FilterOptions();
     }
 
 

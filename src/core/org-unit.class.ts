@@ -1,5 +1,9 @@
-class ID {
+export class ID {
     id: string;
+
+    constructor(id: string) {
+        this.id = id;
+    }
 }
 
 export class OrgUnit {
@@ -28,7 +32,7 @@ export class OrgUnit {
 
 
     constructor() {
-        this.parent = new ID();
+        this.parent = new ID("");
         this.children = [];
         this.ancestors = [];
         this.organisationUnitGroups = [];

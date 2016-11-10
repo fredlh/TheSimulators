@@ -18,7 +18,7 @@ import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals
 export class OrgUnitService {
 
     // private serverUrl = "http://localhost:8082/api/";
-    private serverUrl = "https://play.dhis2.org/demo/api";
+    private serverUrl = "https://play.dhis2.org/test/api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
 
@@ -33,16 +33,11 @@ export class OrgUnitService {
     private lastApiSearch: string = null;
 
     constructor(private http: Http, private mapService: MapService) {
-        // Get all the organisation unit levels
-        this.refreshOrganisationUnitLevels();
-
         // Get all the organisation unit groups
-        this.getOrganisationUnitGroups().subscribe(res => {
-            let groups: OrganisationUnitGroup[] = res.organisationUnitGroups;
-            for (let group of groups) {
-                Globals.organisationUnitGroups.push(group);
-            }
-        });
+        this.refreshOrganisationUniGroups();
+        
+         // Get all the organisation unit levels
+        this.refreshOrganisationUnitLevels();
     }
 
     refreshOrganisationUnitLevels(): void {
@@ -58,6 +53,20 @@ export class OrgUnitService {
             this.callOnGlobalsUpdate();
         });
     }
+
+
+    refreshOrganisationUniGroups(): void {
+        this.getOrganisationUnitGroups().subscribe(res => {
+            let groups: OrganisationUnitGroup[] = res.organisationUnitGroups;
+
+            Globals.organisationUnitGroups = [];
+            for (let group of groups) {
+                Globals.organisationUnitGroups.push(group);
+            }
+            this.callOnGlobalsUpdate();
+        });
+    }
+
 
     registerGlobalsUpdateListener(listener: GlobalsUpdateInterface) {
         this.globalsUpdateListeners.push(listener);
@@ -287,6 +296,7 @@ export class OrgUnitService {
     callOnGlobalsUpdate(): void {
         for (let listener of this.globalsUpdateListeners) {
             listener.onOrganisationUnitLevelsUpdate();
+            listener.onOrganisationUnitGroupsUpdate();
         }
     }
 

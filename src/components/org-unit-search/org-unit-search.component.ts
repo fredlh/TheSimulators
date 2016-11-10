@@ -32,6 +32,8 @@ export class OrgUnitSearchComponent implements GlobalsUpdateInterface, OnInit {
         this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
+    onOrganisationUnitGroupsUpdate(): void {}
+
     ngOnInit(): void {
         this.orgUnitService.registerGlobalsUpdateListener(this);
     }
