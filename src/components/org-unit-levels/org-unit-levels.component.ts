@@ -3,7 +3,7 @@ import { Component }                         from "@angular/core";
 import { OrgUnitService }                    from "../../services/org-unit.service";
 import { SideBarService }                    from "../../services/side-bar.service";
 
-import { GlobalsUpdateInterface }            from "../../core/globals-update.interface";
+import { OrgUnitLevelsUpdateInterface}    from "../../core/org-unit-levels-update.interface";
 
 import { Globals, OrganisationUnitLevel, OrganisationUnitGroup }    from "../../globals/globals.class";
 
@@ -15,7 +15,7 @@ declare var $: any;
     styles: [ require<any>("./org-unit-levels.component.less")]
 })
 
-export class OrgUnitLevelsComponent implements GlobalsUpdateInterface {
+export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
     private orgUnitLevels: OrganisationUnitLevel[] = [];
     private orgUnitLevel = new OrganisationUnitLevel();
@@ -33,7 +33,11 @@ export class OrgUnitLevelsComponent implements GlobalsUpdateInterface {
     private lastEditId: string = "";
 
     constructor(private orgUnitService: OrgUnitService, private sideBarService: SideBarService) {
-        this.orgUnitService.registerGlobalsUpdateListener(this);
+        this.orgUnitService.registerOrgUnitLevelsListener(this);
+    }
+
+    onOrgUnitLevelsUpdate(): void {
+        this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
     toggleOrgUnitLevels(): void {
@@ -83,12 +87,6 @@ export class OrgUnitLevelsComponent implements GlobalsUpdateInterface {
             return $(this).text() == tmpThis.lastEditId;
         }).closest("tr").css({"background-color": ""});
     }
-
-    onOrganisationUnitLevelsUpdate(): void {
-        this.orgUnitLevels = Globals.organisationUnitLevels;
-    }
-
-    onOrganisationUnitGroupsUpdate(): void {}
 
     editOrgUnitLevel(orgUnitLevelId: string): void {
         this.formStatus = null;

@@ -7,7 +7,10 @@ import "rxjs/add/operator/map";
 import "rxjs/Rx";
 
 import { MapService }                                           from "./map.service";
-import { GlobalsUpdateInterface }                               from "../core/globals-update.interface";
+
+import { OrgUnitLevelsUpdateInterface}                          from "../core/org-unit-levels-update.interface";
+import { OrgUnitGroupsUpdateInterface}                          from "../core/org-unit-groups-update.interface";
+
 import { AccordionComponent }                                   from "../components/accordion/accordion.component";
 import { SideBarComponent }                                     from "../components/side-bar/side-bar.component";
 import { OrgUnit }                                              from "../core/org-unit.class";
@@ -27,7 +30,8 @@ export class OrgUnitService {
 
     private sideBar: SideBarComponent;
     private accordion: AccordionComponent;
-    private globalsUpdateListeners: GlobalsUpdateInterface[] = [];
+    private orgUnitLevelsUpdateListeners: OrgUnitLevelsUpdateInterface[] = [];
+    private orgUnitGroupsUpdateListeners: OrgUnitGroupsUpdateInterface[] = [];
 
     private lastApiUrlCall: string = "";
     private lastApiSearch: string = null;
@@ -50,7 +54,7 @@ export class OrgUnitService {
             for (let level of levels) {
                 Globals.organisationUnitLevels.push(level);
             }
-            this.callOnGlobalsUpdate();
+            this.callOrgUnitLevelsUpdate();
         });
     }
 
@@ -63,13 +67,17 @@ export class OrgUnitService {
             for (let group of groups) {
                 Globals.organisationUnitGroups.push(group);
             }
-            this.callOnGlobalsUpdate();
+            this.callOrgUnitGroupsUpdate();
         });
     }
 
 
-    registerGlobalsUpdateListener(listener: GlobalsUpdateInterface) {
-        this.globalsUpdateListeners.push(listener);
+    registerOrgUnitLevelsListener(listener: OrgUnitLevelsUpdateInterface) {
+        this.orgUnitLevelsUpdateListeners.push(listener);
+    }
+
+    registerOrgUnitGroupsListener(listener: OrgUnitGroupsUpdateInterface) {
+        this.orgUnitGroupsUpdateListeners.push(listener);
     }
 
     registerSideBar(sideBar: SideBarComponent) {
@@ -293,12 +301,18 @@ export class OrgUnitService {
         this.getOrgUnitAndChildren(orgUnitId);
     }
 
-    callOnGlobalsUpdate(): void {
-        for (let listener of this.globalsUpdateListeners) {
-            listener.onOrganisationUnitLevelsUpdate();
-            listener.onOrganisationUnitGroupsUpdate();
+    callOrgUnitLevelsUpdate(): void {
+        for (let listener of this.orgUnitLevelsUpdateListeners) {
+            listener.onOrgUnitLevelsUpdate();
         }
     }
+
+    callOrgUnitGroupsUpdate(): void {
+        for (let listener of this.orgUnitGroupsUpdateListeners) {
+            listener.onOrgUnitGroupsUpdate();
+        }
+    }
+
 
     refreshOrgUnits(): void {
         let lastCalls = this.lastApiUrlCall.split("|");

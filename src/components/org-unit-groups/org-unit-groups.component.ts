@@ -3,7 +3,7 @@ import { Component}                         from "@angular/core";
 import { OrgUnitService}                    from "../../services/org-unit.service";
 import { SideBarService}                    from "../../services/side-bar.service";
 
-import { GlobalsUpdateInterface}            from "../../core/globals-update.interface";
+import { OrgUnitGroupsUpdateInterface}    from "../../core/org-unit-groups-update.interface";
 
 import { Globals, OrganisationUnitGroup}    from "../../globals/globals.class";
 
@@ -14,20 +14,17 @@ import { Globals, OrganisationUnitGroup}    from "../../globals/globals.class";
     styles: [ require<any>("./org-unit-groups.component.less")]
 })
 
-export class OrgUnitGroupsComponent implements GlobalsUpdateInterface {
+export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     private orgUnitGroups: OrganisationUnitGroup[] = [];
 
     constructor(private orgUnitService: OrgUnitService,
                 private sideBarService: SideBarService) {
-        this.orgUnitService.registerGlobalsUpdateListener(this);
-                }
+        this.orgUnitService.registerOrgUnitGroupsListener(this);
+    }
 
-    onOrganisationUnitLevelsUpdate(): void {}
-
-    onOrganisationUnitGroupsUpdate(): void {
+    onOrgUnitGroupsUpdate(): void {
         this.orgUnitGroups = Globals.organisationUnitGroups;
-        console.log(Globals.organisationUnitGroups);
     }
 
     toggleOrgUnitGroups(): void {

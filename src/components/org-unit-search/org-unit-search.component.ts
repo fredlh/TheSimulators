@@ -9,7 +9,7 @@ import { OrgUnitService }       from "../../services/org-unit.service";
 
 import { Globals }            from "../../globals/globals.class";
 
-import { GlobalsUpdateInterface} from "../../core/globals-update.interface";
+import { OrgUnitLevelsUpdateInterface}    from "../../core/org-unit-levels-update.interface";
 
 
 declare var $: any;
@@ -20,7 +20,7 @@ declare var $: any;
     styles: [ require<any>("./org-unit-search.component.less") ]
 })
 
-export class OrgUnitSearchComponent implements GlobalsUpdateInterface, OnInit {
+export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterface {
     private searchTerms = new Subject<string>();
     private orgUnits: OrgUnit[];
     private advancedSearchVisible = false;
@@ -28,16 +28,13 @@ export class OrgUnitSearchComponent implements GlobalsUpdateInterface, OnInit {
 
     constructor(private orgUnitService: OrgUnitService) {}
 
-    onOrganisationUnitLevelsUpdate(): void {
+    ngOnInit(): void {
+        this.orgUnitService.registerOrgUnitLevelsListener(this);
+    }
+
+    onOrgUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
     }
-
-    onOrganisationUnitGroupsUpdate(): void {}
-
-    ngOnInit(): void {
-        this.orgUnitService.registerGlobalsUpdateListener(this);
-    }
-
 
     advancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;

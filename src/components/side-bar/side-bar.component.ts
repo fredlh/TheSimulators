@@ -4,7 +4,8 @@ import { OrgUnitService }           from "../../services/org-unit.service";
 import { MapService }               from "../../services/map.service";
 import { SideBarService}            from "../../services/side-bar.service";
 
-import { GlobalsUpdateInterface}    from "../../core/globals-update.interface";
+import { OrgUnitLevelsUpdateInterface}    from "../../core/org-unit-levels-update.interface";
+import { OrgUnitGroupsUpdateInterface}    from "../../core/org-unit-groups-update.interface";
 
 import { OrgUnit, ID }              from "../../core/org-unit.class";
 
@@ -27,7 +28,7 @@ class FilterOptions {
     styles: [ require<any>("./side-bar.component.less") ]
 })
 
-export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
+export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, OrgUnitLevelsUpdateInterface {
     private orgUnits: OrgUnit[] = null;
     private displayedOrgUnits = null;
     private globals = Globals;
@@ -53,17 +54,18 @@ export class SideBarComponent implements GlobalsUpdateInterface, OnInit {
                 private mapService: MapService,
                 private sideBarService: SideBarService) {}
 
-    onOrganisationUnitLevelsUpdate(): void {
+    onOrgUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
-    onOrganisationUnitGroupsUpdate(): void {
+    onOrgUnitGroupsUpdate(): void {
         this.orgUnitGroups = Globals.organisationUnitGroups;
     }
 
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
-        this.orgUnitService.registerGlobalsUpdateListener(this);
+        this.orgUnitService.registerOrgUnitGroupsListener(this);
+        this.orgUnitService.registerOrgUnitLevelsListener(this);
         this.mapService.registerSideBar(this);
         this.sideBarService.registerSideBar(this);
     }

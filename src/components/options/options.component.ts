@@ -4,7 +4,7 @@ import { OrgUnitService }                   from "../../services/org-unit.servic
 import { SideBarService }                   from "../../services/side-bar.service";
 import { MapService }                       from "../../services/map.service";
 
-import { GlobalsUpdateInterface}            from "../../core/globals-update.interface";
+import { OrgUnitLevelsUpdateInterface}    from "../../core/org-unit-levels-update.interface";
 
 import { Globals, OrganisationUnitLevel }   from "../../globals/globals.class";
 
@@ -43,7 +43,7 @@ class Options {
 })
 
 
-export class OptionsComponent implements GlobalsUpdateInterface  {
+export class OptionsComponent implements OrgUnitLevelsUpdateInterface  {
     private static orgUnitLevels: OrganisationUnitLevel [] = [];
     private self = OptionsComponent;
     private booleanOptions = ["Yes", "No"];
@@ -62,10 +62,10 @@ export class OptionsComponent implements GlobalsUpdateInterface  {
                 private mapService: MapService,
                 private sideBarService: SideBarService) {
         OptionsComponent.defaultOptions.mapOptions.push(this.mapOptions);
-        this.orgUnitService.registerGlobalsUpdateListener(this);
+        this.orgUnitService.registerOrgUnitLevelsListener(this);
     }
 
-    onOrganisationUnitLevelsUpdate(): void {
+    onOrgUnitLevelsUpdate(): void {
         OptionsComponent.orgUnitLevels = Globals.organisationUnitLevels;
 
         OptionsComponent.tempOptions.mapOptions = [];
