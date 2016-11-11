@@ -1,5 +1,4 @@
 import { Component, OnInit }                from "@angular/core";
-
 import { MouseEvent }                       from "leaflet";
 import { MapService }                       from "../../services/map.service";
 

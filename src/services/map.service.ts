@@ -1,16 +1,16 @@
-import {Injectable} from "@angular/core";
+import { Injectable }           from "@angular/core";
 
-import {Location} from "../core/location.class";
-import { MapViewComponent } from "../components/map-view/map-view.component";
-import { MapEditComponent } from "../components/map-edit/map-edit.component";
-import { SideBarComponent } from "../components/side-bar/side-bar.component";
-import { AccordionComponent } from "../components/accordion/accordion.component";
+import { MapViewComponent }     from "../components/map-view/map-view.component";
+import { MapEditComponent }     from "../components/map-edit/map-edit.component";
+import { SideBarComponent }     from "../components/side-bar/side-bar.component";
+import { AccordionComponent }   from "../components/accordion/accordion.component";
 
-import { Globals } from "../globals/globals.class";
+import { OrgUnit }              from "../core/org-unit.class";
+import { Location }             from "../core/location.class";
 
-import { OrgUnit } from "../core/org-unit.class";
+import { Globals }              from "../globals/globals.class";
 
-import {Map} from "leaflet";
+import { Map }                  from "leaflet";
 
 @Injectable()
 export class MapService {

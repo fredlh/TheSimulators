@@ -103,6 +103,7 @@ export class MapViewComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
+        // Retrieve default options
         this.onMapOptionsSaved();
     }
 
@@ -127,34 +128,30 @@ export class MapViewComponent implements OnInit {
         this.editId = orgUnitId;
     }
 
+    // Draw a set of organisation units
+    // Also wipes previously drawn units and resets the selected element
     draw(orgUnits: OrgUnit[], onSearch: boolean): void {
         this.levels = [[], [], [], []];
         this.selectedElement = "";
 
+        // Calculate if a zoom to animation should occur
         let doFly = ((this.autoZoomOnSearch && onSearch) || (this.autoZoomOnGetChildren && !onSearch));
 
         this.addMapElement(orgUnits, doFly);
     }
 
-    drawAdditionalOrgUnits(orgUnits: OrgUnit[]): void {
-        // Should it include max level from something else?
-        // Should it fly to, according to parameter?
-
-        this.addMapElement(orgUnits, false);
-    }
-
-    previewCoordinates(coords: number[][][][]): void {
-        // Make polygon in seperate layer and display on map
-    }
-
+    // Called when a org unit is selected on the side bar
+    // Updates selected and fires event to make sure all drawn org units checks if they are it
     selectMap(orgUnitId: string): void {
-        // Set selected
         this.selectedElement = orgUnitId;
 
-        // Tell all polygons to check, could also result in a fly to depending on settings
+        // Tell all drawn elements to check if they are the new selected
+        // If they are the new selected it could involve setting a new style
+        // Could also result in a fly to depending on settings
         this.fireEvent("selectedChanged");
     }
 
+    // Fires a given events for all drawn items
     fireEvent(event: string): void {
         for (let l of this.levels) {
             for (let p of l) {
@@ -163,16 +160,21 @@ export class MapViewComponent implements OnInit {
         }
     }
 
+    // Add a set of organisation units to the map
+    // Only organisation units with coordinates are actually added
     private addMapElement(orgUnits: OrgUnit[], doFly: boolean) {
-        let map = this.map;
+        // Build up a list of all coordinates to be able to zoom
+        // in such a way that everything is visible afterwards
         let allCoords = [];
-        const ms = this;
+
+        const self = this;
 
         // For each orgUnit in the argument array
         for (let org of orgUnits) {
             let levelIndex = org.level;
             let id = org.id;
 
+            // Add more levels to the global levels array if encountering a higher level than previously seen
             if (org.level > this.levels.length) {
                 for (let i = this.levels.length; i < org.level; i++) {
                     this.levels.push([]);
@@ -180,10 +182,9 @@ export class MapViewComponent implements OnInit {
             }
 
             // Check if orgUnit contains coordinates
-            if (org.featureType !== FeatureType.NONE) {
-                // Coordinates is gathered in the form of a string, needs to parse it into [[[x,y],[x,y]],[[x,y]]] number array
+            if (org.featureType !== FeatureType.NONE && org.coordinates !== undefined) {
 
-                // Check if coordinate indicate a polygon (and not a single point --- marker)
+                // Check if coordinate indicate a polygon
                 if (org.featureType === FeatureType.MULTI_POLYGON || org.featureType === FeatureType.POLYGON) {
 
                     // Set up polygon information
@@ -192,11 +193,12 @@ export class MapViewComponent implements OnInit {
                         "properties": {"id": org.id, "name": org.displayName},
                         "geometry": {
                             "type": "Polygon",
-                            "coordinates": ms.mapService.parsePolygonCoordinates(org.coordinates)
+                            // Coordinates is gathered in the form of a string, needs to parse it into [[[x,y],[x,y]],[[x,y]]] number array
+                            "coordinates": self.mapService.parsePolygonCoordinates(org.coordinates)
                         }
                     });
 
-                    // Push the polygon into an array for easy access later
+                    // The polygon itself, with all its events
                     let tempGeo = L.geoJSON(poly, {
                         onEachFeature: function(feature, layer) {
                             layer.bindTooltip(feature.properties.name);
@@ -205,10 +207,12 @@ export class MapViewComponent implements OnInit {
                             return OptionsComponent.getMapOptionsDefault(levelIndex);
                         }
                     })
+                    // Hovering the mouse over the organisation unit highlights it by a style change
+                    // If the organisation unit is already the selected element then nothing happens
                     .addEventListener("mouseover", function(e) {
-                        if (ms.eventsEnabled) {
+                        if (self.eventsEnabled) {
                             this.setStyle(function(feature) {
-                                if (ms.selectedElement !== feature.properties.id) {
+                                if (self.selectedElement !== feature.properties.id) {
                                     return OptionsComponent.getMapOptionsHover(levelIndex);
                                 }
                             });
@@ -216,45 +220,55 @@ export class MapViewComponent implements OnInit {
                             this.toggleTooltip();
                         }
                     })
+                    // When hovering the organisation unit ends, the style is switched back
+                    // If the organisation unit is already the selected element then nothing happens
                     .addEventListener("mouseout", function(e) {
-                        if (ms.eventsEnabled) {
+                        if (self.eventsEnabled) {
                             this.setStyle(function(feature) {
-                                if (ms.selectedElement !== feature.properties.id) {
+                                if (self.selectedElement !== feature.properties.id) {
                                     return OptionsComponent.getMapOptionsDefault(levelIndex);
                                 }
                             });
                         }
                     })
+                    // Click performs a select of an organisation unit
+                    // The style is changed, the side bar notified and a fly to might occur
                     .addEventListener("click", function(e) {
-                        if (ms.eventsEnabled) {
-                            map.clicked = map.clicked + 1;
+                        if (self.eventsEnabled) {
+                            self.map.clicked = self.map.clicked + 1;
                             setTimeout(function() {
-                                if (map.clicked === 1 && ms.selectedElement !== id) {
-                                    ms.selectedElement = id;
-                                    ms.mapService.mapSelect(id);
-                                    ms.fireEvent("selectedChanged");
+                                if (self.map.clicked === 1 && self.selectedElement !== id) {
+                                    self.selectedElement = id;
+                                    self.mapService.mapSelect(id);
+                                    self.fireEvent("selectedChanged");
                                 }
 
-                                map.clicked = 0;
+                                self.map.clicked = 0;
                             }, 250);
                         }
                     })
+                    // Doubleclick performs a dive into an organisation unit
+                    // All children of the org unit is retrieved from the server and displayed
                     .addEventListener("dblclick", function(e) {
-                        if (ms.eventsEnabled) {
-                            map.clicked = 0;
+                        if (self.eventsEnabled) {
+                            self.map.clicked = 0;
 
-                            ms.selectedElement = "";
-                            ms.orgUnitService.mapGetChildren(id);
-                            ms.fireEvent("selectedChanged");
+                            self.selectedElement = "";
+                            self.orgUnitService.mapGetChildren(id);
+                            self.fireEvent("selectedChanged");
                         }
                     })
+                    // Notification about a change in the selected element
+                    // If this element is the selected, set style to the selected style
+                    // Else set style to the default (non-selected and non-highlighted) style
+                    // A fly to might also occur if this element is the selected and zoom option allows it
                     .addEventListener("selectedChanged", function(e) {
                         let geo = this;
                         this.setStyle(function(feature) {
-                            if (ms.selectedElement === feature.properties.id) {
+                            if (self.selectedElement === feature.properties.id) {
 
-                                if (ms.autoZoomOnSelect) {
-                                    map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
+                                if (self.autoZoomOnSelect) {
+                                    self.map.flyToBounds(geo.getBounds(), {paddingTopLeft: [350, 75]});
                                 }
 
                                 return OptionsComponent.getMapOptionsSelected(levelIndex);
@@ -264,9 +278,11 @@ export class MapViewComponent implements OnInit {
                             }
                         });
                     })
+                    // Notification about changes to the options
+                    // Every polygon requests and sets the new style
                     .addEventListener("optionsChanged", function(e) {
                         this.setStyle(function(feature) {
-                            if (ms.selectedElement === feature.properties.id) {
+                            if (self.selectedElement === feature.properties.id) {
                                 return OptionsComponent.getMapOptionsSelected(levelIndex);
 
                             } else {
@@ -274,12 +290,14 @@ export class MapViewComponent implements OnInit {
                             }
                         });
                     })
+                    // Notification saying an edit is about to start
+                    // Change style to a default edit-style as to make sure the edited polygon stands out
+                    // Hides the polygon who is to be edited
                     .addEventListener("setEditStyle", function(e) {
                         let data;
 
                         this.setStyle(function(feature) {
-                            if (id === ms.editId) {
-                                // This layer is to be edited
+                            if (id === self.editId) {
                                 data = feature.geometry.coordinates;
 
                                 return {color: "black", fillColor: "blue", weight: 0, fillOpacity: 0, opacity: 0};
@@ -288,33 +306,38 @@ export class MapViewComponent implements OnInit {
                             }
                         });
                     })
+                    // Notification about polygon coordinates request
+                    // Only the polygon to be edited will answer by calling loadEditPolygon
                     .addEventListener("getPolygonCoordinates", function(e) {
                         this.setStyle(function(feature) {
-                            if (id === ms.editId) {
-                                ms.mapService.loadEditPolygon(feature.geometry.coordinates);
+                            if (id === self.editId) {
+                                self.mapService.loadEditPolygon(feature.geometry.coordinates);
                             }
                         });
                     });
 
+                    // Add polygon coordinates to the set of all coordinates (needed for fly-to)
                     allCoords.push(tempGeo.getBounds());
-                    ms.levels[levelIndex - 1].push(tempGeo);
 
+                    // Push the polygon to the correct level array
+                    self.levels[levelIndex - 1].push(tempGeo);
+
+                // Check if coordinate indicates a point/marker
                 } else if (org.featureType === FeatureType.POINT) {
-                    // Markers for single point locations
-                    let level: any = ms.levels[org.level - 1]; // Hack to force L.Markers into array
-
-                    // Fredrik: Ugly fix right now
-                    // as it can have FeatureType.POINT and have undefined coordinates
-                    if (org.coordinates === undefined) continue;
+                    let level: any = self.levels[org.level - 1]; // Hack to force L.Markers into array
+                    let id = org.id;
 
                     let markerCoordinate = JSON.parse(org.coordinates);
+
+                    // Add marker to the set of all coordinates (needed to perform fly-to)
                     allCoords.push([markerCoordinate[1], markerCoordinate[0]]);
 
+                    // Marker icons
                     const defaultIcon = require("../../../images/ambulance_green.png");
                     const highlightIcon = require("../../../images/ambulance_red.png");
 
+                    // Set up icon object
                     let currentZoom = this.map.getZoom();
-
                     let defIcon = L.icon({
                         iconUrl: "../../../images/ambulance_green.png",
                         iconSize: [4 * currentZoom, 4 * currentZoom],
@@ -327,29 +350,35 @@ export class MapViewComponent implements OnInit {
                         "icon": defIcon
                     });
 
-                    let id = org.id;
+                    // The marker itself, with all its events
                     let markerlatlng = L.latLng(markerCoordinate[1], markerCoordinate[0]);
                     let tempMark = L.marker(markerlatlng, markOptions)
+                    // Click performs a select of an organisation unit
+                    // The icon is changed, the side bar notified and a fly to might occur
                     .addEventListener("click", function(e) {
-                        if (ms.eventsEnabled) {
-                            ms.selectedElement = id;
-                            ms.mapService.mapSelect(id);
-                            ms.fireEvent("selectedChanged");
+                        if (self.eventsEnabled) {
+                            self.selectedElement = id;
+                            self.mapService.mapSelect(id);
+                            self.fireEvent("selectedChanged");
                         }
                     })
+                    // Notification about a change in the selected element
+                    // If this element is the selected, set icon to the highlight icon
+                    // Else set icon to the default icon
+                    // A fly to might be performed if this element is the selected and zoom options allows it
                     .addEventListener("selectedChanged", function(e) {
-                        let currentZoom = ms.map.getZoom();
+                        let currentZoom = self.map.getZoom();
 
-                        if (id === ms.selectedElement) {
+                        if (id === self.selectedElement) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
 
-                            if (ms.autoZoomOnSelect) {
+                            if (self.autoZoomOnSelect) {
                                 let coords = this.getLatLng();
-                                map.flyTo([coords.lat, coords.lng - 0.0004], 18);
+                                self.map.flyTo([coords.lat, coords.lng - 0.0004], 18);
                             }
 
                         } else {
@@ -362,24 +391,26 @@ export class MapViewComponent implements OnInit {
 
                         this.setOpacity(1);
                     })
-                    .addEventListener("optionsChanged", function(e) {
-                        // Don't do anything for markers yet, probably no options for markers ever
-                    })
+                    // Notification about marker coordinates request
+                    // Only the marker to be edited will answer by calling loadEditMarker
                     .addEventListener("getMarkerCoordinates", function(e) {
-                        if (id === ms.editId) {
-                            ms.mapService.loadEditMarker(this.getLatLng());
+                        if (id === self.editId) {
+                            self.mapService.loadEditMarker(this.getLatLng());
                         }
                     })
+                    // Notification saying an edit is about to start
+                    // Hides the marker who is to be edited
                     .addEventListener("setEditStyle", function(e) {
-                        if (id === ms.editId) {
-                            // Hide icon temporarily
+                        if (id === self.editId) {
                             this.setOpacity(0);
                         }
                     })
+                    // Notification saying a zoom was performed
+                    // Resizes the icon dynamically using zoom level
                     .addEventListener("zoomIcon", function (e) {
-                        let currentZoom = ms.map.getZoom();
+                        let currentZoom = self.map.getZoom();
 
-                        if (id === ms.selectedElement) {
+                        if (id === self.selectedElement) {
                             this.setIcon(L.icon({
                                 iconUrl: "../../../images/ambulance_red.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
@@ -394,7 +425,10 @@ export class MapViewComponent implements OnInit {
                         }
                     });
 
+                    // Push the marker to the correct level array
                     level.push(tempMark);
+
+                // Only other possibility is symbol, but don't know what to do with it atm
                 } else {
                     alert("featuretype was symbol");
                 }
@@ -403,21 +437,24 @@ export class MapViewComponent implements OnInit {
 
         // Remove layers to not create duplicates when they are added
         // back towards the end of the function
-        for (let l of ms.layers) {
+        for (let l of self.layers) {
             l.remove();
         }
 
-        ms.layers = [];
-        for (let l of ms.levels) {
-            ms.layers.push(L.layerGroup(l));
+        // Reset layers and push all levels to it
+        self.layers = [];
+        for (let l of self.levels) {
+            self.layers.push(L.layerGroup(l));
         }
 
-        for (let l of ms.layers) {
-            l.addTo(ms.map);
+        // Add all layers back to the map
+        for (let l of self.layers) {
+            l.addTo(self.map);
         }
 
+        // If options allow it, fly to the bounds containing every element added
         if (allCoords.length !== 0 && doFly) {
-            map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]});
+            self.map.flyToBounds(allCoords, {paddingTopLeft: [350, 75]});
         }
     }
 }
