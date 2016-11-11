@@ -73,7 +73,9 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
     onCancel(tmpThis = this): void {
         tmpThis.hideOrgUnitLevelsPanel();
-        // Reset the thing
+        $("td").filter(function() {
+            return $(this).text() === tmpThis.lastEditId;
+        }).closest("tr").css({"background-color": ""});
     }
 
     onCancelEdit(): void {

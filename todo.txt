@@ -35,6 +35,7 @@ API notes/suggestions:
 ----------------------
 - Why the need of two-way binding of orgUnitGroups?
     - Isn't it enoug that each orgUnit knows their group, and the OrganisationUnitGroups is just a lookup object?
+    - If not, why not let orgUnit be the boss? Update it, and the groups are auto updated
 - Why doesn't the API require a OrganisationUnitLevel for each level an orgUnit can have?
 - Why do delete error compalin about "DataObject" and not specify which binding it fails on?
 - Why can parent be undefined? Why not require and just have empty string if no parent (level 1)?

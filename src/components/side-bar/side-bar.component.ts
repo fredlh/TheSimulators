@@ -182,9 +182,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Called when the get children button is clicked
     onGetChildrenClicked(orgUnitId: string) {
         let orgUnit = this.getOrgUnitById(orgUnitId);
-        if (orgUnit.featureType === FeatureType.POLYGON || orgUnit.featureType === FeatureType.MULTI_POLYGON) {
-            this.orgUnitService.getOrgUnitAndChildren(orgUnitId, true, true);
-        }
+        this.orgUnitService.getOrgUnitAndChildren(orgUnitId, true, true);
     }
 
     // A "back button" which displays the previous orgUnits before getChildren was clicked
