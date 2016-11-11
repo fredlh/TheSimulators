@@ -5,3 +5,9 @@
 <org-unit-levels></org-unit-levels>
 <side-bar></side-bar>
 <map-view></map-view>
+
+<button id="toggleAdancedViewButton" type="button" class="btn btn-warning" aria-label="Left Align" (click)="toggleAdvancedView()">
+    <span class="glyphicon glyphicon-cog" aria-hidden="true" style="padding-right: 7px;"></span> 
+    <span *ngIf="advancedViewVisable">Hide advanced view</span>
+    <span *ngIf="!advancedViewVisable">Show advanced view</span>
+</button>
