@@ -503,15 +503,23 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     }
 
 
-
-
+    // Appends the parent name to the orgUnit in the list
+    // Call either when orgUnit in list is expanded or when a orgUnit on the map is selected
     appendParent(orgUnitId: string): void {
+        // Get the chosen orgUniten
         let orgUnit = this.getOrgUnitById(orgUnitId);
 
+        // No parent, so nothing to retrieve or display
+        if (!orgUnit.parent) return;
+
+        // Get the orgUnits parent
         this.orgUnitService.getOrgUnit(orgUnit.parent.id).subscribe(
             res => {
+
+                // Find the wanted <li>-element, and append the name
                 $("#" + orgUnitId).find("li:last-child").each(function(){
-                    if ($(this).text().includes(orgUnit.parent.id)) {
+                    let textElem = $(this).text();
+                    if (textElem.includes(orgUnit.parent.id) && !textElem.includes(res.name)) {
                        $(this).append("<li><strong>Name: </strong>" + res.name + "</li>");
                     }
                 });
