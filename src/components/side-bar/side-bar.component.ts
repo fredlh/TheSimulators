@@ -62,7 +62,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         closeOnSelect: false,
         showCheckAll: true,
         showUncheckAll: true,
-        dynamicTitleMaxItems: 4,
+        dynamicTitleMaxItems: 2,
         maxHeight: "300px",
     };
 
@@ -130,7 +130,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Toggles the side bar, called when clicking
     // the toggle side bar button
     toggleSideBar(): void {
-        $("#sideBar").toggle();
+        $("#sideBarContent").toggle();
+        $("#sideBarButtons").toggle();
         this.sideBarVisible = !this.sideBarVisible;
 
         if (this.sideBarVisible && this.filterAreaVisible) {
@@ -143,7 +144,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Hides the side bar
     // Called when a form/pane should have focus
     hideSideBar(): void {
-        $("#sideBar").hide();
+        $("#sideBarContent").hide();
+        $("#sideBarButtons").hide();
         $("#filterArea").hide();
         $("#toggleSideBar").hide();
     }
@@ -152,7 +154,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Called when the focused form/pane has been closed
     unHideSideBar(): void {
         if (this.sideBarVisible) {
-            $("#sideBar").show();
+            $("#sideBarContent").show();
+            $("#sideBarButtons").show();
         }
 
         if (this.filterAreaVisible) {
@@ -169,7 +172,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     showSideBar(): void {
         this.toggleSideBarButtonVisible = true;
         this.sideBarVisible = true;
-        $("#sideBar").show();
+        $("#sideBarContent").show();
+        $("#sideBarButtons").show();
         $("#toggleSideBar").show();
     }
 
@@ -404,9 +408,16 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         this.filterAreaVisible = !this.filterAreaVisible;
     }
 
+    // Closes the filter
+    closeFilter(): void {
+        $("#filterArea").hide();
+        this.filterAreaVisible = false;
+    }
+
     // Applies the filter on displayedOrgUnits
     // Called when apply filter button is clicked
     applyFilter(): void {
+        $("#filterArea").toggle();
         let options = this.filterOptions;
 
         // Save the values in a short variable to avoid very long lines

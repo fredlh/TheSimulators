@@ -2,6 +2,74 @@
     <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
 </button>
 
+
+<div id="sideBarButtons" style="display: none;">
+    <button type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
+            <span *ngIf="!filterAreaVisible">Open Filter</span>
+            <span *ngIf="filterAreaVisible">Close Filter</span>
+    </button>
+
+    <button type="button" class="btn btn-primary" style="margin-left: 30%;" (click)="refreshOrgUnits()">
+        Refresh
+    </button>
+
+    <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
+    </button>
+
+    <button *ngIf="!hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block disabled" id="prevStackButton" 
+            aria-label="Left Align" (click)="goToPreviousOrgUnits()">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
+    </button>
+</div>
+
+
+<div id="sideBarContent" style="display: none;">
+    <div *ngIf="orgUnits === undefined" id="noSearchResults">
+            <p>No organisation units matched the given search parameters</p>
+    </div>
+
+    <div *ngIf="orgUnits !== undefined">
+        <accordion>
+            <div *ngFor="let orgUnit of displayedOrgUnits; let myIndex = index">
+                <div id={{orgUnit.id}}>
+                    <accordion-group orgUnitId={{orgUnit.id}}>
+                        <accordion-heading>
+                            {{orgUnit.displayName}}
+                        </accordion-heading>
+                        <span style="cursor: auto;">
+                            <button id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
+                            <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
+                            <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
+                            <ul style="margin-top: 10px;">
+                                <li><strong>ID:</strong> {{orgUnit.id}}</li>
+                                <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getName(orgUnit.level)}}</li>
+                                <li><strong>Feature type:</strong> {{orgUnit.featureType}}</li>
+                                <li *ngIf="orgUnit.parent"><strong>Parent:</strong><br/>
+                                    <ul>
+                                        <li><strong>ID: </strong>{{orgUnit.parent.id}}</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Created:</strong> {{globals.formatDate(orgUnit.created)}}</li>
+                                <li><strong>Opening:</strong> {{globals.formatDate(orgUnit.openingDate)}}</li>
+                                <li><strong>Updated:</strong> {{globals.formatDate(orgUnit.lastUpdated)}}</li>
+                                <li><strong>Groups:</strong><br>
+                                    <ul>
+                                        <div *ngFor="let group of orgUnit.organisationUnitGroups">
+                                            <li>{{globals.getOrgGroupName(group.id)}}</li>
+                                        </div>
+                                    </ul>
+                                </li>
+                                <li><strong>Coords:</strong> {{orgUnit.coordinates}}</li>
+                            </ul>
+                        </span>
+                    </accordion-group>
+                </div>
+            </div>
+        </accordion>
+    </div>
+</div>
+    <!--
 <div id="sideBar" style="display: none;">
 
     <div id="topArea">
@@ -9,18 +77,17 @@
             Filter
         </button>
 
-        <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="margin-left: 100px;" (click)="refreshOrgUnits()">
+        <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="margin-left: 35%;" (click)="refreshOrgUnits()">
             Refresh
         </button>
             
         <br>
-        <h3 style="text-align: center;">Search results </h3>
 
         <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
             <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
         </button>
     </div>
-
+    
     <div id="orgUnitArea">
         <div *ngIf="orgUnits === undefined" id="noSearchResults">
             <hr/>  
@@ -71,7 +138,7 @@
 
    
 </div>
-
+-->
 
 
 <div id="editOrgUnitArea" class="edit-org-unit container-fluid">
@@ -158,10 +225,6 @@
 
 
 <div id="filterArea" style="display: none;">
-    <h2>Filter search results</h2>
-
-    <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
-    
     <form (ngSubmit)="applyFilter()" #optionsForm="ngForm">
     
         <div class="form-group row">
@@ -198,28 +261,34 @@
 
         <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
 
-
-        <label id="labelText" class="col-form-label-lg">Organisation unit groups</label>
-        <br/>
-
-
-            <ss-multiselect-dropdown [options]="orgUnitGroups" [texts]="selectBoxTexts" [settings]="selectBoxSettings" 
-                                     [(ngModel)]="filterOptions.orgUnitGroups" name="orgUnitGroups">
-            </ss-multiselect-dropdown>
-
+        <div class="form-group row">
+            <label id="labelText" class="col-sm-4 col-form-label-lg">Organisation unit groups</label>
+            <div class="col-xs-8">
+                <ss-multiselect-dropdown [options]="orgUnitGroups" [texts]="selectBoxTexts" [settings]="selectBoxSettings" 
+                                        [(ngModel)]="filterOptions.orgUnitGroups" name="orgUnitGroups">
+                </ss-multiselect-dropdown>
+            </div>
+        </div>
 
                   
 
+        <div id="filterButtonsArea">
+            <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
 
-        <hr style="height:1px ;border:none; color:silver; background-color: silver;" />
+            <button type="button" class="btn btn-primary" (click)="closeFilter()">
+                Close
+            </button>
 
-        <button *ngIf="filterApplied" type="reset" class="btn btn-danger" (click)="clearFilter()">
-            Clear filter
-        </button>
+            <button type="submit" class="btn btn-success" style="float: right;">
+                Apply filter
+            </button>
 
-        <button type="submit" class="btn btn-success">
-            Apply filter
-        </button>
+            <button *ngIf="filterApplied" type="reset" class="btn btn-danger" (click)="clearFilter()" style="float: right;  margin-right: 5px;">
+                Clear filter
+            </button>
+
+            
+        </div>
         
 
     </form>

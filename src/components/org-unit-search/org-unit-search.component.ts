@@ -53,15 +53,24 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
 
     advancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;
-        let top = this.advancedSearchVisible ? "205px" : "70px";
+        let contentTop = this.advancedSearchVisible ? "273px" : "138px";
+        let buttonsTop = this.advancedSearchVisible ? "205px" : "70px";
         let animateSpeed = 200;
 
-        $("#sideBar").animate({
-            top: top,
+        $("#sideBarContent").animate({
+            top: contentTop,
+        }, animateSpeed);
+
+        $("#filterArea").animate({
+            top: contentTop,
+        }, animateSpeed);
+
+        $("#sideBarButtons").animate({
+            top: buttonsTop,
         }, animateSpeed);
 
         $("#toggleSideBar").animate({
-            top: top
+            top: buttonsTop
         }, animateSpeed);
 
         $("#advancedSearchDiv").slideToggle("fast");

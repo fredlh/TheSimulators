@@ -1,3 +1,4 @@
+/*
 #sideBar {
     position: absolute;
     top: 70px;
@@ -14,9 +15,42 @@
     overflow: hidden;
     resize: both;
 }
+*/
+#sideBarContent {
+    position: absolute;
+    top: 138px;
+    left: 20px;
+    bottom: 50px;
 
-#topArea {
+    width: 320px;
+    z-index: 1000;
+    background-color: #f5f5f5;
 
+
+    border-radius: 5px;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+    resize: both;
+}
+
+
+#sideBarButtons {
+    //background-color: #f5f5f5;
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    height: 70px;
+
+    width: 320px;
+    z-index: 1000;
+    border-radius: 5px 5px 0 0;
+}
+
+.disabled,
+.disabled:active {
+    opacity: 1;
+    color: lightsteelblue;
 }
 
 #orgUnitArea {
@@ -27,7 +61,7 @@
     top: 0px;
     left: 0px;
     right: 0px;
-    height: 85%;
+    max-height: 90%;
 }
 
 h3.center {
@@ -118,15 +152,17 @@ h3.center {
     padding: 10px;
     margin-top: 0px;
 
-    top: 120px;
-    left: 350px;
-    width: 300px;
+    top: 138px;
+    left: 20px;
+    width: 320px;
 
-    background-color: white;
+    background-color: ghostwhite;
 
     z-index: 10003;
 
     border-radius: 5px;
+    border: 1px solid lightslategray;
+    box-shadow: 1px 1px 2px 1px #888888;
 }
 
 
