@@ -18,12 +18,6 @@ Delete:
 - Remove the functionality?
 
 
-Filter:
--------
-- Move the filter when the side bar is resized
-- New placement?
-
-
 General:
 --------
 - Commenting

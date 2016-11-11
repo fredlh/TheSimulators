@@ -60,7 +60,11 @@
                                         </div>
                                     </ul>
                                 </li>
-                                <li><strong>Coords:</strong> {{orgUnit.coordinates}}</li>
+                                <li>
+                                    <strong>Has coordinates:</strong> 
+                                    <span *ngIf="orgUnit.coordinates" style="color: green;">Yes</span>
+                                    <span *ngIf="!orgUnit.coordinates" style="color: red;">No</span>
+                                </li>
                             </ul>
                         </span>
                     </accordion-group>
