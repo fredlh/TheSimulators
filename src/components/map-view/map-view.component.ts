@@ -88,6 +88,19 @@ export class MapViewComponent implements OnInit {
         });
         */
 
+        // Hack to make sure all layers are displayed correctly
+        // even if fly to animation is stopped prematurely by user
+        // Removes all layers and readds them
+        this.map.on("moveend", function() {
+            for (let l of self.layers) {
+                l.remove();
+            }
+
+            for (let l of self.layers) {
+                l.addTo(self.map);
+            }
+        });
+
         this.mapService.registerMapView(this);
         let map = this.map;
 
