@@ -6,7 +6,7 @@ import { Component, AfterViewInit } from "@angular/core";
     styles: [ require<any>("./app.component.less") ]
 })
 
-export class AppComponent implements AfterViewInit { 
+export class AppComponent implements AfterViewInit {
 
     private advancedViewVisable: boolean = false;
 
@@ -23,5 +23,4 @@ export class AppComponent implements AfterViewInit {
         this.advancedViewVisable = !this.advancedViewVisable;
     }
 
-    
 }

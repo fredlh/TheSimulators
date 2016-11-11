@@ -536,7 +536,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             error => {
                 console.error(error);
             }
-        )
+        );
     }
 
 }

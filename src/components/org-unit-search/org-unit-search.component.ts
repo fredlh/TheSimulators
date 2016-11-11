@@ -82,7 +82,6 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
         } else {
             this.searchLocation(this.searchOptions.term);
         }
-        
     }
 
     searchLocation(location: string) {
