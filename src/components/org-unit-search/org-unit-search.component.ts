@@ -8,7 +8,6 @@ import { OrgUnit }                        from "../../core/org-unit.class";
 import { OrgUnitService }                 from "../../services/org-unit.service";
 import { GeocodingService }               from "../../services/geocoding.service";
 import { MapService }                     from "../../services/map.service";
-import { SideBarService }                 from "../../services/side-bar.service";
 
 import { Globals }                        from "../../globals/globals.class";
 
@@ -42,8 +41,7 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
 
     constructor(private orgUnitService: OrgUnitService,
                 private geocoder: GeocodingService,
-                private mapService: MapService,
-                private sideBarService: SideBarService) {}
+                private mapService: MapService,) {}
 
     ngOnInit(): void {
         this.orgUnitService.registerOrgUnitLevelsListener(this);
@@ -60,11 +58,6 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
         let contentTop = this.advancedSearchVisible ? "240px" : "105px";
         let buttonsTop = this.advancedSearchVisible ? "205px" : "70px";
         let animateSpeed = 200;
-
-        // If the prevStack button is visible, it needs to be 33 pixels further down
-        if (this.sideBarService.isLastFrameStackVisible()) {
-            contentTop = (+contentTop.split("p")[0] + 33).toString() + "px";
-        }
 
         // Animate the new values
         $("#sideBarContent").animate({

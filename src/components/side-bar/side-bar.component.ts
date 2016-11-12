@@ -1,18 +1,17 @@
-import { Component, OnInit }        from "@angular/core";
+import { Component, OnInit }                                                 from "@angular/core";
 
-import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts}         from "../../modules/multiselect-dropdown";
+import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts }        from "../../modules/multiselect-dropdown";
 
+import { OrgUnitService }                                                    from "../../services/org-unit.service";
+import { MapService }                                                        from "../../services/map.service";
+import { SideBarService}                                                     from "../../services/side-bar.service";
 
-import { OrgUnitService }           from "../../services/org-unit.service";
-import { MapService }               from "../../services/map.service";
-import { SideBarService}            from "../../services/side-bar.service";
+import { OrgUnitLevelsUpdateInterface }                                      from "../../core/org-unit-levels-update.interface";
+import { OrgUnitGroupsUpdateInterface }                                      from "../../core/org-unit-groups-update.interface";
 
-import { OrgUnitLevelsUpdateInterface}    from "../../core/org-unit-levels-update.interface";
-import { OrgUnitGroupsUpdateInterface}    from "../../core/org-unit-groups-update.interface";
+import { OrgUnit, ID }                                                       from "../../core/org-unit.class";
 
-import { OrgUnit, ID }              from "../../core/org-unit.class";
-
-import { Globals, FeatureType, OrganisationUnitGroup }     from "../../globals/globals.class";
+import { Globals, FeatureType, OrganisationUnitGroup }                       from "../../globals/globals.class";
 
 
 declare var $: any;
@@ -52,9 +51,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     private haveSubmitted = false;
     private saveSuccess = null;
-
-    private prevStackFrameStatus = null;
-    private hasPrevStackFrame = false;
 
     private selectBoxSettings: IMultiSelectSettings = {
         pullRight: true,
@@ -200,10 +196,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Returns whether it can show previous orgUnits or not
     hasPreviousStackFrame(): boolean {
         return this.orgUnitService.hasPreviousStackFrame();
-    }
-
-    isLastFrameStackVisible(): boolean {
-        return this.hasPrevStackFrame;
     }
 
     // Returns the orgUnit with the given id, or null if none exists

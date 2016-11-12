@@ -218,6 +218,14 @@ export class OrgUnitService {
             .catch((error: any) => Observable.throw(error));
     }
 
+    getOrgUnitIcon(name: string): any {
+        let imageHeader = new Headers({"Content-Type": "image/png", "Authorization": this.basicAuth});
+        return this.http
+            .get(`https://play.dhis2.org/test/images/orgunitgroup/${name}`, {headers: imageHeader})
+            .map((res: Response) => res)
+            .catch((error: any) => Observable.throw(error));
+    }
+
     search(term = "", level = "", maxLevel = ""): OrgUnit[] {
         if (term.trim() === "") {
             return undefined;
