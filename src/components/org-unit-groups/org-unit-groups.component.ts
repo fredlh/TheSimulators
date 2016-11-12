@@ -21,6 +21,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     private orgUnitGroups: OrganisationUnitGroup[] = [];
     private orgUnits = [];
+    private displayedOrgUnits = [];
 
     private openedId;
     private openedIndex;
@@ -113,6 +114,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         this.orgUnitService.getOrgUnits("&level=1").subscribe(
             res => {
                 this.orgUnits = JSON.parse(JSON.stringify(res.organisationUnits));
+                this.displayedOrgUnits = JSON.parse(JSON.stringify(res.organisationUnits));
             },
             error => {
                 console.error(error);
@@ -122,33 +124,44 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     elementClicked(event: any): void {
         let name = event.target.innerText;
-        console.log("Name: " + name + " | index: " + this.getIndexByName(name));
+        //console.log("Name: " + name + " | index: " + this.getIndexByName(name));
 
-        if (this.getIndexByName(name) === -1) return ;
+        if (this.getIndexByName(event.target.innerText) === -1) return;
+        console.log(event);
 
-        this.test(this.getIndexByName(name), name)
+        let spanContent = event.target.childNodes[0].innerText.split("|");
+        let index = +spanContent[0];
+        let parent = spanContent[1];
+
+
+        console.log("Name: " + name + " | index: " + index + " | parent: " + parent);
+        //console.log(event);
+
+        //if (this.getIndexByName(name) === -1) return ;
+
+        this.test(index, name);
     }
 
-    getIdByName(id: number): OrgUnit {
-        for (let unit of this.orgUnits) {
-            if (id === unit.id) return unit;
-        }
-
-        return null;
-    }
-
-    getIndexByName(name: number): number {
-        for (let i = 0; i < this.orgUnits.length; i++) {
-            if (this.orgUnits[i].name === name) return i;
+    getIndexByName(name: string): number {
+        for (let i = 0; i < this.displayedOrgUnits.length; i++) {
+            if (this.displayedOrgUnits[i].name === name) return i;
         }
 
         return -1;
     }
 
+    getIdByName(name: string): string {
+        for (let i = 0; i < this.displayedOrgUnits.length; i++) {
+            if (this.displayedOrgUnits[i].name === name) return "" + this.displayedOrgUnits[i].id;
+        }
+
+        return "-1";
+    }
+
     test(index: number, name: string): void {
 
         let tmpThis = this;
-        this.orgUnitService.getOrgUnitWithChildren(this.orgUnits[index].id).subscribe(
+        this.orgUnitService.getOrgUnitWithChildren(this.getIdByName(name)).subscribe(
             res => {
                 let units = res.organisationUnits
 
@@ -156,16 +169,23 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
                         let buildString = "<ul>";
 
-                        if ($(this).text().includes(name)) {
+                        let splitText = $(this).text().split("|");
+                            console.log(splitText);
+                        if (splitText.length >=3 && splitText[2].trim() === name) {
                             for (let i = 1; i < units.length; i++) {
-                                buildString += "<li>" + units[i].name + "</li>";
-                                tmpThis.orgUnits.push(units[i]);
+                                let spanContent = `<span style="display: none;">${i}|${name}|</span>`;
+                                buildString += "<li>" + spanContent + units[i].name + "</li>";
+                                tmpThis.displayedOrgUnits.push(units[i]);
+                                console.log("appending: " + units[i].name);
                             }
 
                             buildString += "</ul>";
 
-                            if (units.length != 1)
+                            if (units.length !== 1) {
                                 $(this).append(buildString);
+                                console.log("appending")
+                                return;
+                            }
                         }
 
                     });
