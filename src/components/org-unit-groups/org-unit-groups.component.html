@@ -22,14 +22,14 @@
                         <p><strong>Code:</strong> {{group.code}} | <strong>ID:</strong> {{group.id}}
                         <p>Org units</p>
                         <div *ngIf="orgUnitGroups.length > 0">
-                            <select class="form-control"[(ngModel)]="tmp" name="testDritt">
+                            <select class="form-control">
                                 <option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray; let i = index" 
                                         value="{{orgUnit.name}">{{orgUnit.name}}</option>               
                             </select>
                         </div>
 
-                        <ul>
-                            <li (click)="test()">Test</li>
+                        <ul *ngFor="let a of orgUnits; let myIndex = index">
+                            <li>{{a.name}}</li>
                         </ul>
             
                     </accordion-group>

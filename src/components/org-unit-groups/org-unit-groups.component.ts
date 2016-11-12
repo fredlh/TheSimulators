@@ -1,4 +1,4 @@
-import { Component }                        from "@angular/core";
+import { Component, ElementRef, Renderer }  from "@angular/core";
 
 import { OrgUnitService}                    from "../../services/org-unit.service";
 import { SideBarService}                    from "../../services/side-bar.service";
@@ -20,14 +20,25 @@ import { Globals, OrganisationUnitGroup }   from "../../globals/globals.class";
 export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     private orgUnitGroups: OrganisationUnitGroup[] = [];
-    private orgUnits: OrgUnit[] = [];
+    private orgUnits = [];
 
-    private tmp = ["", "", ""];
+    private openedId;
+    private openedIndex;
+
+    private listenFunc: Function;
+
 
     constructor(private orgUnitService: OrgUnitService,
-                private sideBarService: SideBarService) {
+                private sideBarService: SideBarService,
+                private elementRef: ElementRef,
+                private rendered: Renderer) {
         this.orgUnitService.registerOrgUnitGroupsListener(this);
         this.orgUnitService.registerOrgUnitGroups(this);
+
+        let tmpThis = this;
+        this.listenFunc = rendered.listen(elementRef.nativeElement, "click", (event) => {
+            tmpThis.elementClicked(event);
+        });
     }
 
     onOrgUnitGroupsUpdate(): void {
@@ -78,9 +89,12 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     }
 
     orgUnitGroupOpened(orgUnitGroupId: string, orgUnitGroupIndex: number) {
+        this.openedId = orgUnitGroupId;
+        this.openedIndex = orgUnitGroupIndex;
+
         if (!this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray) {
-            let worker = Worker
             this.getOrgUnits(orgUnitGroupId, orgUnitGroupIndex);
+            this.getOrgUnitLevel1();
         }
 
         /*
@@ -95,8 +109,71 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         */
     }
 
-    test(): void {
-        console.log("TEST");
+    getOrgUnitLevel1(): void {
+        this.orgUnitService.getOrgUnits("&level=1").subscribe(
+            res => {
+                this.orgUnits = JSON.parse(JSON.stringify(res.organisationUnits));
+            },
+            error => {
+                console.error(error);
+            }
+        )
+    }
+
+    elementClicked(event: any): void {
+        let name = event.target.innerText;
+        console.log("Name: " + name + " | index: " + this.getIndexByName(name));
+
+        if (this.getIndexByName(name) === -1) return ;
+
+        this.test(this.getIndexByName(name), name)
+    }
+
+    getIdByName(id: number): OrgUnit {
+        for (let unit of this.orgUnits) {
+            if (id === unit.id) return unit;
+        }
+
+        return null;
+    }
+
+    getIndexByName(name: number): number {
+        for (let i = 0; i < this.orgUnits.length; i++) {
+            if (this.orgUnits[i].name === name) return i;
+        }
+
+        return -1;
+    }
+
+    test(index: number, name: string): void {
+
+        let tmpThis = this;
+        this.orgUnitService.getOrgUnitWithChildren(this.orgUnits[index].id).subscribe(
+            res => {
+                let units = res.organisationUnits
+
+                    $("#" + this.openedId).find("li").each(function () {
+
+                        let buildString = "<ul>";
+
+                        if ($(this).text().includes(name)) {
+                            for (let i = 1; i < units.length; i++) {
+                                buildString += "<li>" + units[i].name + "</li>";
+                                tmpThis.orgUnits.push(units[i]);
+                            }
+
+                            buildString += "</ul>";
+
+                            if (units.length != 1)
+                                $(this).append(buildString);
+                        }
+
+                    });
+                },
+            error => {
+                console.error(error);
+            }
+        );
     }
 
 
