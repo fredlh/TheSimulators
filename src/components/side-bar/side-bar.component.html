@@ -13,11 +13,7 @@
         Refresh
     </button>
 
-    <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
-        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
-    </button>
-
-    <button *ngIf="!hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block disabled" id="prevStackButton" 
+    <button *ngIf="hasPreviousStackFrame()" id="prevStackButton" type="button" class="btn btn-primary btn-md btn-block" 
             aria-label="Left Align" (click)="goToPreviousOrgUnits()">
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
     </button>

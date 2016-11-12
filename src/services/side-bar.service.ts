@@ -23,4 +23,8 @@ export class SideBarService {
         this.sideBar.appendParent(orgUnitId);
     }
 
+    isLastFrameStackVisible(): boolean {
+        return this.sideBar.isLastFrameStackVisible();
+    }
+
 }

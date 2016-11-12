@@ -53,6 +53,9 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     private haveSubmitted = false;
     private saveSuccess = null;
 
+    private prevStackFrameStatus = null;
+    private hasPrevStackFrame = false;
+
     private selectBoxSettings: IMultiSelectSettings = {
         pullRight: true,
         enableSearch: true,
@@ -121,8 +124,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Called when the user has clicked on an orgUnit on the map
     scrollToOrgUnit(orgUnitId: string) {
         setTimeout(function() {
-            $("#orgUnitArea").animate({
-                scrollTop: $("#" + orgUnitId).position().top + $("#orgUnitArea").scrollTop() - 40
+            $("#sideBarContent").animate({
+                scrollTop: $("#" + orgUnitId).position().top + $("#sideBarContent").scrollTop() - 40
             }, 500);
         }, 100);
     }
@@ -196,7 +199,20 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     // Returns whether it can show previous orgUnits or not
     hasPreviousStackFrame(): boolean {
-        return this.orgUnitService.hasPreviousStackFrame();
+        this.hasPrevStackFrame = this.orgUnitService.hasPreviousStackFrame();
+
+        // Only change the css property if the status has changed
+        if (this.hasPrevStackFrame  !== this.prevStackFrameStatus) {
+            let top = this.hasPrevStackFrame  ? "138px" : "105px";
+            $("#sideBarContent").css(({"top": top}));
+            this.prevStackFrameStatus = !this.prevStackFrameStatus;
+        }
+
+        return this.hasPrevStackFrame;
+    }
+
+    isLastFrameStackVisible(): boolean {
+        return this.hasPrevStackFrame;
     }
 
     // Returns the orgUnit with the given id, or null if none exists
