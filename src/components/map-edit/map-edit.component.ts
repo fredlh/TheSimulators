@@ -42,7 +42,7 @@ export class MapEditComponent implements OnInit {
             }
         });
 
-        this.drawControl = new L.Control.Draw({
+        this.drawControl = new (L as any).Control.Draw({
             position: "topright",
             edit: {
                 featureGroup: this.drawnItems,
@@ -62,11 +62,8 @@ export class MapEditComponent implements OnInit {
             }
         });
 
-        this.map.on("draw:created", function(e: L.DrawEvents.Created) {
-            let type = e.layerType,
-                layer = e.layer;
-
-            self.drawnItems.addLayer(layer);
+        this.map.on("draw:created", function(e) {
+            self.drawnItems.addLayer(e.layer);
         });
 
         $("#marker-buttons").hide();
@@ -96,7 +93,7 @@ export class MapEditComponent implements OnInit {
             opacity: 0.5,
             fill: true,
             fillColor: null,
-            fillOpacity: 0.2,
+            fillOpacity: 0.2
         });
     }
 
@@ -164,7 +161,7 @@ export class MapEditComponent implements OnInit {
         // Create a backup of the editable layers
         this.previousDrawnItems = [];
         for (let l of this.drawnItems.getLayers()) {
-            this.previousDrawnItems.push(this.createEditPolygon(l.getLatLngs()));
+            this.previousDrawnItems.push(this.createEditPolygon((l as L.Polygon).getLatLngs()));
         }
     }
 
@@ -174,11 +171,11 @@ export class MapEditComponent implements OnInit {
             if (saved) {
                 this.previousDrawnItems = [];
                 for (let lay of this.drawnItems.getLayers()) {
-                    this.previousDrawnItems.push(this.createEditPolygon(lay.getLatLngs()));
+                    this.previousDrawnItems.push(this.createEditPolygon((lay as L.Polygon).getLatLngs()));
                     let subfigure = [];
 
                     // Export coords from layer
-                    let lats = lay.getLatLngs();
+                    let lats = (lay as any).getLatLngs();
                     for (let area of lats) {
                         for (let point of area) {
                             subfigure.push([point.lng, point.lat]);

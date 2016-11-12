@@ -199,16 +199,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     // Returns whether it can show previous orgUnits or not
     hasPreviousStackFrame(): boolean {
-        this.hasPrevStackFrame = this.orgUnitService.hasPreviousStackFrame();
-
-        // Only change the css property if the status has changed
-        if (this.hasPrevStackFrame  !== this.prevStackFrameStatus) {
-            let top = this.hasPrevStackFrame  ? "138px" : "105px";
-            $("#sideBarContent").css(({"top": top}));
-            this.prevStackFrameStatus = !this.prevStackFrameStatus;
-        }
-
-        return this.hasPrevStackFrame;
+        return this.orgUnitService.hasPreviousStackFrame();
     }
 
     isLastFrameStackVisible(): boolean {

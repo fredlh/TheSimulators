@@ -207,7 +207,8 @@ export class MapViewComponent implements OnInit {
                         "geometry": {
                             "type": "Polygon",
                             // Coordinates is gathered in the form of a string, needs to parse it into [[[x,y],[x,y]],[[x,y]]] number array
-                            "coordinates": self.mapService.parsePolygonCoordinates(org.coordinates)
+                            "coordinates": self.mapService.parsePolygonCoordinates(org.coordinates),
+                            "smoothFactor": 10.0
                         }
                     });
 

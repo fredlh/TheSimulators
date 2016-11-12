@@ -9,14 +9,15 @@
             <span *ngIf="filterAreaVisible">Close Filter</span>
     </button>
 
-    <button type="button" class="btn btn-primary" style="margin-left: 30%;" (click)="refreshOrgUnits()">
+    <button *ngIf="hasPreviousStackFrame()" id="prevStackButton" type="button" class="btn btn-primary btn-md" 
+            style="margin-left: 13.7%;" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Go back
+    </button>
+
+    <button type="button" class="btn btn-primary" style="float: right; margin-right: 5px;" (click)="refreshOrgUnits()">
         Refresh
     </button>
 
-    <button *ngIf="hasPreviousStackFrame()" id="prevStackButton" type="button" class="btn btn-primary btn-md btn-block" 
-            aria-label="Left Align" (click)="goToPreviousOrgUnits()">
-        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
-    </button>
 </div>
 
 
