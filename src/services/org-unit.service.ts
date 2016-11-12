@@ -12,7 +12,10 @@ import { OrgUnitLevelsUpdateInterface}                          from "../core/or
 import { OrgUnitGroupsUpdateInterface}                          from "../core/org-unit-groups-update.interface";
 
 import { AccordionComponent }                                   from "../components/accordion/accordion.component";
+import { AccordionGroupComponent }                              from "../components/accordion/accordion-group.component";
 import { SideBarComponent }                                     from "../components/side-bar/side-bar.component";
+import { OrgUnitGroupsComponent }                               from "../components/org-unit-groups/org-unit-groups.component";
+
 import { OrgUnit }                                              from "../core/org-unit.class";
 import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals/globals.class";
 
@@ -30,6 +33,8 @@ export class OrgUnitService {
 
     private sideBar: SideBarComponent;
     private accordion: AccordionComponent;
+    private accordionGroup: AccordionGroupComponent;
+    private orgUnitGroups: OrgUnitGroupsComponent;
     private orgUnitLevelsUpdateListeners: OrgUnitLevelsUpdateInterface[] = [];
     private orgUnitGroupsUpdateListeners: OrgUnitGroupsUpdateInterface[] = [];
 
@@ -87,6 +92,19 @@ export class OrgUnitService {
     registerAccordion(accordion: AccordionComponent) {
         this.accordion = accordion;
     }
+
+    registerGroupAccordion(groupAccordion: AccordionGroupComponent) {
+        this.accordionGroup = groupAccordion;
+    }
+
+    registerOrgUnitGroups(orgUnitGroups: OrgUnitGroupsComponent) {
+        this.orgUnitGroups = orgUnitGroups;
+    }
+
+    orgUnitGroupOpened(orgUnitGroupId: string, orgUnitGroupIndex: number): void {
+        this.orgUnitGroups.orgUnitGroupOpened(orgUnitGroupId, orgUnitGroupIndex);
+    }
+
 
     // Retrieves all the organisation groups levels
     getOrganisationUnitLevels(): any {

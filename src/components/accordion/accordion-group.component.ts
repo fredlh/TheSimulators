@@ -1,9 +1,11 @@
 import {Component, Input, Host, forwardRef, Inject, ContentChild, ElementRef} from "@angular/core";
-import {AccordionComponent} from "./accordion.component";
-import {AccordionToggleComponent} from "./accordion-toggle.component";
 
-import { MapService } from "../../services/map.service";
-import {SideBarService} from "../../services/side-bar.service";
+import {AccordionComponent}                                                   from "./accordion.component";
+import {AccordionToggleComponent}                                             from "./accordion-toggle.component";
+
+import { MapService }                                                         from "../../services/map.service";
+import { SideBarService }                                                     from "../../services/side-bar.service";
+import { OrgUnitService }                                                     from "../../services/org-unit.service";
 
 @Component({
     selector: "accordion-group",
@@ -19,12 +21,18 @@ export class AccordionGroupComponent {
     orgUnitId: string = "";
 
     @Input()
+    orgUnitGroupId: string = "";
+
+    @Input()
+    orgUnitGroupIndex: number;
+
+    @Input()
     isOpened: boolean = false;
 
     @ContentChild(AccordionToggleComponent)
     toggler: ElementRef;
 
-    constructor(private mapService: MapService, private sideBarService: SideBarService,
+    constructor(private mapService: MapService, private sideBarService: SideBarService, private orgUnitService: OrgUnitService,
                 @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {}
 
     checkAndToggle() {
@@ -41,6 +49,11 @@ export class AccordionGroupComponent {
             this.accordion.closeAll();
 
         this.isOpened = !isOpenedBeforeWeChange;
+
+        if (this.orgUnitGroupId !== "" && this.isOpened) {
+            this.orgUnitService.orgUnitGroupOpened(this.orgUnitGroupId, this.orgUnitGroupIndex);
+            return;
+        }
 
         if (this.orgUnitId === "") return;
 

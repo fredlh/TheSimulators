@@ -1,6 +1,5 @@
-class Id {
-    id: string;
-}
+import { OrgUnit, ID} from "../core/org-unit.class";
+
 
 export class FeatureType {
     public static NONE = "NONE";
@@ -28,12 +27,14 @@ export class OrganisationUnitGroup {
     symbol: string;
     dimensionItem: string;
     dimensionItentType: string;
-    organisationGroupSet: Id;
-    organisationUnits: Id[];
+    organisationGroupSet: ID;
+    organisationUnits: ID[];
+    orgUnitArray: OrgUnit[];
 
     constructor() {
-        this.organisationGroupSet = new Id();
+        this.organisationGroupSet = new ID("");
         this.organisationUnits = [];
+        this.orgUnitArray = [];
     }
 }
 
