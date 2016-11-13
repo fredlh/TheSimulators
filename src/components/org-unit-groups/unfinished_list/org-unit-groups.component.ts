@@ -8,6 +8,10 @@ import { OrgUnitGroupsUpdateInterface }     from "../../core/org-unit-groups-upd
 import { OrgUnit }                          from "../../core/org-unit.class";
 import { Globals, OrganisationUnitGroup }   from "../../globals/globals.class";
 
+const callps = require<any>("../../../CollapsibleLists.js");
+
+declare var CollapsibleLists: any;
+
 @Component({
     selector: "org-unit-groups",
     template: require<any>("./org-unit-groups.component.html"),
@@ -110,6 +114,10 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
             }
         )
     }
+    // Can have the following classes:
+    // - listOpened    | The list is opened, should have a "-" icon and should show a hand
+    // - listClosed    | The list is closed, should have a "+" icon and should show a hand
+    // - listLastChild | Last child of of the list, should have an empty icon and a "|"" cursor
 
     elementClicked(event: any): void {
 
