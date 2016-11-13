@@ -71,26 +71,25 @@
                 <div id="{{group.id}}">
                     <accordion-group orgUnitGroupId="{{group.id}}" orgUnitGroupIndex={{myIndex}}>
                         <accordion-heading>{{myIndex + 1}} - {{group.name}}</accordion-heading>
-                        <p><strong>Code:</strong> {{group.code}} | <strong>ID:</strong> {{group.id}}
-                        <p>Org units</p>
+                        <p><strong>Code:</strong> {{group.code}} | <strong>ID:</strong> {{group.id}}</p><br>
+                        <p>The organisation unit have the following groups:</p>
                         <div *ngIf="orgUnitGroups.length > 0">
                             <select class="form-control">
                                 <option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray; let i = index" 
                                         value="{{orgUnit.name}">{{orgUnit.name}}</option>               
                             </select>
                         </div>
+                        <br>
+                        <br>
+                        <p>To add new org units, enter a name and search in the field below.
+                            You can choose which ones you want to add from the search result</p>
 
+                        <form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit()">
+                        	<input type="text" class="form-control" placeholder=" Enter name of an organisation unit ..." 
+									[(ngModel)]="orgUnitSearchTerm" name="searchOrgUnitBar">
 
-
-                        <p>Org units</p>
-                        <ul *ngFor="let a of orgUnits; let myIndex = index" class="org-unit-traversel">
-                            <li>
-                                <span style="display: none;">{{myIndex}}|-1|</span>
-                                <span class="glyphicon glyphicon glyphicon glyphicon-plus"></span>  
-                                {{a.name}}
-                            </li>
-                        </ul>
-
+                        	<input type="submit" value="Search" class="btn btn-primary">
+        				</form>
             
                     </accordion-group>
                 </div>

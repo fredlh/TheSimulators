@@ -1,12 +1,12 @@
 import { Component, ElementRef, Renderer, AfterViewInit }  from "@angular/core";
 
-import { OrgUnitService}                    from "../../services/org-unit.service";
-import { SideBarService}                    from "../../services/side-bar.service";
+import { OrgUnitService}                    from "../../../services/org-unit.service";
+import { SideBarService}                    from "../../../services/side-bar.service";
 
-import { OrgUnitGroupsUpdateInterface }     from "../../core/org-unit-groups-update.interface";
+import { OrgUnitGroupsUpdateInterface }     from "../../../core/org-unit-groups-update.interface";
 
-import { OrgUnit }                          from "../../core/org-unit.class";
-import { Globals, OrganisationUnitGroup }   from "../../globals/globals.class";
+import { OrgUnit }                          from "../../../core/org-unit.class";
+import { Globals, OrganisationUnitGroup }   from "../../../globals/globals.class";
 
 const callps = require<any>("../../../CollapsibleLists.js");
 
@@ -37,7 +37,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
                 private elementRef: ElementRef,
                 private rendered: Renderer) {
         this.orgUnitService.registerOrgUnitGroupsListener(this);
-        this.orgUnitService.registerOrgUnitGroups(this);
+        //this.orgUnitService.registerOrgUnitGroups(this);
 
         let tmpThis = this;
         this.listenFunc = rendered.listen(elementRef.nativeElement, "click", (event) => {
