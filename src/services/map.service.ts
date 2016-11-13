@@ -61,6 +61,8 @@ export class MapService {
         L.DomEvent.disableScrollPropagation(element);
     };
 
+    // DHIS coordinates are not directly compatible with leaflet
+    // Parse and make compatible number arrays
     parsePolygonCoordinates(coordinatesAsString: string): any {
         let parsedCoordinates = [];
         let polygons = JSON.parse(coordinatesAsString);
@@ -72,63 +74,90 @@ export class MapService {
         return parsedCoordinates;
     }
 
+    // Tigger events on the map
     fireEvent(event: string): void {
         this.mapView.fireEvent(event);
     }
 
+    // Enable click, doubleclick and hover events on the map
+    // Used to reenable after finishing edit modes
     enableEvents(): void {
         this.mapView.enableEvents();
     }
 
+    // Disable click, doubleclick and hover events on the map
+    // Used during edit modes
     disableEvents(): void {
         this.mapView.disableEvents();
     }
 
+    // Called by the selected polygon to load its data to edit mode
     loadEditPolygon(arg: any): void {
         this.mapEdit.loadEditPolygon(arg);
     }
 
+    // Called by the selected marker to load its data to edit mode
     loadEditMarker(arg: any): void {
         this.mapEdit.loadEditMarker(arg);
     }
 
+    // Called to initiate edit mode for the map
     startEdit(orgUnitId: string, polygon: boolean): void {
         this.mapView.setEditId(orgUnitId);
         this.mapEdit.startEdit(orgUnitId, polygon);
     }
 
+    // Called to end a single edit for the map
+    // Does not reset edit mode variables
+    // User still on edit screen
     endEdit(saved: boolean): number[] {
         return this.mapEdit.endEdit(saved);
     }
 
-    draw(orgUnits: OrgUnit[], onSearch: boolean): void {
-        this.mapView.draw(orgUnits, onSearch);
-    }
-
-    selectMap(orgUnitId: string): void {
-        this.mapView.selectMap(orgUnitId);
-    }
-
-    deselectMap(): void {
-        this.mapView.selectMap("");
-    }
-
-    onMapOptionsSaved(): void {
-        this.mapView.onMapOptionsSaved();
-    }
-
+    // Called to fully end edit mode
+    // Resets all edit mode variables
     endEditMode(): void {
         this.mapEdit.endEditMode();
     }
 
+    // Draw the given organisation units on the map as polygons or markers
+    // Only draws the organisation units with coordinates
+    draw(orgUnits: OrgUnit[], onSearch: boolean): void {
+        this.mapView.draw(orgUnits, onSearch);
+    }
+
+    // Notification for the map about a select change in the side bar
+    // Affects style for polygons and icon for markers
+    // May include paning and zooming the map to the selected element
+    selectMap(orgUnitId: string): void {
+        this.mapView.selectMap(orgUnitId);
+    }
+
+    // Notification for the map about no selected elements
+    // Affects style for polygons and icon for markers
+    // May include paning and zooming the map to all elements
+    deselectMap(): void {
+        this.mapView.selectMap("");
+    }
+
+    // Notification for the map about possible change in options
+    // May affect style for polygons
+    onMapOptionsSaved(): void {
+        this.mapView.onMapOptionsSaved();
+    }
+
+    // Clear coordinate data for an element in edit mode
+    // Makes sure no data is loaded from existing polygons or markers
     clearMapEditData(): void {
         this.mapEdit.clearEditData();
     }
 
+    // Called when using filters to only draw the elements still in the results
     onFilter(orgUnits: OrgUnit[]): void {
         this.draw(orgUnits, true);
     }
 
+    // Called by map to notify side bar about an element selection by map click
     mapSelect(orgUnitId: string): void {
         this.accordion.toggleOrgUnitInSideBar(orgUnitId);
         this.sideBar.scrollToOrgUnit(orgUnitId);

@@ -1,21 +1,13 @@
-import { Component, ViewChild, OnInit } from "@angular/core";
+import { Component, OnInit }            from "@angular/core";
 
 import { OrgUnitService }               from "../../services/org-unit.service";
 import { MapService }                   from "../../services/map.service";
 import { GeocodingService }             from "../../services/geocoding.service";
 
-import { NavigatorComponent }           from "../navigator/navigator.component";
-import { MarkerComponent }              from "../marker/marker.component";
-
-import { Location }                     from "../../core/location.class";
 import { OrgUnit }                      from "../../core/org-unit.class";
 
-import { OptionsComponent, MapOptions } from "../options/options.component";
-import { Globals, FeatureType }         from "../../globals/globals.class";
-
-import { MouseEvent }                   from "leaflet";
-
-const leafletDraw = require("leaflet-draw");
+import { OptionsComponent }             from "../options/options.component";
+import { FeatureType }                  from "../../globals/globals.class";
 
 
 @Component({
@@ -36,6 +28,10 @@ export class MapViewComponent implements OnInit {
     // User selected element, either through map click or selected in side bar
     private selectedElement;
 
+    // Coordinates for all elements currently drawn
+    // Used to pan/zoom so all elements are visible
+    private allCoords = [];
+
     // Do zoom or not, set using options panel in the UI
     private autoZoomOnSearch: boolean;
     private autoZoomOnGetChildren: boolean;
@@ -55,7 +51,6 @@ export class MapViewComponent implements OnInit {
     private defaultHoverStyle;
     private defaultSelectedStyle;
 
-    @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
     constructor(private mapService: MapService, private geocoder: GeocodingService, private orgUnitService: OrgUnitService) {}
 
@@ -81,12 +76,6 @@ export class MapViewComponent implements OnInit {
         this.map.on("zoom", function() {
             self.fireEvent("zoomIcon");
         });
-
-        /*
-        this.map.on("zoomend", function() {
-            self.fireEvent("zoomIcon");
-        });
-        */
 
         // Hack to make sure all layers are displayed correctly
         // even if fly to animation is stopped prematurely by user
@@ -162,6 +151,11 @@ export class MapViewComponent implements OnInit {
         // If they are the new selected it could involve setting a new style
         // Could also result in a fly to depending on settings
         this.fireEvent("selectedChanged");
+
+        // If orgUnitId indicates a deselect, fly to all elements if options allow it
+        if (orgUnitId === "" && this.allCoords.length !== 0 && this.autoZoomOnSelect) {
+            this.map.flyToBounds(this.allCoords, {paddingTopLeft: [350, 75]});
+        }
     }
 
     // Fires a given events for all drawn items
@@ -178,7 +172,8 @@ export class MapViewComponent implements OnInit {
     private addMapElement(orgUnits: OrgUnit[], doFly: boolean) {
         // Build up a list of all coordinates to be able to zoom
         // in such a way that everything is visible afterwards
-        let allCoords = [];
+        this.allCoords = [];
+        let allCoords = this.allCoords;
 
         const self = this;
 
