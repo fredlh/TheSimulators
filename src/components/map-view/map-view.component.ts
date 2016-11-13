@@ -36,6 +36,8 @@ export class MapViewComponent implements OnInit {
     private autoZoomOnSearch: boolean;
     private autoZoomOnGetChildren: boolean;
     private autoZoomOnSelect: boolean;
+    private autoZoomOnDeselect: boolean;
+    private autoZoomOnSelectWoCoordinates: boolean;
 
     private map;
 
@@ -113,6 +115,8 @@ export class MapViewComponent implements OnInit {
         this.autoZoomOnSearch = OptionsComponent.getAutoZoomOnSearch();
         this.autoZoomOnGetChildren = OptionsComponent.getAutoZoomOnGetChildren();
         this.autoZoomOnSelect = OptionsComponent.getAutoZoomOnSelect();
+        this.autoZoomOnDeselect = OptionsComponent.getAutoZoomOnDeselect();
+        this.autoZoomOnSelectWoCoordinates = OptionsComponent.getAutoZoomOnSelectWoCoordinates();
 
         // Fire changed options event
         this.fireEvent("optionsChanged");
@@ -147,22 +151,26 @@ export class MapViewComponent implements OnInit {
     selectMap(orgUnitId: string): void {
         this.selectedElement = orgUnitId;
 
+        // Check if selected org unit indicates a deselection
+        // Could result in a fly to "all" if options allow it
+        if (orgUnitId === "") {
+            if (this.allCoords.length !== 0 && this.autoZoomOnDeselect) {
+                this.map.flyToBounds(this.allCoords, {paddingTopLeft: [350, 75]});
+            }
+
         // Check if selected org unit contains coordinates
         // Could result in a fly to "all" if no coordinates and options allow it
-        let orgUnit = this.mapService.getOrgUnitById(orgUnitId);
-        if ((orgUnit === undefined || orgUnit.coordinates === undefined) && this.autoZoomOnSelect) {
-            this.map.flyToBounds(this.allCoords, {paddingTopLeft: [350, 75]});
+        } else {
+            let orgUnit = this.mapService.getOrgUnitById(orgUnitId);
+            if ((orgUnit === undefined || orgUnit.coordinates === undefined) && this.autoZoomOnSelectWoCoordinates) {
+                this.map.flyToBounds(this.allCoords, {paddingTopLeft: [350, 75]});
+            }
         }
 
         // Tell all drawn elements to check if they are the new selected
         // If they are the new selected it could involve setting a new style
         // Could also result in a fly to depending on settings
         this.fireEvent("selectedChanged");
-
-        // If orgUnitId indicates a deselect, fly to all elements if options allow it
-        if (orgUnitId === "" && this.allCoords.length !== 0 && this.autoZoomOnSelect) {
-            this.map.flyToBounds(this.allCoords, {paddingTopLeft: [350, 75]});
-        }
     }
 
     // Fires a given events for all drawn items

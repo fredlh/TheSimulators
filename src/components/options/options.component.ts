@@ -33,6 +33,8 @@ class Options {
     autoZoomOnSearch = "Yes";
     autoZoomOnGetChildren = "Yes";
     autoZoomOnSelect = "Yes";
+    autoZoomOnDeselect = "Yes";
+    autoZoomOnSelectWoCoordinates = "Yes";
     mapOptions: MapOptions[] = [];
 }
 
@@ -96,6 +98,14 @@ export class OptionsComponent implements OrgUnitLevelsUpdateInterface  {
 
     public static getAutoZoomOnSelect(): boolean {
         return OptionsComponent.currentOptions.autoZoomOnSelect === "Yes";
+    }
+
+    public static getAutoZoomOnDeselect(): boolean {
+        return OptionsComponent.currentOptions.autoZoomOnDeselect === "Yes";
+    }
+
+    public static getAutoZoomOnSelectWoCoordinates(): boolean {
+        return OptionsComponent.currentOptions.autoZoomOnSelectWoCoordinates === "Yes";
     }
 
     public static getMapOptions(): MapOptions[] {
