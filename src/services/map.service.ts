@@ -17,6 +17,8 @@ export class MapService {
     public map: Map;
     public baseMaps: any;
 
+    private currentOrgUnits: OrgUnit[] = [];
+
     private mapView: MapViewComponent;
     private mapEdit: MapEditComponent;
     private sideBar: SideBarComponent;
@@ -123,6 +125,8 @@ export class MapService {
     // Draw the given organisation units on the map as polygons or markers
     // Only draws the organisation units with coordinates
     draw(orgUnits: OrgUnit[], onSearch: boolean): void {
+        this.currentOrgUnits = orgUnits;
+
         this.mapView.draw(orgUnits, onSearch);
     }
 
@@ -138,6 +142,16 @@ export class MapService {
     // May include paning and zooming the map to all elements
     deselectMap(): void {
         this.mapView.selectMap("");
+    }
+
+    getOrgUnitById(orgUnitId: string): OrgUnit {
+        for (let o of this.currentOrgUnits) {
+            if (o.id === orgUnitId) {
+                return o;
+            }
+        }
+
+        return undefined;
     }
 
     // Notification for the map about possible change in options
