@@ -147,6 +147,13 @@ export class MapViewComponent implements OnInit {
     selectMap(orgUnitId: string): void {
         this.selectedElement = orgUnitId;
 
+        // Check if selected org unit contains coordinates
+        // Could result in a fly to "all" if no coordinates and options allow it
+        let orgUnit = this.mapService.getOrgUnitById(orgUnitId);
+        if ((orgUnit === undefined || orgUnit.coordinates === undefined) && this.autoZoomOnSelect) {
+            this.map.flyToBounds(this.allCoords, {paddingTopLeft: [350, 75]});
+        }
+
         // Tell all drawn elements to check if they are the new selected
         // If they are the new selected it could involve setting a new style
         // Could also result in a fly to depending on settings
