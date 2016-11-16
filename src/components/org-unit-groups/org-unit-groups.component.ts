@@ -38,6 +38,18 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // Contains all the info the user can search and change
     private selectedOrgUnitGroup = new SelectedOrgUnitGroups();
 
+    // Used to display info regarding adding and deletion of orgUnits in an orgUnitGroup
+    // true = success, false = error
+    private orgUnitGroupStatus: boolean = null;
+    private orgUnitGroupMessage: string = "";
+
+    // Same as above, but used during adding of new orgUnitGroups
+    private newOrgUnitGroupStatus: boolean = null;
+    private newOrgUnitGroupMessage: string = "";
+
+    // Name on the new orgUnitGroup the use can add
+    private newOrgUnitGroupName: string = "";
+
 
     constructor(private orgUnitService: OrgUnitService, private sideBarService: SideBarService) {
         this.orgUnitService.registerOrgUnitGroupsListener(this);
@@ -52,6 +64,12 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     toggleOrgUnitGroups(): void {
         this.showOrgUnitGroupsPanel();
+
+        this.orgUnitGroupStatus = null;
+        this.orgUnitGroupMessage = "";
+        this.newOrgUnitGroupStatus = null;
+        this.newOrgUnitGroupMessage = "";
+        this.newOrgUnitGroupName = "";
 
         let tmpThis = this;
         $(".org-unit-groups-close").click(function() {
@@ -180,22 +198,28 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     // Adds an orgUnitGroup
     // TODO:
-    // - Refresh the page? Or just have a refresh page button somewhere?
-    onAddOrgUnitGroup(name: string) {
-        console.log("Add orgUnitGroup: " + name)
+    // - Call refreshOrgunitGroups() on success?
+    onAddOrgUnitGroup():void {
+        // Ignore if just blanks
+        if (this.newOrgUnitGroupName.trim() === "") return;
 
+        // Set the required fields
         let orgUnitGroup = new OrganisationUnitGroup();
-        orgUnitGroup.name = name;
-        orgUnitGroup.displayName = name;
-        orgUnitGroup.shortName = name;
+        orgUnitGroup.name = this.newOrgUnitGroupName;
+        orgUnitGroup.displayName = this.newOrgUnitGroupName;
+        orgUnitGroup.shortName = this.newOrgUnitGroupName;
         orgUnitGroup.created = new Date();
 
+        // Save the orgUnitGroup and display wether it successed or failed
+        let tmpThis = this;
         this.orgUnitService.saveOrganisationUnitGroup(orgUnitGroup).subscribe(
             res => {
-                console.log(res);
+                tmpThis.newOrgUnitGroupStatus = true;
+                tmpThis.newOrgUnitGroupMessage = "Added the organisation unit group '" + this.newOrgUnitGroupName + "'";
             },
             error => {
-                console.error(error);
+                tmpThis.newOrgUnitGroupStatus = false;
+                tmpThis.newOrgUnitGroupMessage = "Unable to add the organisation unit group '" + this.newOrgUnitGroupName + "'";
             }
         ); 
     }
@@ -210,5 +234,14 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         console.log("Delete orgUnitGroup: " + id);
     }
 
+
+    // Refreshes the orgUnitGroups
+    // TODO:
+    // - When retrieving new orgUnitGroups, all orgUnitArrays are lost
+    // - Any changes on the implementation or assumptions are needed?
+    refreshOrgunitGroups(): void {
+        //this.orgUnitService.refreshOrganisationUniGroups();
+        console.log("Currently not working");
+    }
 
 }

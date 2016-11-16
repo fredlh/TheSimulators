@@ -8,14 +8,27 @@
 	<div class="org-unit-groups-content">
         <span class="org-unit-groups-close">x</span>
         
-        <h1>Manage organisation unit groups</h1>
-        <p>Here you can view, edit, delete and add organisation unit groups
-			<a href="#addOrgUnitGroupForm"><button type="button" class="btn btn-primary" aria-label="Left Align">
-          Go to add org unit group form
-        </button></a>
-		</p>
+		<h1>Manage organisation unit groups</h1>
 
-        
+		<div class="form-group row">
+			<div class="col-xs-7">
+				<p>Here you can view, edit, delete and add organisation unit groups	</p>
+			</div>
+
+			<div class="col-xs-2">
+				<a href="#addOrgUnitGroupForm">
+					<button type="button" class="btn btn-primary pull-right" aria-label="Left Align">
+						Go to add org unit group form
+					</button>
+				</a>
+			</div>
+
+			<div class="col-xs-3">
+				<button type="button" class="btn btn-primary pull-right" aria-label="Left Align" (click)="refreshOrgunitGroups()">
+					Refresh org unit groups
+				</button>
+			</div>
+		</div>
 
 
         <accordion [closeOthers]="false">
@@ -23,51 +36,75 @@
                 <div id="{{group.id}}">
                     <accordion-group orgUnitGroupId="{{group.id}}" orgUnitGroupIndex={{myIndex}}>
                         <accordion-heading>{{myIndex + 1}} - {{group.name}}</accordion-heading>
-                        
+  
+						<div class="col-lg-6">
+							<h3>Edit org unit group</h3>
+							<p>Select the org units you want in the list, and click "remove" to remove them</p>
 
-						<div id="innerOrgUnitGroupArea">
-							
-							<div id="leftInnerOrgunitGrupArea">
-								<h3>Edit org unit group</h3>
-								<p>Select the org units you want in the list, and click "remove" to remove them</p>
+							<form>
+								<div class="form-group row">
+									<div class="col-xs-9">
+										<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromExisting" name="selectedUnitsInGroup">
+											<option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
+										</select>
+									</div>
 
-                            	<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromExisting" name="selectedUnitsInGroup">
-                                	<option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
-                            	</select>
-
-								<button type="button" class="btn btn-primary" aria-label="Left Align" (click)="removeOrgUnit()">
-									Remove
-								</button>
-							</div>
-							
-							<div id="rightInnerOrgUnitGroupArea">
-								<h3>Add org units to org unit group</h3>
-								<p>To add new org units, enter a name and search in the field below.
-                            		You can choose which ones you want to add from the search result</p>
-
-                        		<form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit()">
-                        			<input type="text" class="form-control" placeholder=" Enter name of an organisation unit ..." 
-											[(ngModel)]="selectedOrgUnitGroup.searchTerm" name="searchOrgUnitBar">
-
-                        			<input type="submit" value="Search" class="btn btn-primary">
-        						</form>
-
-								<div *ngIf="selectedOrgUnitGroup.searchResults.length > 0">
-									<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromSearch" name="selectedUnitsInGroup">
-										<option *ngFor="let orgUnit of selectedOrgUnitGroup.searchResults;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
-									</select>
-
-									<button type="button" class="btn btn-primary" aria-label="Left Align" (click)="addOrgUnit()">
-										Add
-									</button>
+									<div class="col-xs-2">
+										<button type="button" class="btn btn-warning" aria-label="Left Align" (click)="removeOrgUnit()">
+											Remove
+										</button>
+									</div>
 								</div>
+							</form>
+						</div>
+							
+						<div class="col-lg-6">
+							<h3>Add org units to org unit group</h3>
+							<p>To add new org units, enter a name and search in the field below.
+                               You can choose which ones you want to add from the search result</p>
 
+                        	<form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit()">
+								<div class="form-group row">
+									<div class="col-xs-9">
+										<input type="text" class="form-control" placeholder=" Enter name of an organisation unit ..." 
+												[(ngModel)]="selectedOrgUnitGroup.searchTerm" name="searchOrgUnitBar">
+									</div>
+									
+									<div class="col-xs-2">
+										<input type="submit" value="Search" class="btn btn-primary">
+									</div>
+								</div>
+        					</form>
+
+							<div *ngIf="selectedOrgUnitGroup.searchResults.length > 0">
+								<form>
+									<div class="form-group row">
+										<div class="col-xs-9">
+											<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromSearch" name="selectedUnitsInGroup">
+												<option *ngFor="let orgUnit of selectedOrgUnitGroup.searchResults;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
+											</select>
+										</div>
+
+										<div class="col-xs-2">
+											<button type="button" class="btn btn-success" aria-label="Left Align" (click)="addOrgUnit()">
+												Add
+											</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+				
+						<div class="col-lg-12">
+							<div *ngIf="orgUnitGroupStatus === false" class="alert alert-danger">
+								<strong>Error:</strong> {{orgUnitGroupMessage}}
 							</div>
 
+							<div *ngIf="orgUnitGroupStatus === true" class="alert alert-success">
+								<strong>Success:</strong> {{orgUnitGroupMessage}}
+							</div>
 						</div>
-
-                        
-            
+						
                     </accordion-group>
                 </div>
 
@@ -78,24 +115,38 @@
 
         <div id="addOrgUnitGroupForm">
 
-			<form (ngSubmit)="onAddOrgUnitGroup(orgUnitGroupName.value)" #orgUnitGroupForm="ngForm">
+			<form (ngSubmit)="onAddOrgUnitGroup()" #orgUnitGroupForm="ngForm">
 				<h3>Add new org unit group </h3>
 				<div class="form-group row">
 					<label class="col-lg-1 col-form-label">Name: </label>
-					<div class="col-lg-4">
-						<input class="form-control" type="text" #orgUnitGroupName required>
+					<div class="col-lg-5">
+						<input class="form-control" type="text" required
+							   [(ngModel)]="newOrgUnitGroupName" name="angularNewOrgUnitGroupName">
 					</div>
 					
-					<input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
-					
-					<input type="submit" value="Add" class="btn btn-success" [disabled]="!orgUnitGroupForm.form.valid">
+					<div class="col-lg-5">
+						<input type="submit" value="Add" class="btn btn-success" [disabled]="!orgUnitGroupForm.form.valid">
+					</div>
 				</div>
-            	<br/>
         	</form>
-
         </div>
+		
 
+		<div *ngIf="newOrgUnitGroupStatus === false" class="alert alert-danger">
+			<strong>Error:</strong> {{newOrgUnitGroupMessage}}
+		</div>
 
+		<div *ngIf="newOrgUnitGroupStatus === true" class="alert alert-success">
+			<strong>Success:</strong> {{newOrgUnitGroupMessage}}
+		</div>
+
+      	<button type="button" class="btn btn-primary pull-right" aria-label="Left Align" (click)="onCancel()">
+        	Close
+    	</button>
+		
+  
+		<br>
+		<br>
 
     </div>
 </div>
