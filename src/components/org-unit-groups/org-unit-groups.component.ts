@@ -61,12 +61,10 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     showOrgUnitGroupsPanel(): void {
         document.getElementById("orgUnitGroupsArea").style.display = "block";
-        //this.sideBarService.hideSideBar();
     }
 
     hideOrgUnitGroupsPanel(): void {
         document.getElementById("orgUnitGroupsArea").style.display = "none";
-        //this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {
@@ -108,8 +106,6 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
             }
         )
     }
-
-    
 
     getIdByName(name: string): string {
         for (let i = 0; i < this.displayedOrgUnits.length; i++) {

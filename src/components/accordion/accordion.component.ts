@@ -1,19 +1,20 @@
-import {ContentChildren, Component, QueryList, Input, forwardRef, AfterContentInit} from "@angular/core";
-import {AccordionGroupComponent} from "./accordion-group.component";
+import {ContentChildren, Component, QueryList, Input, forwardRef, AfterContentInit}     from "@angular/core";
+import {AccordionGroupComponent}                                                        from "./accordion-group.component";
 
-import { MapService }       from "../../services/map.service";
+import { MapService }                                                                   from "../../services/map.service";
+import { OrgUnitService }                                                               from "../../services/org-unit.service";
 
 @Component({
     selector: "accordion",
     template: `
-<div class="panel-group" role="tablist" aria-multiselectable="true">
-    <ng-content></ng-content>
-</div>
-`
+            <div class="panel-group" role="tablist" aria-multiselectable="true">
+                <ng-content></ng-content>
+            </div>
+            `
 })
 export class AccordionComponent implements AfterContentInit {
 
-    constructor(private mapService: MapService) {}
+    constructor(private mapService: MapService, private orgUnitSerivce: OrgUnitService) {}
 
     @Input()
     closeOthers = true;
@@ -35,6 +36,7 @@ export class AccordionComponent implements AfterContentInit {
             });
         }
 
+        this.orgUnitSerivce.registerAccordion(this);
         this.mapService.registerAccordion(this);
     }
 

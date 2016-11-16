@@ -220,7 +220,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Opens the editOrgUnitArea and registers the needed events
     // Gets called when the edit org unit button is clicked
     onEditOrgUnitOpen(orgUnitId = "") {
-        //this.hideSideBar();
         this.showEditOrgUnitPanel();
 
         if (orgUnitId !== "") {
@@ -250,13 +249,13 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Closes the panel and shows the sideBar again
     onEditOrgUnitCancel(tmpThis = this): void {
         this.closeEditOrgUnitPanel();
-        //tmpThis.unHideSideBar();
-        // tmpThis.orgUnitService.endAddOrEditOrgUnit();
         tmpThis.mapService.endEditMode();
     }
 
     // The user has submited the edited org unit
     onEditOrgUnitSubmit(): void {
+        this.mapService.endEditMode();
+
         // Ignore if user alreayd have submitted successfully
         if (this.haveSubmitted) return;
 

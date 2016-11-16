@@ -18,6 +18,19 @@ Delete:
 - Remove the functionality?
 
 
+Map:
+---
+- Different shapes of select and de-selected facility marker
+    - Makes it zoom a bit out and in when toggling
+- Crashing when trying to display an orgUnit with undefined coordinates
+    - Happens when adding an orgUnit with no coordinates and trying to draw it
+
+
+Stuff:
+------
+- Style the draw orgUnit and marker text and buttons at the top white area
+
+
 General:
 --------
 - Commenting

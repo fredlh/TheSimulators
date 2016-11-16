@@ -276,18 +276,6 @@ export class OrgUnitService {
         return;
     }
 
-    gotoOrgUnit(parentId: string, orgUnitId: string): void {
-        this.mapService.endEditMode();
-        this.getOrgUnitAndChildren(parentId, false);
-        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`;
-    }
-
-    gotoParent(parentId: string): void {
-        this.mapService.endEditMode();
-        this.getOrgUnitAndChildren(parentId, false);
-        this.lastApiUrlCall = `getOrgUnitWithChildren|${parentId}`;
-    }
-
     returnToLastStackFrame(): void {
         let retValue = this.getPreviousStackFrame();
 

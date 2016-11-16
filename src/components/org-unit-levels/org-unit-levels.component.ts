@@ -63,12 +63,10 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
     showOrgUnitLevelsPanel(): void {
         document.getElementById("orgUnitLevelsArea").style.display = "block";
-        //this.sideBarService.hideSideBar();
     }
 
     hideOrgUnitLevelsPanel(): void {
         document.getElementById("orgUnitLevelsArea").style.display = "none";
-        //this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {
@@ -136,45 +134,6 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
                 tmpThis.statusMessage = "Failed to delete the organisation unit level. Please refresh and try again";
             }
         );
-
-        /*
-        let orgUnitGroup = new OrganisationUnitGroup();
-        orgUnitGroup.name = "TestGroup";
-        orgUnitGroup.shortName = "TestGroup";
-        orgUnitGroup.displayName = "TestGroup";
-        orgUnitGroup.created = new Date();
-
-        this.orgUnitService.saveOrganisationUnitGroup(orgUnitGroup).subscribe(
-            res => {
-                console.log(res);
-            },
-            error => {
-                console.log(error);
-            }
-        );
-        */
-        /*
-        this.orgUnitService.getOrganisationUnitGroup("GjCw1ausFmX").subscribe(
-            res => {
-                let orgUnitGroup: OrganisationUnitGroup = res;
-                
-                orgUnitGroup.organisationUnits = [{id: "ZNslhLxrRQ2"}];
-
-                this.orgUnitService.updateOrganisationUnitGroup(orgUnitGroup).subscribe(
-                    res => {
-                        let tmp: OrganisationUnitGroup = res;
-                        console.log(tmp);
-                    },
-                    error => {
-                        console.log(error);
-                    }
-                )
-            },
-            error => {
-                console.log(error);
-            }
-        )
-        */
     }
 
     onSaveOrgUnit(): void {

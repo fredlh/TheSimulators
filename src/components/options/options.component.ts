@@ -183,12 +183,10 @@ export class OptionsComponent implements OrgUnitLevelsUpdateInterface  {
 
     showOptionsPanel(): void {
         document.getElementById("optionsArea").style.display = "block";
-        //this.sideBarService.hideSideBar();
     }
 
     hideOptionsPanel(): void {
         document.getElementById("optionsArea").style.display = "none";
-        //this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {

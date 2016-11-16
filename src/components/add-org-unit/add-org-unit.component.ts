@@ -74,14 +74,10 @@ export class AddOrgUnitComponent {
 
     showAddOrgUnitPanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "block";
-        //this.sideBarService.hideSideBar();
     }
 
-    hideAddOrgUnitPanel(unHideSideBar = true): void {
+    hideAddOrgUnitPanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
-        if (unHideSideBar) {
-            //this.sideBarService.unHideSideBar();
-        }
     }
 
     onCancel(tmpThis = this): void {
@@ -183,14 +179,14 @@ export class AddOrgUnitComponent {
 
     drawOrgUnitPolygon(): void {
         this.sideBarService.hideSideBar();
-        this.hideAddOrgUnitPanel(false);
+        this.hideAddOrgUnitPanel();
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.mapService.startEdit("", true);
     }
 
     drawOrgUnitMarker(): void {
         this.sideBarService.hideSideBar();        
-        this.hideAddOrgUnitPanel(false);
+        this.hideAddOrgUnitPanel();
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.mapService.startEdit("", false);
     }
@@ -248,15 +244,5 @@ export class AddOrgUnitComponent {
         this.orgUnit.coordinates = "";
         this.orgUnit.featureType = FeatureType.NONE;
         this.mapService.clearMapEditData();
-    }
-
-    gotoOrgUnit(): void {
-        this.hideAddOrgUnitPanel();
-        this.orgUnitService.gotoOrgUnit(this.orgUnit.parent.id, this.savedOrgUnitId);
-    }
-
-    gotoParent(): void {
-        this.hideAddOrgUnitPanel();
-        this.orgUnitService.gotoParent(this.orgUnit.parent.id);
     }
 }
