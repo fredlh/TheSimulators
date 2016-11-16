@@ -61,12 +61,12 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     showOrgUnitGroupsPanel(): void {
         document.getElementById("orgUnitGroupsArea").style.display = "block";
-        this.sideBarService.hideSideBar();
+        //this.sideBarService.hideSideBar();
     }
 
     hideOrgUnitGroupsPanel(): void {
         document.getElementById("orgUnitGroupsArea").style.display = "none";
-        this.sideBarService.unHideSideBar();
+        //this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {

@@ -220,7 +220,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Opens the editOrgUnitArea and registers the needed events
     // Gets called when the edit org unit button is clicked
     onEditOrgUnitOpen(orgUnitId = "") {
-        this.hideSideBar();
+        //this.hideSideBar();
         this.showEditOrgUnitPanel();
 
         if (orgUnitId !== "") {
@@ -250,14 +250,12 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     // Closes the panel and shows the sideBar again
     onEditOrgUnitCancel(tmpThis = this): void {
         this.closeEditOrgUnitPanel();
-        tmpThis.unHideSideBar();
+        //tmpThis.unHideSideBar();
         // tmpThis.orgUnitService.endAddOrEditOrgUnit();
         tmpThis.mapService.endEditMode();
     }
 
     // The user has submited the edited org unit
-    // Re-show the sideBar
-    // TODO: Send the updated onrgUnit to orgUnitService, and make a http put request
     onEditOrgUnitSubmit(): void {
         // Ignore if user alreayd have submitted successfully
         if (this.haveSubmitted) return;
@@ -317,6 +315,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     // Saves the drawn org unit
     saveDrawnOrgUnit(): void {
+        this.unHideSideBar();
+
         // Retrieve the drawn coordinates from the map
         this.selectedOrgUnit.coordinates = JSON.stringify(this.mapService.endEdit(true));
 
@@ -342,6 +342,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     // Discards the drawn org unit
     cancelDrawnOrgUnit(): void {
+        this.unHideSideBar();
         this.mapService.endEdit(false);
         $("#editOrgUnitPanelArea").slideToggle("fast");
         this.onEditOrgUnitOpen();
@@ -468,6 +469,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         // Set displayOrgUnits and call the mapService so the map draws only the filtered orgUnits
         this.displayedOrgUnits = JSON.parse(JSON.stringify(tmpOrgUnits));
         this.filterApplied = true;
+        this.filterAreaVisible = !this.filterAreaVisible
         this.mapService.onFilter(this.displayedOrgUnits);
     }
 

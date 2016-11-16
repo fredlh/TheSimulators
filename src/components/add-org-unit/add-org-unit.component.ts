@@ -45,18 +45,6 @@ export class AddOrgUnitComponent {
         this.orgUnitService.refreshOrganisationUnitLevels();
         this.showAddOrgUnitPanel();
 
-        // Temp thing to delete an orgUnitLevel
-        /*
-        this.orgUnitService.deleteOrganisationUnitLevel("rMNZZezHvcG").subscribe(
-            res => {
-                console.log(res);
-            },
-            error => {
-                console.log(error);
-            }
-        );
-        */
-
         // Reset the form
         this.orgUnit = new OrgUnit();
         this.orgUnitLevel = new OrganisationUnitLevel();
@@ -86,13 +74,13 @@ export class AddOrgUnitComponent {
 
     showAddOrgUnitPanel(): void {
         document.getElementById("addOrgUnitArea").style.display = "block";
-        this.sideBarService.hideSideBar();
+        //this.sideBarService.hideSideBar();
     }
 
     hideAddOrgUnitPanel(unHideSideBar = true): void {
         document.getElementById("addOrgUnitArea").style.display = "none";
         if (unHideSideBar) {
-            this.sideBarService.unHideSideBar();
+            //this.sideBarService.unHideSideBar();
         }
     }
 
@@ -194,18 +182,22 @@ export class AddOrgUnitComponent {
     }
 
     drawOrgUnitPolygon(): void {
+        this.sideBarService.hideSideBar();
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.mapService.startEdit("", true);
     }
 
     drawOrgUnitMarker(): void {
+        this.sideBarService.hideSideBar();        
         this.hideAddOrgUnitPanel(false);
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.mapService.startEdit("", false);
     }
 
     saveDrawnOrgUnit(): void {
+        this.sideBarService.unHideSideBar();
+
         // Retrieve the drawn coordinates from the map
         this.orgUnit.coordinates = JSON.stringify(this.mapService.endEdit(true));
 
@@ -230,6 +222,7 @@ export class AddOrgUnitComponent {
     }
 
     cancelDrawnOrgUnit(): void {
+        this.sideBarService.unHideSideBar();
         this.mapService.endEdit(false);
 
         $("#drawOrgUnitPanelArea").slideToggle("fast");

@@ -63,12 +63,12 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
     showOrgUnitLevelsPanel(): void {
         document.getElementById("orgUnitLevelsArea").style.display = "block";
-        this.sideBarService.hideSideBar();
+        //this.sideBarService.hideSideBar();
     }
 
     hideOrgUnitLevelsPanel(): void {
         document.getElementById("orgUnitLevelsArea").style.display = "none";
-        this.sideBarService.unHideSideBar();
+        //this.sideBarService.unHideSideBar();
     }
 
     onCancel(tmpThis = this): void {
