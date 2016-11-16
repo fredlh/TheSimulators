@@ -1,6 +1,4 @@
-import { Component, ElementRef, Renderer, AfterViewInit }  from "@angular/core";
-
-import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts }        from "../../modules/multiselect-dropdown";
+import { Component }                        from "@angular/core";
 
 import { OrgUnitService}                    from "../../services/org-unit.service";
 import { SideBarService}                    from "../../services/side-bar.service";
@@ -28,49 +26,20 @@ class SelectedOrgUnitGroups {
 
 export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
+    // All the organistion unit groups
+    // Each group is a toggable accordion
     private orgUnitGroups: OrganisationUnitGroup[] = [];
-    private orgUnits = [];
-    private displayedOrgUnits = [];
-    private hasRetrievedChildren = [];
 
-    private testGroup:string[] = [];
-
-    private orgUnitSearchTerm: string = "";
-
+    // The ID and Index of the opened orgUnitGroup
     private openedId;
     private openedIndex;
 
+    // The selected/opened orgUnitGroup
+    // Contains all the info the user can search and change
     private selectedOrgUnitGroup = new SelectedOrgUnitGroups();
 
-    private selectBoxSettings: IMultiSelectSettings = {
-        pullRight: true,
-        enableSearch: true,
-        checkedStyle: "checkboxes",
-        buttonClasses: "btn btn-default",
-        selectionLimit: 0,
-        closeOnSelect: false,
-        showCheckAll: true,
-        showUncheckAll: true,
-        dynamicTitleMaxItems: 2,
-        maxHeight: "300px",
-    };
 
-    private selectBoxTexts: IMultiSelectTexts = {
-        checkAll: "Check all",
-        uncheckAll: "Uncheck all",
-        checked: "checked",
-        checkedPlural: "checked",
-        searchPlaceholder: "Search...",
-        defaultTitle: "Select",
-    };
-
-
-
-
-    constructor(private orgUnitService: OrgUnitService,
-                private sideBarService: SideBarService,
-                private elementRef: ElementRef,
-                private rendered: Renderer) {
+    constructor(private orgUnitService: OrgUnitService, private sideBarService: SideBarService) {
         this.orgUnitService.registerOrgUnitGroupsListener(this);
         this.orgUnitService.registerOrgUnitGroups(this);
 
@@ -108,13 +77,23 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         tmpThis.hideOrgUnitGroupsPanel();
     }
 
-    getOrgUnits(orgUnitGroupId: string, orgUnitGroupIndex: number): void {
+
+    // Retrives all the orgUnits from an orgUnitGroup
+    // Is done so the user can see the names rather than the IDs
+    getOrgUnitsFromOrgUnitGroup(orgUnitGroupId: string, orgUnitGroupIndex: number): void {
+        let firstSave = true;
         this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray = [];
 
         for (let orgUnit of this.orgUnitGroups[orgUnitGroupIndex].organisationUnits) {
             this.orgUnitService.getOrgUnit(orgUnit.id).subscribe(
                 res => {
                     this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray.push(res);
+
+                    if (firstSave) {
+                        this.selectedOrgUnitGroup.selectedFromExisting = res.name;
+                        firstSave = false;
+                    }
+
                 },
                 error => {
                     console.error(error);
@@ -122,6 +101,8 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         }
     }
 
+    // Called when an orgUnitGroup is opened
+    // Saves the ID and Index, sets the selectedOrgUnitGroup and retrives the orgUnits on first time opened
     orgUnitGroupOpened(orgUnitGroupId: string, orgUnitGroupIndex: number) {
         this.openedId = orgUnitGroupId;
         this.openedIndex = orgUnitGroupIndex;
@@ -130,27 +111,17 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         this.selectedOrgUnitGroup.orgUnitGroup = JSON.parse(JSON.stringify(this.orgUnitGroups[orgUnitGroupIndex]));
 
         if (!this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray) {
-            this.getOrgUnits(orgUnitGroupId, orgUnitGroupIndex);
-            this.getOrgUnitLevel1();
+            this.getOrgUnitsFromOrgUnitGroup(orgUnitGroupId, orgUnitGroupIndex);
         }
     }
 
-    getOrgUnitLevel1(): void {
-        this.orgUnitService.getOrgUnits("&level=1").subscribe(
-            res => {
-                this.orgUnits = JSON.parse(JSON.stringify(res.organisationUnits));
-                this.displayedOrgUnits = JSON.parse(JSON.stringify(res.organisationUnits));
-            },
-            error => {
-                console.error(error);
-            }
-        )
-    }
 
-    getIdByName(name: string): string {
-        for (let i = 0; i < this.displayedOrgUnits.length; i++) {
-            if (this.displayedOrgUnits[i].name.trim() === name) {
-                return "" + this.displayedOrgUnits[i].id;
+    // Returns an orgUnits ID by its name
+    // Defaults to the orgUnitGroups orgUnitArray, but can be specified
+    getIdByName(name: string, orgUnitArray = this.orgUnitGroups[this.openedIndex].orgUnitArray): string {
+        for (let orgUnit of orgUnitArray) {
+            if (orgUnit.name.trim() === name) {
+                return orgUnit.id.toString();
             }
         }
 
@@ -158,11 +129,19 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     }
 
 
+    // Searches for orgUnits
+    // Gets called when the user wants to search for orgUnits to add to the orgUnitGroup
+    // The result is displayed in a selectbox
     searchOrgUnit(): void {
         let tmpThis = this;
         this.orgUnitService.getOrgUnits("&query=" + this.selectedOrgUnitGroup.searchTerm).subscribe(
             res => {
-                tmpThis.selectedOrgUnitGroup.searchResults = res.organisationUnits;
+                if (res.organisationUnits.length > 0){
+                    tmpThis.selectedOrgUnitGroup.selectedFromSearch = res.organisationUnits[0].name;
+                    console.log(tmpThis.selectedOrgUnitGroup.selectedFromSearch);
+                    tmpThis.selectedOrgUnitGroup.searchResults = res.organisationUnits;
+                }
+
             },
             error => {
                 console.error(error);
@@ -175,7 +154,8 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // TODO:
     // - Remove selected orgUnit from this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits[]
     removeOrgUnit(): void {
-        console.log("Remove from orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromExisting);
+        let id = this.getIdByName(this.selectedOrgUnitGroup.selectedFromExisting);
+        console.log("Remove from orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromExisting + " | id: " + id);
     }
 
 
@@ -183,22 +163,23 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // TODO:
     // - Add the orgUnit to this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits[]
     addOrgUnit(): void {
-        console.log("Add to orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromSearch);
+        let id = this.getIdByName(this.selectedOrgUnitGroup.selectedFromSearch, this.selectedOrgUnitGroup.searchResults);
+        console.log("Add to orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromSearch + " | id: " + id);
     }
 
 
     // Saves an orgUnitGroup with updated info
     // TODO:
+    // - Add the save button on the page
     // - Send a put request to the api with the new orgUnit
     // - How to update?
-    onSaveOrgUnitGroup(id: string): void {
-        console.log("Save orgUnitGroup: " + id);
+    onSaveOrgUnitGroup(): void {
+        console.log("Save orgUnitGroup: " + this.openedId);
     }
 
 
     // Adds an orgUnitGroup
     // TODO:
-    // - Send the orgUnitGroup to the API
     // - Refresh the page? Or just have a refresh page button somewhere?
     onAddOrgUnitGroup(name: string) {
         console.log("Add orgUnitGroup: " + name)
@@ -222,7 +203,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     // Deletes an orgUnitGroup
     // TODO:
-    // - Figure out where to place the delete button
+    // - Add the delete button on the page
     // - Send a delete request to the API
     // - Howt to update?
     onDeleteOrgUnitGroup(id: string) {

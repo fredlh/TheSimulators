@@ -32,7 +32,7 @@
 								<p>Select the org units you want in the list, and click "remove" to remove them</p>
 
                             	<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromExisting" name="selectedUnitsInGroup">
-                                	<option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray;" value="{{orgUnit.id}}">{{orgUnit.name}}</option>               
+                                	<option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
                             	</select>
 
 								<button type="button" class="btn btn-primary" aria-label="Left Align" (click)="removeOrgUnit()">
@@ -54,7 +54,7 @@
 
 								<div *ngIf="selectedOrgUnitGroup.searchResults.length > 0">
 									<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromSearch" name="selectedUnitsInGroup">
-										<option *ngFor="let orgUnit of selectedOrgUnitGroup.searchResults;" value="{{orgUnit.id}}">{{orgUnit.name}}</option>               
+										<option *ngFor="let orgUnit of selectedOrgUnitGroup.searchResults;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
 									</select>
 
 									<button type="button" class="btn btn-primary" aria-label="Left Align" (click)="addOrgUnit()">
