@@ -1,7 +1,11 @@
 OrganisationUnitGroups:
 -----------------------
-- Need to be able to manage them?
-- How to add and remove groups from an orgUnit?
+- Remaining functionality:
+    - remove orgUnit from group
+    - add orgUnit to group
+    - save button and save group call
+    - delete button and delete group call
+- Finish the design
 
 
 Search:

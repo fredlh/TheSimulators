@@ -5,91 +5,68 @@
 </div>
 
 <div id="orgUnitGroupsArea" class="org-unit-groups">
-    <div class="org-unit-groups-content">
+	<div class="org-unit-groups-content">
         <span class="org-unit-groups-close">x</span>
         
         <h1>Manage organisation unit groups</h1>
-        <p>Here you can view, edit, delete and add organisation unit groups</p>
-
-<!--     
-<ul class="treeView">
-        <li>
-          Collapsible lists
-          <ul class="collapsibleList">
-            <li>
-              Actions
-              <ul>
-                <li>
-                  Creation
-                  <ul>
-                    <li>apply()</li>
-                    <li class="lastChild">applyTo(node)</li>
-                  </ul>
-                </li>
-                <li class="lastChild">
-                  Toggling
-                  <ul>
-                    <li>Expanding/opening</li>
-                    <li class="lastChild">Collapsing/closing</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li class="lastChild">
-              Uses
-              <ul>
-                <li>Directory listings</li>
-                <li>Tree views</li>
-                <li class="lastChild">Outline views</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
--->
-
-
-
-
+        <p>Here you can view, edit, delete and add organisation unit groups
+			<a href="#addOrgUnitGroupForm"><button type="button" class="btn btn-primary" aria-label="Left Align">
+          Go to add org unit group form
+        </button></a>
+		</p>
 
         
-        
 
 
-
-
-
-
-
-		
-		
-        
-        
         <accordion [closeOthers]="false">
-
             <div *ngFor="let group of orgUnitGroups; let myIndex = index">
                 <div id="{{group.id}}">
                     <accordion-group orgUnitGroupId="{{group.id}}" orgUnitGroupIndex={{myIndex}}>
                         <accordion-heading>{{myIndex + 1}} - {{group.name}}</accordion-heading>
-                        <p><strong>Code:</strong> {{group.code}} | <strong>ID:</strong> {{group.id}}</p><br>
-                        <p>The organisation unit have the following groups:</p>
-                        <div *ngIf="orgUnitGroups.length > 0">
-                            <select class="form-control">
-                                <option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray; let i = index" 
-                                        value="{{orgUnit.name}">{{orgUnit.name}}</option>               
-                            </select>
-                        </div>
-                        <br>
-                        <br>
-                        <p>To add new org units, enter a name and search in the field below.
-                            You can choose which ones you want to add from the search result</p>
+                        
 
-                        <form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit()">
-                        	<input type="text" class="form-control" placeholder=" Enter name of an organisation unit ..." 
-									[(ngModel)]="orgUnitSearchTerm" name="searchOrgUnitBar">
+						<div id="innerOrgUnitGroupArea">
+							
+							<div id="leftInnerOrgunitGrupArea">
+								<h3>Edit org unit group</h3>
+								<p>Select the org units you want in the list, and click "remove" to remove them</p>
 
-                        	<input type="submit" value="Search" class="btn btn-primary">
-        				</form>
+                            	<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromExisting" name="selectedUnitsInGroup">
+                                	<option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray;" value="{{orgUnit.id}}">{{orgUnit.name}}</option>               
+                            	</select>
+
+								<button type="button" class="btn btn-primary" aria-label="Left Align" (click)="removeOrgUnit()">
+									Remove
+								</button>
+							</div>
+							
+							<div id="rightInnerOrgUnitGroupArea">
+								<h3>Add org units to org unit group</h3>
+								<p>To add new org units, enter a name and search in the field below.
+                            		You can choose which ones you want to add from the search result</p>
+
+                        		<form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit()">
+                        			<input type="text" class="form-control" placeholder=" Enter name of an organisation unit ..." 
+											[(ngModel)]="selectedOrgUnitGroup.searchTerm" name="searchOrgUnitBar">
+
+                        			<input type="submit" value="Search" class="btn btn-primary">
+        						</form>
+
+								<div *ngIf="selectedOrgUnitGroup.searchResults.length > 0">
+									<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromSearch" name="selectedUnitsInGroup">
+										<option *ngFor="let orgUnit of selectedOrgUnitGroup.searchResults;" value="{{orgUnit.id}}">{{orgUnit.name}}</option>               
+									</select>
+
+									<button type="button" class="btn btn-primary" aria-label="Left Align" (click)="addOrgUnit()">
+										Add
+									</button>
+								</div>
+
+							</div>
+
+						</div>
+
+                        
             
                     </accordion-group>
                 </div>
@@ -98,6 +75,25 @@
 
         </accordion>
 
+
+        <div id="addOrgUnitGroupForm">
+
+			<form (ngSubmit)="onAddOrgUnitGroup(orgUnitGroupName.value)" #orgUnitGroupForm="ngForm">
+				<h3>Add new org unit group </h3>
+				<div class="form-group row">
+					<label class="col-lg-1 col-form-label">Name: </label>
+					<div class="col-lg-4">
+						<input class="form-control" type="text" #orgUnitGroupName required>
+					</div>
+					
+					<input type="button" value="Cancel" class="btn btn-primary" (click)="onCancel()">
+					
+					<input type="submit" value="Add" class="btn btn-success" [disabled]="!orgUnitGroupForm.form.valid">
+				</div>
+            	<br/>
+        	</form>
+
+        </div>
 
 
 

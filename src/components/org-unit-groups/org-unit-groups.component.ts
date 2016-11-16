@@ -1,5 +1,7 @@
 import { Component, ElementRef, Renderer, AfterViewInit }  from "@angular/core";
 
+import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts }        from "../../modules/multiselect-dropdown";
+
 import { OrgUnitService}                    from "../../services/org-unit.service";
 import { SideBarService}                    from "../../services/side-bar.service";
 
@@ -7,6 +9,15 @@ import { OrgUnitGroupsUpdateInterface }     from "../../core/org-unit-groups-upd
 
 import { OrgUnit }                          from "../../core/org-unit.class";
 import { Globals, OrganisationUnitGroup }   from "../../globals/globals.class";
+
+
+class SelectedOrgUnitGroups {
+    orgUnitGroup: OrganisationUnitGroup;
+    searchTerm: string = "";
+    searchResults: OrgUnit[] = [];
+    selectedFromSearch: string = "";
+    selectedFromExisting: string = "";
+}
 
 @Component({
     selector: "org-unit-groups",
@@ -22,12 +33,38 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     private displayedOrgUnits = [];
     private hasRetrievedChildren = [];
 
+    private testGroup:string[] = [];
+
     private orgUnitSearchTerm: string = "";
 
     private openedId;
     private openedIndex;
 
-    private listenFunc: Function;
+    private selectedOrgUnitGroup = new SelectedOrgUnitGroups();
+
+    private selectBoxSettings: IMultiSelectSettings = {
+        pullRight: true,
+        enableSearch: true,
+        checkedStyle: "checkboxes",
+        buttonClasses: "btn btn-default",
+        selectionLimit: 0,
+        closeOnSelect: false,
+        showCheckAll: true,
+        showUncheckAll: true,
+        dynamicTitleMaxItems: 2,
+        maxHeight: "300px",
+    };
+
+    private selectBoxTexts: IMultiSelectTexts = {
+        checkAll: "Check all",
+        uncheckAll: "Uncheck all",
+        checked: "checked",
+        checkedPlural: "checked",
+        searchPlaceholder: "Search...",
+        defaultTitle: "Select",
+    };
+
+
 
 
     constructor(private orgUnitService: OrgUnitService,
@@ -89,6 +126,9 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         this.openedId = orgUnitGroupId;
         this.openedIndex = orgUnitGroupIndex;
 
+        this.selectedOrgUnitGroup = new SelectedOrgUnitGroups();
+        this.selectedOrgUnitGroup.orgUnitGroup = JSON.parse(JSON.stringify(this.orgUnitGroups[orgUnitGroupIndex]));
+
         if (!this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray) {
             this.getOrgUnits(orgUnitGroupId, orgUnitGroupIndex);
             this.getOrgUnitLevel1();
@@ -117,10 +157,77 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         return "-1";
     }
 
+
     searchOrgUnit(): void {
-        console.log(this.orgUnitSearchTerm);
+        let tmpThis = this;
+        this.orgUnitService.getOrgUnits("&query=" + this.selectedOrgUnitGroup.searchTerm).subscribe(
+            res => {
+                tmpThis.selectedOrgUnitGroup.searchResults = res.organisationUnits;
+            },
+            error => {
+                console.error(error);
+            }
+        )
     }
 
+
+    // Removes an orgUnit from an orgUnitGroup
+    // TODO:
+    // - Remove selected orgUnit from this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits[]
+    removeOrgUnit(): void {
+        console.log("Remove from orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromExisting);
+    }
+
+
+    // Adds an orgUnit to the orgUnitGroup
+    // TODO:
+    // - Add the orgUnit to this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits[]
+    addOrgUnit(): void {
+        console.log("Add to orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromSearch);
+    }
+
+
+    // Saves an orgUnitGroup with updated info
+    // TODO:
+    // - Send a put request to the api with the new orgUnit
+    // - How to update?
+    onSaveOrgUnitGroup(id: string): void {
+        console.log("Save orgUnitGroup: " + id);
+    }
+
+
+    // Adds an orgUnitGroup
+    // TODO:
+    // - Send the orgUnitGroup to the API
+    // - Refresh the page? Or just have a refresh page button somewhere?
+    onAddOrgUnitGroup(name: string) {
+        console.log("Add orgUnitGroup: " + name)
+
+        let orgUnitGroup = new OrganisationUnitGroup();
+        orgUnitGroup.name = name;
+        orgUnitGroup.displayName = name;
+        orgUnitGroup.shortName = name;
+        orgUnitGroup.created = new Date();
+
+        this.orgUnitService.saveOrganisationUnitGroup(orgUnitGroup).subscribe(
+            res => {
+                console.log(res);
+            },
+            error => {
+                console.error(error);
+            }
+        ); 
+    }
+
+
+    // Deletes an orgUnitGroup
+    // TODO:
+    // - Figure out where to place the delete button
+    // - Send a delete request to the API
+    // - Howt to update?
+    onDeleteOrgUnitGroup(id: string) {
+        console.log("Delete orgUnitGroup: " + id);
+    }
 
 
 }
