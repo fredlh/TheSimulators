@@ -218,10 +218,10 @@
 
 
 <div id="editOrgUnitPanelArea" style="display: none;">
-    <p>Here you can draw an organisation unit by using the options at the right</p>
-    <p>Draw the org unit, and either hit Save or Cancel</p>
-    <button id="saveDrawnOrgUnitButton" class="btn btn-info" (click)="saveDrawnOrgUnit()">Save</button>
-    <button id="cancelDrawnOrgUnitButton" class="btn btn-info" (click)="cancelDrawnOrgUnit()">Cancel</button>
+    <p>Here you can draw an organisation unit, either a polygon or a marker depending on your choice.</p>
+    <p>Use the draw tools on the right, and either cancel or save when finished.</p>
+    <button id="cancelDrawnOrgUnitButton" style="margin-right: 10px;" class="btn btn-warning" (click)="cancelDrawnOrgUnit()">Cancel</button>
+    <button id="saveDrawnOrgUnitButton" style="margin-left: 10px;"  class="btn btn-success" (click)="saveDrawnOrgUnit()">Save</button>
 </div>
 
 

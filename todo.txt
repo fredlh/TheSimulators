@@ -26,11 +26,6 @@ Map:
     - Happens when adding an orgUnit with no coordinates and trying to draw it
 
 
-Stuff:
-------
-- Style the draw orgUnit and marker text and buttons at the top white area
-
-
 General:
 --------
 - Commenting
