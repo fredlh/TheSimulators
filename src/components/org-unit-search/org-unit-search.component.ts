@@ -41,7 +41,7 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
 
     constructor(private orgUnitService: OrgUnitService,
                 private geocoder: GeocodingService,
-                private mapService: MapService,) {}
+                private mapService: MapService) {}
 
     ngOnInit(): void {
         this.orgUnitService.registerOrgUnitLevelsListener(this);

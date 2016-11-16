@@ -185,7 +185,7 @@ export class AddOrgUnitComponent {
     }
 
     drawOrgUnitMarker(): void {
-        this.sideBarService.hideSideBar();        
+        this.sideBarService.hideSideBar();
         this.hideAddOrgUnitPanel();
         $("#drawOrgUnitPanelArea").slideToggle("fast");
         this.mapService.startEdit("", false);

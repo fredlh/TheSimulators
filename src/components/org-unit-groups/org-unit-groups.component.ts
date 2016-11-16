@@ -154,7 +154,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         let tmpThis = this;
         this.orgUnitService.getOrgUnits("&query=" + this.selectedOrgUnitGroup.searchTerm).subscribe(
             res => {
-                if (res.organisationUnits.length > 0){
+                if (res.organisationUnits.length > 0) {
                     tmpThis.selectedOrgUnitGroup.selectedFromSearch = res.organisationUnits[0].name;
                     console.log(tmpThis.selectedOrgUnitGroup.selectedFromSearch);
                     tmpThis.selectedOrgUnitGroup.searchResults = res.organisationUnits;
@@ -164,7 +164,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
             error => {
                 console.error(error);
             }
-        )
+        );
     }
 
 
@@ -199,7 +199,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // Adds an orgUnitGroup
     // TODO:
     // - Call refreshOrgunitGroups() on success?
-    onAddOrgUnitGroup():void {
+    onAddOrgUnitGroup(): void {
         // Ignore if just blanks
         if (this.newOrgUnitGroupName.trim() === "") return;
 
@@ -221,7 +221,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
                 tmpThis.newOrgUnitGroupStatus = false;
                 tmpThis.newOrgUnitGroupMessage = "Unable to add the organisation unit group '" + this.newOrgUnitGroupName + "'";
             }
-        ); 
+        );
     }
 
 
@@ -240,7 +240,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // - When retrieving new orgUnitGroups, all orgUnitArrays are lost
     // - Any changes on the implementation or assumptions are needed?
     refreshOrgunitGroups(): void {
-        //this.orgUnitService.refreshOrganisationUniGroups();
+        // this.orgUnitService.refreshOrganisationUniGroups();
         console.log("Currently not working");
     }
 

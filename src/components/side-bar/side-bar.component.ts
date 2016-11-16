@@ -468,7 +468,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         // Set displayOrgUnits and call the mapService so the map draws only the filtered orgUnits
         this.displayedOrgUnits = JSON.parse(JSON.stringify(tmpOrgUnits));
         this.filterApplied = true;
-        this.filterAreaVisible = !this.filterAreaVisible
+        this.filterAreaVisible = !this.filterAreaVisible;
         this.mapService.onFilter(this.displayedOrgUnits);
     }
 
