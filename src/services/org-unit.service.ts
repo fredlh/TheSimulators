@@ -308,7 +308,7 @@ export class OrgUnitService {
     }
 
     mapGetChildren(orgUnitId: string): void {
-        this.getOrgUnitAndChildren(orgUnitId);
+        this.getOrgUnitAndChildren(orgUnitId, true, true);
     }
 
     callOrgUnitLevelsUpdate(): void {
