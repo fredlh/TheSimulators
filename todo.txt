@@ -1,11 +1,27 @@
 OrganisationUnitGroups:
 -----------------------
-- Remaining functionality:
-    - remove orgUnit from group
-    - add orgUnit to group
-    - save button and save group call
-    - delete button and delete group call
-- Finish the design
+- Following works:
+    - Adding new orgUnitGroup
+    - Delete self-added orgUnitGroup
+    - Modify existing orgUnitGroup
+- Following doesn't work:
+    - Delete existing orgUnitGroup
+    - Modify self-added orgUnitGroup
+
+- What to do about the stuff that doesn't work?
+    - Fix it or just remove add and deletion of orgUnitGroups
+
+- Can get the image from the API, but how to display it?
+
+- How to handle multiple open orgUnitGroups?
+    - Only have a single selectedOrgUnitGroup and reset it every time the user opens a new one?
+    - Create a selectedOrgUnitGroup for each group, so that the "state" for each group is saved?
+
+- How to habdle update? (Refresh, delete, add, ...)
+    - Auto update?
+        - If yes, okay if the group collapses?
+    - Refresh button on top of the page which the user have to click manually?
+
 
 
 Search:

@@ -8,6 +8,7 @@ import { OrgUnitGroupsUpdateInterface }     from "../../core/org-unit-groups-upd
 import { OrgUnit }                          from "../../core/org-unit.class";
 import { Globals, OrganisationUnitGroup }   from "../../globals/globals.class";
 
+declare var $: any;
 
 class SelectedOrgUnitGroups {
     orgUnitGroup: OrganisationUnitGroup;
@@ -15,6 +16,10 @@ class SelectedOrgUnitGroups {
     searchResults: OrgUnit[] = [];
     selectedFromSearch: string = "";
     selectedFromExisting: string = "";
+
+    constructor() {
+        this.orgUnitGroup = new OrganisationUnitGroup();
+    }
 }
 
 @Component({
@@ -54,7 +59,6 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     constructor(private orgUnitService: OrgUnitService, private sideBarService: SideBarService) {
         this.orgUnitService.registerOrgUnitGroupsListener(this);
         this.orgUnitService.registerOrgUnitGroups(this);
-
     }
 
 
@@ -159,7 +163,6 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
                     console.log(tmpThis.selectedOrgUnitGroup.selectedFromSearch);
                     tmpThis.selectedOrgUnitGroup.searchResults = res.organisationUnits;
                 }
-
             },
             error => {
                 console.error(error);
@@ -169,36 +172,91 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
 
     // Removes an orgUnit from an orgUnitGroup
-    // TODO:
-    // - Remove selected orgUnit from this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits[]
     removeOrgUnit(): void {
+        // Get the ID of the selected orgUnit
         let id = this.getIdByName(this.selectedOrgUnitGroup.selectedFromExisting);
-        console.log("Remove from orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromExisting + " | id: " + id);
+
+        // Remov the selected orgUnit from the select box
+        this.orgUnitGroups[this.openedIndex].orgUnitArray = this.orgUnitGroups[this.openedIndex].orgUnitArray.filter(function(orgUnit) {
+            return orgUnit.id !== id;
+        });
+
+        // Set the select box to default to the 1st item
+        if (this.orgUnitGroups[this.openedIndex].orgUnitArray.length > 0) {
+            this.selectedOrgUnitGroup.selectedFromExisting = this.orgUnitGroups[this.openedIndex].orgUnitArray[0].name;
+        }
     }
 
 
     // Adds an orgUnit to the orgUnitGroup
-    // TODO:
-    // - Add the orgUnit to this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits[]
     addOrgUnit(): void {
+        this.orgUnitGroupStatus = null;
+        this.orgUnitGroupMessage = "";
         let id = this.getIdByName(this.selectedOrgUnitGroup.selectedFromSearch, this.selectedOrgUnitGroup.searchResults);
-        console.log("Add to orgUnitGroup: " + this.selectedOrgUnitGroup.selectedFromSearch + " | id: " + id);
+
+        // Get thr orgUnit from the search results
+        let orgUnit = undefined;
+        for (let o of this.selectedOrgUnitGroup.searchResults) {
+            if (o.id === id) {
+                orgUnit = o;
+                break;
+            }
+        }
+
+        // If the orgUnit is already a part of the group, display error and return
+        for (let unit of this.orgUnitGroups[this.openedIndex].orgUnitArray) {
+            if (unit.id === orgUnit.id) {
+                this.orgUnitGroupStatus = false;
+                this.orgUnitGroupMessage = "Cannot add '" + unit.name + "'. The orgUnit is already a part of the group";
+                return;
+            }
+        }
+
+        // Add the orgUnit to the groups orgUnits
+        this.orgUnitGroups[this.openedIndex].orgUnitArray.push(orgUnit);
+
+        // Remove the orgUnit from the select box so you can cannot add the same orgUnit multiple times
+        this.selectedOrgUnitGroup.searchResults = this.selectedOrgUnitGroup.searchResults.filter(function(unit) {
+            return unit.id !== orgUnit.id;
+        });
+
+        // Set the option in the selectBox to the 1st result
+        if (this.selectedOrgUnitGroup.searchResults.length > 0) {
+            this.selectedOrgUnitGroup.selectedFromSearch = this.selectedOrgUnitGroup.searchResults[0].name;
+        }
     }
 
 
     // Saves an orgUnitGroup with updated info
     // TODO:
-    // - Add the save button on the page
-    // - Send a put request to the api with the new orgUnit
     // - How to update?
     onSaveOrgUnitGroup(): void {
-        console.log("Save orgUnitGroup: " + this.openedId);
+        // Update the organisationUnits in the group
+        this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits = [];
+        for (let unit of this.orgUnitGroups[this.openedIndex].orgUnitArray) {
+            this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits.push({"id": unit.id});
+        }
+
+        // Send the updated orgUnitGroup to the API
+        this.orgUnitService.updateOrganisationUnitGroup(this.selectedOrgUnitGroup.orgUnitGroup).subscribe(
+            res => {
+                console.log(res);
+                this.orgUnitGroupStatus = true;
+                this.orgUnitGroupMessage = "Updated organisation unit group";
+            },
+            error => {
+                console.error(error);
+                this.orgUnitGroupStatus = false;
+                this.orgUnitGroupMessage = "Unable to update organisation unit group";
+                console.error(error);
+            }
+        );
     }
 
 
     // Adds an orgUnitGroup
     // TODO:
-    // - Call refreshOrgunitGroups() on success?
+    // - Howt to update?
     onAddOrgUnitGroup(): void {
         // Ignore if just blanks
         if (this.newOrgUnitGroupName.trim() === "") return;
@@ -220,6 +278,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
             error => {
                 tmpThis.newOrgUnitGroupStatus = false;
                 tmpThis.newOrgUnitGroupMessage = "Unable to add the organisation unit group '" + this.newOrgUnitGroupName + "'";
+                console.error(error);
             }
         );
     }
@@ -227,11 +286,26 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     // Deletes an orgUnitGroup
     // TODO:
-    // - Add the delete button on the page
-    // - Send a delete request to the API
     // - Howt to update?
-    onDeleteOrgUnitGroup(id: string) {
-        console.log("Delete orgUnitGroup: " + id);
+    onDeleteOrgUnitGroup(confirmedDelete = false) {
+        // Return if the user clicked "No" on confirm delete
+        if (!confirmedDelete) {
+            document.getElementById("confirmDeleteArea").style.display = "block";
+            return;
+        }
+
+        // Send the delete request to the API and print out the delete result
+        this.orgUnitService.deleteOrganisationUnitGroup(this.selectedOrgUnitGroup.orgUnitGroup.id).subscribe(
+            res => {
+                this.orgUnitGroupStatus = true;
+                this.orgUnitGroupMessage = "Deleted organisation unit group '" + this.selectedOrgUnitGroup.orgUnitGroup.name + "'";
+            },
+            error => {
+                this.orgUnitGroupStatus = false;
+                this.orgUnitGroupMessage = "Failed to delete organisation unit group '" + this.selectedOrgUnitGroup.orgUnitGroup.name + "'";
+                console.error(error);
+            }
+        );
     }
 
 
@@ -242,6 +316,14 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     refreshOrgunitGroups(): void {
         // this.orgUnitService.refreshOrganisationUniGroups();
         console.log("Currently not working");
+    }
+
+
+    confirmDelete(yes: boolean): void {
+        document.getElementById("confirmDeleteArea").style.display = "none";
+        if (yes)  {
+            this.onDeleteOrgUnitGroup(true);
+        }
     }
 
 }
