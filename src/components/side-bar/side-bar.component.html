@@ -36,8 +36,8 @@
                         </accordion-heading>
                         <span style="cursor: auto;">
                             <button id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
-                            <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
-                            <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
+                            <button id="#editOrgUnitButton" class="btn btn-warning" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
+                            <button id="#deleteOrgUnitButton" class="btn btn-danger" (click)="deleteOrgUnit(orgUnit.id, false)">Delete</button>
                             <ul style="margin-top: 10px;">
                                 <li><strong>ID:</strong> {{orgUnit.id}}</li>
                                 <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getName(orgUnit.level)}}</li>
@@ -70,76 +70,7 @@
         </accordion>
     </div>
 </div>
-    <!--
-<div id="sideBar" style="display: none;">
 
-    <div id="topArea">
-        <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="float: right;" (click)="toggleFilter()">
-            Filter
-        </button>
-
-        <button *ngIf="orgUnits !== undefined" type="button" class="btn btn-primary" style="margin-left: 35%;" (click)="refreshOrgUnits()">
-            Refresh
-        </button>
-            
-        <br>
-
-        <button *ngIf="hasPreviousStackFrame()" type="button" class="btn btn-primary btn-md btn-block" aria-label="Left Align" (click)="goToPreviousOrgUnits()">
-            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Return to previous organisation units
-        </button>
-    </div>
-    
-    <div id="orgUnitArea">
-        <div *ngIf="orgUnits === undefined" id="noSearchResults">
-            <hr/>  
-            <p>No organisation units matched the given search parameters</p>
-        </div>
-
-        <div *ngIf="orgUnits !== undefined">
-            <accordion>
-                <div *ngFor="let orgUnit of displayedOrgUnits; let myIndex = index">
-                    <div id={{orgUnit.id}}>
-                        <accordion-group orgUnitId={{orgUnit.id}}>
-                            <accordion-heading>
-                                {{orgUnit.displayName}}
-                            </accordion-heading>
-                            <span style="cursor: auto;">
-                                <button id="#zoomToChildrenButton" class="btn btn-info" (click)="onGetChildrenClicked(orgUnit.id)">Children</button>
-                                <button id="#editOrgUnitButton" class="btn btn-info" (click)="onEditOrgUnitOpen(orgUnit.id)">Edit</button>
-                                <button id="#deleteOrgUnitButton" class="btn btn-info" (click)="deleteOrgUnit(orgUnit.id)">Delete</button>
-                                <ul style="margin-top: 10px;">
-                                    <li><strong>ID:</strong> {{orgUnit.id}}</li>
-                                    <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getName(orgUnit.level)}}</li>
-                                    <li><strong>Feature type:</strong> {{orgUnit.featureType}}</li>
-                                    <li *ngIf="orgUnit.parent"><strong>Parent:</strong><br/>
-                                        <ul>
-                                            <li><strong>ID: </strong>{{orgUnit.parent.id}}</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>Created:</strong> {{globals.formatDate(orgUnit.created)}}</li>
-                                    <li><strong>Opening:</strong> {{globals.formatDate(orgUnit.openingDate)}}</li>
-                                    <li><strong>Updated:</strong> {{globals.formatDate(orgUnit.lastUpdated)}}</li>
-                                    <li><strong>Groups:</strong><br>
-                                        <ul>
-                                            <div *ngFor="let group of orgUnit.organisationUnitGroups">
-                                                <li>{{globals.getOrgGroupName(group.id)}}</li>
-                                            </div>
-                                        </ul>
-                                    </li>
-                                    <li><strong>Coords:</strong> {{orgUnit.coordinates}}</li>
-                                </ul>
-                            </span>
-                        </accordion-group>
-                    </div>
-                </div>
-            </accordion>
-        </div>
-    
-    </div>
-
-   
-</div>
--->
 
 
 <div id="editOrgUnitArea" class="edit-org-unit container-fluid">
@@ -287,13 +218,20 @@
             <button *ngIf="filterApplied" type="reset" class="btn btn-danger" (click)="clearFilter()" style="float: right;  margin-right: 5px;">
                 Clear filter
             </button>
-
-            
         </div>
-        
-
     </form>
+</div>
 
 
 
+<div id="confirmDeleteAreaOrgUnit" class="confirm-delete2">
+    <div class="confirm-delete-content2">
+        <div class="alert alert-danger" role="alert">
+            Are you sure you want to delete the org unit with id '{{orgUnitIdToDelete}}'?
+            <span style="float: right; margin-top: -7px;">
+                <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDeleteOrgUnit(false)">No</button>
+                <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDeleteOrgUnit(true)">Yes</button>
+            </span>
+        </div>
+    </div>
 </div>

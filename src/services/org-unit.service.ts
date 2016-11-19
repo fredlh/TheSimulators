@@ -23,8 +23,8 @@ import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals
 @Injectable()
 export class OrgUnitService {
 
-    // private serverUrl = "http://localhost:8082/api/";
-    private serverUrl = "https://play.dhis2.org/test/api";
+    private serverUrl = "http://localhost:8082/api/";
+    // private serverUrl = "https://play.dhis2.org/test/api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
 

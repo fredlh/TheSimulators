@@ -48,6 +48,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     private filterOptions = new FilterOptions();
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
+    private orgUnitIdToDelete: string = "";
 
     private haveSubmitted = false;
     private saveSuccess = null;
@@ -374,10 +375,18 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     //
 
     // Deletes the orgUnit with the given id
-    deleteOrgUnit(orgUnitId: string) {
-        console.log("Temporarily disabled");
-        /*
-        this.orgUnitService.deleteOrganisationUnit(orgUnitId).subscribe(
+    deleteOrgUnit(orgUnitId: string, confirmedDelete: boolean = false) {
+        if (orgUnitId !== "") {
+            this.orgUnitIdToDelete = orgUnitId;
+        }
+
+        // Return if the user clicked "No" on confirm delete
+        if (!confirmedDelete) {
+            document.getElementById("confirmDeleteAreaOrgUnit").style.display = "block";
+            return;
+        }
+
+        this.orgUnitService.deleteOrganisationUnit(this.orgUnitIdToDelete).subscribe(
             // All good, just refresh the page so the deleted orgUnit dissapairs
             res => {
                 this.refreshOrgUnits();
@@ -391,8 +400,15 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
                 }
                 console.log(error);
             }
-        );
-        */
+        );   
+    }
+
+
+    confirmDeleteOrgUnit(yes: boolean, ): void {
+        document.getElementById("confirmDeleteAreaOrgUnit").style.display = "none";
+        if (yes)  {
+            this.deleteOrgUnit("", true);
+        }
     }
 
 

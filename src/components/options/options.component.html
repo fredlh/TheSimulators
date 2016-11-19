@@ -1,8 +1,6 @@
-<div id="optionsButton">
-    <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="toggleOptionsWindow()">
-        <span class="glyphicon glyphicon-cog" aria-hidden="true" style="padding-right: 7px;"></span>  Options
-    </button>
-</div>
+<button id="optionsButton" type="button" class="btn btn-primary" aria-label="Left Align" (click)="toggleOptionsWindow()">
+    <span class="glyphicon glyphicon-cog" aria-hidden="true" style="padding-right: 7px;"></span>  Options
+</button>
 
 
 
@@ -216,8 +214,8 @@
 
 
             <input type="button" value="Close" class="btn btn-primary" (click)="onCancel()">
-            <input type="button" value="Reset to default options" class="btn btn-primary" (click)="onReset()">
-            <input style="float: right;" type="submit" value="Save" class="btn btn-primary" [disabled]="!optionsForm.form.valid">
+            <input type="button" value="Reset to default options" class="btn btn-warning" (click)="onReset()">
+            <input style="float: right;" type="submit" value="Save" class="btn btn-success" [disabled]="!optionsForm.form.valid">
         </form>
                 
     </div>

@@ -23,14 +23,6 @@ OrganisationUnitGroups:
     - Refresh button on top of the page which the user have to click manually?
 
 
-
-Search:
-------
-- Auto search on each new word, rather than a button?
-- Able to place a marker and say "get all orgUnits (filter too?) within x distance"
-- Implement the local filters here too? (filter on name and orgUnitGroup)
-
-
 Delete:
 -------
 - Check further how to delete orgUnits with groups?
@@ -48,6 +40,7 @@ Map:
 
 General:
 --------
+- Print an error message at the bottom/top of the screen or something (such as error on delete orgUnit)
 - Commenting
 - Decide on final design (placement of things and color)
 - Go through all HTML & CSS, fix naming conventions and as much as hard coded of pixels as possible

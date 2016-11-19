@@ -149,6 +149,12 @@ export class MapViewComponent implements OnInit {
     // Called when a org unit is selected on the side bar
     // Updates selected and fires event to make sure all drawn org units checks if they are it
     selectMap(orgUnitId: string): void {
+        // Fredrik: Just change this to whatever fits the best in the current code
+        // No coordinates, so nothing to zoom to
+        if (this.allCoords.length === 0) {
+            return;
+        }
+
         this.selectedElement = orgUnitId;
 
         // Check if selected org unit indicates a deselection

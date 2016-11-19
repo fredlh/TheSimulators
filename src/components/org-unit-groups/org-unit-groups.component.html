@@ -1,8 +1,7 @@
-<div id="toggleOrgUnitGroupsButton">
-    <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="toggleOrgUnitGroups()">
-        Organisation unit groups
-    </button>
-</div>
+<button id="toggleOrgUnitGroupsButton" type="button" class="btn btn-primary" aria-label="Left Align" (click)="toggleOrgUnitGroups()">
+     Organisation unit groups
+</button>
+
 
 <div id="orgUnitGroupsArea" class="org-unit-groups">
 	<div class="org-unit-groups-content">
@@ -172,7 +171,7 @@
 <div id="confirmDeleteArea" class="confirm-delete">
     <div class="confirm-delete-content">
         <div class="alert alert-danger" role="alert">
-            Are you sure you want to delete organisation unit group  '{{selectedOrgUnitGroup.orgUnitGroup.name}}'?
+            Are you sure you want to delete organisation unit group '{{selectedOrgUnitGroup.orgUnitGroup.name}}'?
             <span style="float: right; margin-top: -7px;">
                 <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDelete(false)">No</button>
                 <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDelete(true)">Yes</button>
