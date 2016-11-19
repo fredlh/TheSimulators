@@ -49,6 +49,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
     private orgUnitIdToDelete: string = "";
+    private deleteErrorMessage:string = "";
 
     private haveSubmitted = false;
     private saveSuccess = null;
@@ -391,20 +392,22 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             res => {
                 this.refreshOrgUnits();
             },
-            // An error occured, display appropiat error message if known else general error message
+            // An error occured, try to find the reason and display the error area
             error => {
-                if (error.status === 404) {
-                    console.error("Error: Organisation unit with id '" + orgUnitId + "' has already been deleted");
-                } else {
-                    console.error("Unknown error during deletion. Please refresh and try again");
+                try {
+                    this.deleteErrorMessage =  error._body.split(`"message":`)[1].split(`"`)[1];
+                } catch (Error) {
+                    this.deleteErrorMessage = "Unable to find the reason";
                 }
-                console.log(error);
+
+                document.getElementById("errorArea").style.display = "block";
+                
             }
         );   
     }
 
 
-    confirmDeleteOrgUnit(yes: boolean, ): void {
+    confirmDeleteOrgUnit(yes: boolean): void {
         document.getElementById("confirmDeleteAreaOrgUnit").style.display = "none";
         if (yes)  {
             this.deleteOrgUnit("", true);

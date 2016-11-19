@@ -23,12 +23,6 @@ OrganisationUnitGroups:
     - Refresh button on top of the page which the user have to click manually?
 
 
-Delete:
--------
-- Check further how to delete orgUnits with groups?
-- Only able to delete orgUnits with no groups?
-- Remove the functionality?
-
 
 Map:
 ---

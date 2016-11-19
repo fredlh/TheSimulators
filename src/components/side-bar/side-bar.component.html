@@ -22,11 +22,11 @@
 
 
 <div id="sideBarContent" style="display: none;">
-    <div *ngIf="orgUnits === undefined" id="noSearchResults">
+    <div *ngIf="!orgUnits" id="noSearchResults">
             <p>No organisation units matched the given search parameters</p>
     </div>
 
-    <div *ngIf="orgUnits !== undefined">
+    <div *ngIf="orgUnits">
         <accordion>
             <div *ngFor="let orgUnit of displayedOrgUnits; let myIndex = index">
                 <div id={{orgUnit.id}}>
@@ -219,6 +219,7 @@
                 Clear filter
             </button>
         </div>
+        
     </form>
 </div>
 
@@ -234,4 +235,11 @@
             </span>
         </div>
     </div>
+</div>
+
+
+<div id="errorArea" class="alert alert-danger alert-dismissible" style="display: none;">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Error: </strong> Unable to delete organisation unit with id '{{orgUnitIdToDelete}}'<br>
+  <strong>Reason: </strong>{{deleteErrorMessage}}
 </div>
