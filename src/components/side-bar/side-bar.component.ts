@@ -49,7 +49,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
     private selectedOrgUnit: OrgUnit = new OrgUnit();
     private orgUnitIdToDelete: string = "";
-    private deleteErrorMessage:string = "";
+    private deleteErrorMessage: string = "";
 
     private haveSubmitted = false;
     private saveSuccess = null;
@@ -401,9 +401,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
                 }
 
                 document.getElementById("errorArea").style.display = "block";
-                
             }
-        );   
+        );
     }
 
 

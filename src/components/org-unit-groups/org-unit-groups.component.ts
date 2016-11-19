@@ -11,15 +11,12 @@ import { Globals, OrganisationUnitGroup }   from "../../globals/globals.class";
 declare var $: any;
 
 class SelectedOrgUnitGroups {
-    orgUnitGroup: OrganisationUnitGroup;
     searchTerm: string = "";
     searchResults: OrgUnit[] = [];
     selectedFromSearch: string = "";
     selectedFromExisting: string = "";
-
-    constructor() {
-        this.orgUnitGroup = new OrganisationUnitGroup();
-    }
+    status: boolean = null;
+    message: string = "";
 }
 
 @Component({
@@ -35,18 +32,9 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // Each group is a toggable accordion
     private orgUnitGroups: OrganisationUnitGroup[] = [];
 
-    // The ID and Index of the opened orgUnitGroup
-    private openedId;
-    private openedIndex;
-
     // The selected/opened orgUnitGroup
     // Contains all the info the user can search and change
-    private selectedOrgUnitGroup = new SelectedOrgUnitGroups();
-
-    // Used to display info regarding adding and deletion of orgUnits in an orgUnitGroup
-    // true = success, false = error
-    private orgUnitGroupStatus: boolean = null;
-    private orgUnitGroupMessage: string = "";
+    private selectedOrgUnitGroups: SelectedOrgUnitGroups[] = [];
 
     // Same as above, but used during adding of new orgUnitGroups
     private newOrgUnitGroupStatus: boolean = null;
@@ -55,22 +43,36 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // Name on the new orgUnitGroup the use can add
     private newOrgUnitGroupName: string = "";
 
+    private groupIndexToBeDeleted: number = -1;
+
 
     constructor(private orgUnitService: OrgUnitService, private sideBarService: SideBarService) {
         this.orgUnitService.registerOrgUnitGroupsListener(this);
         this.orgUnitService.registerOrgUnitGroups(this);
+
+        for (let i = 0; i < this.orgUnitGroups.length; i++) {
+            this.selectedOrgUnitGroups.push(new SelectedOrgUnitGroups());
+        }
     }
 
 
     onOrgUnitGroupsUpdate(): void {
         this.orgUnitGroups = Globals.organisationUnitGroups;
+
+        this.selectedOrgUnitGroups = [];
+        for (let i = 0; i < this.orgUnitGroups.length; i++) {
+            this.selectedOrgUnitGroups.push(new SelectedOrgUnitGroups());
+        }
     }
 
     toggleOrgUnitGroups(): void {
         this.showOrgUnitGroupsPanel();
 
-        this.orgUnitGroupStatus = null;
-        this.orgUnitGroupMessage = "";
+        this.selectedOrgUnitGroups = [];
+        for (let i = 0; i < this.orgUnitGroups.length; i++) {
+            this.selectedOrgUnitGroups.push(new SelectedOrgUnitGroups());
+        }
+
         this.newOrgUnitGroupStatus = null;
         this.newOrgUnitGroupMessage = "";
         this.newOrgUnitGroupName = "";
@@ -112,26 +114,20 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
                     this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray.push(res);
 
                     if (firstSave) {
-                        this.selectedOrgUnitGroup.selectedFromExisting = res.name;
+                        this.selectedOrgUnitGroups[orgUnitGroupIndex].selectedFromExisting = res.name;
                         firstSave = false;
                     }
-
                 },
                 error => {
                     console.error(error);
-                });
+                }
+            );
         }
     }
 
     // Called when an orgUnitGroup is opened
     // Saves the ID and Index, sets the selectedOrgUnitGroup and retrives the orgUnits on first time opened
     orgUnitGroupOpened(orgUnitGroupId: string, orgUnitGroupIndex: number) {
-        this.openedId = orgUnitGroupId;
-        this.openedIndex = orgUnitGroupIndex;
-
-        this.selectedOrgUnitGroup = new SelectedOrgUnitGroups();
-        this.selectedOrgUnitGroup.orgUnitGroup = JSON.parse(JSON.stringify(this.orgUnitGroups[orgUnitGroupIndex]));
-
         if (!this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray) {
             this.getOrgUnitsFromOrgUnitGroup(orgUnitGroupId, orgUnitGroupIndex);
         }
@@ -140,7 +136,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     // Returns an orgUnits ID by its name
     // Defaults to the orgUnitGroups orgUnitArray, but can be specified
-    getIdByName(name: string, orgUnitArray = this.orgUnitGroups[this.openedIndex].orgUnitArray): string {
+    getIdByName(name: string, groupIndex: number, orgUnitArray = this.orgUnitGroups[groupIndex].orgUnitArray): string {
         for (let orgUnit of orgUnitArray) {
             if (orgUnit.name.trim() === name) {
                 return orgUnit.id.toString();
@@ -154,49 +150,60 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // Searches for orgUnits
     // Gets called when the user wants to search for orgUnits to add to the orgUnitGroup
     // The result is displayed in a selectbox
-    searchOrgUnit(): void {
-        let tmpThis = this;
-        this.orgUnitService.getOrgUnits("&query=" + this.selectedOrgUnitGroup.searchTerm).subscribe(
+    searchOrgUnit(groupIndex: number): void {
+        let selectedOrgUnitGroup = this.selectedOrgUnitGroups[groupIndex];
+
+        this.orgUnitService.getOrgUnits("&query=" + selectedOrgUnitGroup.searchTerm).subscribe(
             res => {
                 if (res.organisationUnits.length > 0) {
-                    tmpThis.selectedOrgUnitGroup.selectedFromSearch = res.organisationUnits[0].name;
-                    console.log(tmpThis.selectedOrgUnitGroup.selectedFromSearch);
-                    tmpThis.selectedOrgUnitGroup.searchResults = res.organisationUnits;
+                    selectedOrgUnitGroup.selectedFromSearch = res.organisationUnits[0].name;
+                    selectedOrgUnitGroup.searchResults = res.organisationUnits;
                 }
             },
             error => {
-                console.error(error);
+                selectedOrgUnitGroup.status = false;
+
+                try {
+                    selectedOrgUnitGroup.message =  error._body.split(`"message":`)[1].split(`"`)[1];
+                } catch (Error) {
+                    selectedOrgUnitGroup.message = "Unable to find the reason";
+                }
             }
         );
     }
 
 
     // Removes an orgUnit from an orgUnitGroup
-    removeOrgUnit(): void {
+    removeOrgUnit(groupIndex: number): void {
+        let selectedOrgUnitGroup = this.selectedOrgUnitGroups[groupIndex];
+        let orgUnitGroup = this.orgUnitGroups[groupIndex];
+
         // Get the ID of the selected orgUnit
-        let id = this.getIdByName(this.selectedOrgUnitGroup.selectedFromExisting);
+        let id = this.getIdByName(selectedOrgUnitGroup.selectedFromExisting, groupIndex);
 
         // Remov the selected orgUnit from the select box
-        this.orgUnitGroups[this.openedIndex].orgUnitArray = this.orgUnitGroups[this.openedIndex].orgUnitArray.filter(function(orgUnit) {
+        orgUnitGroup.orgUnitArray = orgUnitGroup.orgUnitArray.filter(function(orgUnit) {
             return orgUnit.id !== id;
         });
 
         // Set the select box to default to the 1st item
-        if (this.orgUnitGroups[this.openedIndex].orgUnitArray.length > 0) {
-            this.selectedOrgUnitGroup.selectedFromExisting = this.orgUnitGroups[this.openedIndex].orgUnitArray[0].name;
+        if (orgUnitGroup.orgUnitArray.length > 0) {
+            selectedOrgUnitGroup.selectedFromExisting = orgUnitGroup.orgUnitArray[0].name;
         }
     }
 
 
     // Adds an orgUnit to the orgUnitGroup
-    addOrgUnit(): void {
-        this.orgUnitGroupStatus = null;
-        this.orgUnitGroupMessage = "";
-        let id = this.getIdByName(this.selectedOrgUnitGroup.selectedFromSearch, this.selectedOrgUnitGroup.searchResults);
+    addOrgUnit(groupIndex: number): void {
+        let selectedOrgUnitGroup = this.selectedOrgUnitGroups[groupIndex];
+        let id = this.getIdByName(selectedOrgUnitGroup.selectedFromSearch, groupIndex, selectedOrgUnitGroup.searchResults);
+
+        selectedOrgUnitGroup.status = null;
+        selectedOrgUnitGroup.message = "";
 
         // Get thr orgUnit from the search results
         let orgUnit = undefined;
-        for (let o of this.selectedOrgUnitGroup.searchResults) {
+        for (let o of selectedOrgUnitGroup.searchResults) {
             if (o.id === id) {
                 orgUnit = o;
                 break;
@@ -204,59 +211,63 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         }
 
         // If the orgUnit is already a part of the group, display error and return
-        for (let unit of this.orgUnitGroups[this.openedIndex].orgUnitArray) {
+        for (let unit of this.orgUnitGroups[groupIndex].orgUnitArray) {
             if (unit.id === orgUnit.id) {
-                this.orgUnitGroupStatus = false;
-                this.orgUnitGroupMessage = "Cannot add '" + unit.name + "'. The orgUnit is already a part of the group";
+                selectedOrgUnitGroup.status = false;
+                selectedOrgUnitGroup.message = "Cannot add '" + unit.name + "'. The orgUnit is already a part of the group";
                 return;
             }
         }
 
         // Add the orgUnit to the groups orgUnits
-        this.orgUnitGroups[this.openedIndex].orgUnitArray.push(orgUnit);
+        this.orgUnitGroups[groupIndex].orgUnitArray.push(orgUnit);
 
         // Remove the orgUnit from the select box so you can cannot add the same orgUnit multiple times
-        this.selectedOrgUnitGroup.searchResults = this.selectedOrgUnitGroup.searchResults.filter(function(unit) {
+        selectedOrgUnitGroup.searchResults = selectedOrgUnitGroup.searchResults.filter(function(unit) {
             return unit.id !== orgUnit.id;
         });
 
         // Set the option in the selectBox to the 1st result
-        if (this.selectedOrgUnitGroup.searchResults.length > 0) {
-            this.selectedOrgUnitGroup.selectedFromSearch = this.selectedOrgUnitGroup.searchResults[0].name;
+        if (selectedOrgUnitGroup.searchResults.length > 0) {
+            selectedOrgUnitGroup.selectedFromSearch = selectedOrgUnitGroup.searchResults[0].name;
         }
     }
 
 
     // Saves an orgUnitGroup with updated info
-    // TODO:
-    // - How to update?
-    onSaveOrgUnitGroup(): void {
+    onSaveOrgUnitGroup(groupIndex: number): void {
+        let selectedOrgUnitGroup = this.selectedOrgUnitGroups[groupIndex];
+        let orgUnitGroup = this.orgUnitGroups[groupIndex];
         // Update the organisationUnits in the group
-        this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits = [];
-        for (let unit of this.orgUnitGroups[this.openedIndex].orgUnitArray) {
-            this.selectedOrgUnitGroup.orgUnitGroup.organisationUnits.push({"id": unit.id});
+        orgUnitGroup.organisationUnits = [];
+        for (let unit of this.orgUnitGroups[groupIndex].orgUnitArray) {
+            orgUnitGroup.organisationUnits.push({"id": unit.id});
         }
 
         // Send the updated orgUnitGroup to the API
-        this.orgUnitService.updateOrganisationUnitGroup(this.selectedOrgUnitGroup.orgUnitGroup).subscribe(
+        this.orgUnitService.updateOrganisationUnitGroup(orgUnitGroup).subscribe(
             res => {
                 console.log(res);
-                this.orgUnitGroupStatus = true;
-                this.orgUnitGroupMessage = "Updated organisation unit group";
+                selectedOrgUnitGroup.status = true;
+                selectedOrgUnitGroup.message = "Updated organisation unit group";
             },
             error => {
-                console.error(error);
-                this.orgUnitGroupStatus = false;
-                this.orgUnitGroupMessage = "Unable to update organisation unit group";
-                console.error(error);
+                selectedOrgUnitGroup.status = false;
+
+                let errorMessage: string = error._body;
+                let splitIndex = errorMessage.includes("response") ? 2 : 1;
+
+                try {
+                    selectedOrgUnitGroup.message = errorMessage.split(`"message":`)[splitIndex].split(`"`)[1];
+                } catch (Error) {
+                    selectedOrgUnitGroup.message = "Unable to find the reason";
+                }
             }
         );
     }
 
 
     // Adds an orgUnitGroup
-    // TODO:
-    // - Howt to update?
     onAddOrgUnitGroup(): void {
         // Ignore if just blanks
         if (this.newOrgUnitGroupName.trim() === "") return;
@@ -272,57 +283,64 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         let tmpThis = this;
         this.orgUnitService.saveOrganisationUnitGroup(orgUnitGroup).subscribe(
             res => {
-                tmpThis.newOrgUnitGroupStatus = true;
-                tmpThis.newOrgUnitGroupMessage = "Added the organisation unit group '" + this.newOrgUnitGroupName + "'";
+                tmpThis.refreshOrgunitGroups();
             },
             error => {
                 tmpThis.newOrgUnitGroupStatus = false;
-                tmpThis.newOrgUnitGroupMessage = "Unable to add the organisation unit group '" + this.newOrgUnitGroupName + "'";
-                console.error(error);
+
+                try {
+                    tmpThis.newOrgUnitGroupMessage =  error._body.split(`"message":`)[1].split(`"`)[1];
+                } catch (Error) {
+                    tmpThis.newOrgUnitGroupMessage = "Unable to find the reason";
+                }
             }
         );
     }
 
 
     // Deletes an orgUnitGroup
-    // TODO:
-    // - Howt to update?
-    onDeleteOrgUnitGroup(confirmedDelete = false) {
+    onDeleteOrgUnitGroup(groupIndex: number, confirmedDelete = false): void {
         // Return if the user clicked "No" on confirm delete
         if (!confirmedDelete) {
+            this.groupIndexToBeDeleted = groupIndex;
             document.getElementById("confirmDeleteArea").style.display = "block";
             return;
         }
 
+        let selectedOrgUnitGroup = this.selectedOrgUnitGroups[this.groupIndexToBeDeleted];
+
         // Send the delete request to the API and print out the delete result
-        this.orgUnitService.deleteOrganisationUnitGroup(this.selectedOrgUnitGroup.orgUnitGroup.id).subscribe(
+        this.orgUnitService.deleteOrganisationUnitGroup(this.orgUnitGroups[this.groupIndexToBeDeleted].id).subscribe(
             res => {
-                this.orgUnitGroupStatus = true;
-                this.orgUnitGroupMessage = "Deleted organisation unit group '" + this.selectedOrgUnitGroup.orgUnitGroup.name + "'";
+                this.refreshOrgunitGroups();
             },
             error => {
-                this.orgUnitGroupStatus = false;
-                this.orgUnitGroupMessage = "Failed to delete organisation unit group '" + this.selectedOrgUnitGroup.orgUnitGroup.name + "'";
-                console.error(error);
+                selectedOrgUnitGroup.status = false;
+
+                try {
+                    selectedOrgUnitGroup.message  =  error._body.split(`"message":`)[1].split(`"`)[1];
+                } catch (Error) {
+                    selectedOrgUnitGroup.message  = "Unable to find the reason";
+                }
             }
         );
     }
 
 
     // Refreshes the orgUnitGroups
-    // TODO:
-    // - When retrieving new orgUnitGroups, all orgUnitArrays are lost
-    // - Any changes on the implementation or assumptions are needed?
     refreshOrgunitGroups(): void {
-        // this.orgUnitService.refreshOrganisationUniGroups();
-        console.log("Currently not working");
+        this.orgUnitService.refreshOrganisationUniGroups();
+        this.groupIndexToBeDeleted = -1;
+        this.newOrgUnitGroupName = "";
+        this.newOrgUnitGroupStatus = null;
+        this.newOrgUnitGroupMessage = "";
     }
 
 
     confirmDelete(yes: boolean): void {
         document.getElementById("confirmDeleteArea").style.display = "none";
         if (yes)  {
-            this.onDeleteOrgUnitGroup(true);
+            this.onDeleteOrgUnitGroup(-1, true);
         }
     }
 

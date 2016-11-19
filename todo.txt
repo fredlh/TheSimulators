@@ -1,27 +1,6 @@
 OrganisationUnitGroups:
 -----------------------
-- Following works:
-    - Adding new orgUnitGroup
-    - Delete self-added orgUnitGroup
-    - Modify existing orgUnitGroup
-- Following doesn't work:
-    - Delete existing orgUnitGroup
-    - Modify self-added orgUnitGroup
-
-- What to do about the stuff that doesn't work?
-    - Fix it or just remove add and deletion of orgUnitGroups
-
 - Can get the image from the API, but how to display it?
-
-- How to handle multiple open orgUnitGroups?
-    - Only have a single selectedOrgUnitGroup and reset it every time the user opens a new one?
-    - Create a selectedOrgUnitGroup for each group, so that the "state" for each group is saved?
-
-- How to habdle update? (Refresh, delete, add, ...)
-    - Auto update?
-        - If yes, okay if the group collapses?
-    - Refresh button on top of the page which the user have to click manually?
-
 
 
 Map:
@@ -34,7 +13,6 @@ Map:
 
 General:
 --------
-- Print an error message at the bottom/top of the screen or something (such as error on delete orgUnit)
 - Commenting
 - Decide on final design (placement of things and color)
 - Go through all HTML & CSS, fix naming conventions and as much as hard coded of pixels as possible
@@ -48,3 +26,4 @@ API notes/suggestions:
 - Why doesn't the API require a OrganisationUnitLevel for each level an orgUnit can have?
 - Why do delete error compalin about "DataObject" and not specify which binding it fails on?
 - Why can parent be undefined? Why not require and just have empty string if no parent (level 1)?
+- Documentation of which fields are requiered when saving an orgUnit

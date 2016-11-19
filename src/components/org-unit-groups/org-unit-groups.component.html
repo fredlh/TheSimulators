@@ -32,27 +32,28 @@
 
 
         <accordion [closeOthers]="false">
-            <div *ngFor="let group of orgUnitGroups; let myIndex = index">
+            <div *ngFor="let group of orgUnitGroups; let i = index">
                 <div id="{{group.id}}">
-                    <accordion-group orgUnitGroupId="{{group.id}}" orgUnitGroupIndex={{myIndex}}>
-                        <accordion-heading>{{myIndex + 1}} - {{group.name}}</accordion-heading>
+                    <accordion-group orgUnitGroupId="{{group.id}}" orgUnitGroupIndex={{i}}>
+                        <accordion-heading>{{i + 1}} - {{group.name}}</accordion-heading>
   
+						
 						<div class="col-lg-6">
 							<h3>Edit org unit group</h3>
 							<p>Select the org units you want in the list, and click "remove" to remove them</p>
 
-							<div *ngIf="orgUnitGroups[myIndex].orgUnitArray">
-								<div *ngIf="orgUnitGroups[myIndex].orgUnitArray.length > 0">
+							<div *ngIf="orgUnitGroups[i].orgUnitArray">
+								<div *ngIf="orgUnitGroups[i].orgUnitArray.length > 0">
 									<form>
 										<div class="form-group row">
 											<div class="col-xs-7">
-												<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromExisting" name="selectedUnitsInGroup">
-													<option *ngFor="let orgUnit of orgUnitGroups[myIndex].orgUnitArray;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
+												<select class="form-control" [(ngModel)]="selectedOrgUnitGroups[i].selectedFromExisting" name="selectedUnitsInGroup">
+													<option *ngFor="let orgUnit of orgUnitGroups[i].orgUnitArray;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
 												</select>
 											</div>
 
 											<div class="col-xs-2">
-												<button type="button" class="btn btn-warning" aria-label="Left Align" (click)="removeOrgUnit()">
+												<button type="button" class="btn btn-warning" aria-label="Left Align" (click)="removeOrgUnit(i)">
 													Remove
 												</button>
 											</div>
@@ -67,11 +68,11 @@
 							<p>To add new org units, enter a name and search in the field below.
                                You can choose which ones you want to add from the search result</p>
 
-                        	<form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit()">
+                        	<form id="searchOrgUnitForm" (ngSubmit)="searchOrgUnit(i)">
 								<div class="form-group row">
 									<div class="col-xs-8">
 										<input type="text" class="form-control" placeholder=" Enter name of an organisation unit ..." 
-												[(ngModel)]="selectedOrgUnitGroup.searchTerm" name="searchOrgUnitBar">
+												[(ngModel)]="selectedOrgUnitGroups[i].searchTerm" name="searchOrgUnitBar">
 									</div>
 									
 									<div class="col-xs-2">
@@ -80,17 +81,17 @@
 								</div>
         					</form>
 
-							<div *ngIf="selectedOrgUnitGroup.searchResults.length > 0">
+							<div *ngIf="selectedOrgUnitGroups[i].searchResults.length > 0">
 								<form>
 									<div class="form-group row">
 										<div class="col-xs-9">
-											<select class="form-control" [(ngModel)]="selectedOrgUnitGroup.selectedFromSearch" name="selectedUnitsInGroup">
-												<option *ngFor="let orgUnit of selectedOrgUnitGroup.searchResults;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
+											<select class="form-control" [(ngModel)]="selectedOrgUnitGroups[i].selectedFromSearch" name="selectedUnitsInGroup">
+												<option *ngFor="let orgUnit of selectedOrgUnitGroups[i].searchResults;" value="{{orgUnit.name}}">{{orgUnit.name}}</option>               
 											</select>
 										</div>
 
 										<div class="col-xs-2">
-											<button type="button" class="btn btn-success" aria-label="Left Align" (click)="addOrgUnit()">
+											<button type="button" class="btn btn-success" aria-label="Left Align" (click)="addOrgUnit(i)">
 												Add
 											</button>
 										</div>
@@ -98,27 +99,29 @@
 								</form>
 							</div>
 						</div>
-				
+						
+						
 						<div class="col-lg-12">
-							<div *ngIf="orgUnitGroupStatus === false" class="alert alert-danger">
-								<strong>Error:</strong> {{orgUnitGroupMessage}}
+							<div *ngIf="selectedOrgUnitGroups[i].status === false" class="alert alert-danger">
+								<strong>Error:</strong> {{selectedOrgUnitGroups[i].message}}
 							</div>
 
-							<div *ngIf="orgUnitGroupStatus === true" class="alert alert-success">
-								<strong>Success:</strong> {{orgUnitGroupMessage}}
+							<div *ngIf="selectedOrgUnitGroups[i].status === true" class="alert alert-success">
+								<strong>Success:</strong> {{selectedOrgUnitGroups[i].message}}
 							</div>
 						</div>
 
 						<div class="col-xs-10">
-							<button type="button" class="btn btn-danger" aria-label="Left Align" (click)="onDeleteOrgUnitGroup()">
+							<button type="button" class="btn btn-danger" aria-label="Left Align" (click)="onDeleteOrgUnitGroup(i)">
 								Delete group
 							</button>
 						</div>
 						<div class="col-xs-2">
-							<button type="button" class="btn btn-success" aria-label="Left Align" (click)="onSaveOrgUnitGroup()">
+							<button type="button" class="btn btn-success" aria-label="Left Align" (click)="onSaveOrgUnitGroup(i)">
 								Save changes
 							</button>
 						</div>
+						
 						
                     </accordion-group>
                 </div>
@@ -170,8 +173,8 @@
 
 <div id="confirmDeleteArea" class="confirm-delete">
     <div class="confirm-delete-content">
-        <div class="alert alert-danger" role="alert">
-            Are you sure you want to delete organisation unit group '{{selectedOrgUnitGroup.orgUnitGroup.name}}'?
+        <div *ngIf="groupIndexToBeDeleted >= 0" class="alert alert-danger" role="alert">
+            Are you sure you want to delete organisation unit group '{{orgUnitGroups[groupIndexToBeDeleted].name}}'?
             <span style="float: right; margin-top: -7px;">
                 <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDelete(false)">No</button>
                 <button type="button" class="btn btn-primary" aria-label="Left Align" (click)="confirmDelete(true)">Yes</button>
