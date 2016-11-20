@@ -14,3 +14,17 @@ How to download and run:
 -	npm run build
 
 -	npm run start
+
+
+Used projects
+------
+Bit about which open-source projects we've used:
+- accordion
+- leaflet starter
+- multiple select
+
+
+API struggling/suggestions
+------
+Bit about API struggling and suggestions
+- 
