@@ -151,8 +151,8 @@
 <div id="editOrgUnitPanelArea" style="display: none;">
     <p>Here you can draw an organisation unit, either a polygon or a marker depending on your choice.</p>
     <p>Use the draw tools on the right, and either cancel or save when finished.</p>
-    <button id="cancelDrawnOrgUnitButton" style="margin-right: 10px;" class="btn btn-warning" (click)="cancelDrawnOrgUnit()">Cancel</button>
-    <button id="saveDrawnOrgUnitButton" style="margin-left: 10px;"  class="btn btn-success" (click)="saveDrawnOrgUnit()">Save</button>
+    <button style="margin-right: 10px;" class="btn btn-warning" (click)="cancelDrawnOrgUnit()">Cancel</button>
+    <button style="margin-left: 10px;"  class="btn btn-success" (click)="saveDrawnOrgUnit()">Save</button>
 </div>
 
 
@@ -160,7 +160,7 @@
     <form (ngSubmit)="applyFilter()" #optionsForm="ngForm">
     
         <div class="form-group row">
-            <label for="example-text-input" class="col-xs-2 col-form-label">Name: </label>
+            <label class="col-xs-2 col-form-label">Name: </label>
             <div class="col-xs-10">
                 <input class="form-control" type="text" [(ngModel)]="filterOptions.name" name="filterOptionsName">
             </div>
@@ -168,7 +168,7 @@
 
 
         <div class="form-group row">
-            <label for="example-text-input" class="col-sm-2 col-form-label">Filter: </label>
+            <label class="col-sm-2 col-form-label">Filter: </label>
             <div class="col-xs-10">
                 <select class="form-control" [(ngModel)]="filterOptions.nameFilterType" name="filterOptionsNameFilterType">
                     <option value="startsWith">Starts with</option> 
@@ -184,7 +184,7 @@
         <div class="form-group row">
             <label id="labelText" class="col-sm-2 col-form-label-lg">Level</label>
             <div class="col-xs-10">
-                <select class="form-control" id="exampleSelect1" [(ngModel)]="filterOptions.level" name="filterOptionsLevel">
+                <select class="form-control" [(ngModel)]="filterOptions.level" name="filterOptionsLevel">
                     <option value="All">All</option> 
                     <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
                 </select>

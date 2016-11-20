@@ -2,8 +2,6 @@
     <span class="glyphicon glyphicon-cog" aria-hidden="true" style="padding-right: 7px;"></span>  Options
 </button>
 
-
-
 <div id="optionsArea" class="options container-fluid">
     <div class="options-content">
         <span class="close">x</span>
@@ -22,6 +20,7 @@
                 <label class="col-xs-2 col-form-label" style="text-align: center;">Deselect</label>
                 <label class="col-xs-2 col-form-label" style="text-align: center;">Select without coordinates</label>
             </div>
+            
             <div class="form-group row">
                 <div class="col-xs-2">
                 </div>
@@ -59,7 +58,6 @@
 
 
             <accordion [closeOthers]="false">
-
                 <accordion-group>
                     <accordion-heading>Color</accordion-heading>
 
@@ -217,7 +215,6 @@
             <input type="button" value="Reset to default options" class="btn btn-warning" (click)="onReset()">
             <input style="float: right;" type="submit" value="Save" class="btn btn-success" [disabled]="!optionsForm.form.valid">
         </form>
-                
     </div>
 </div>
 

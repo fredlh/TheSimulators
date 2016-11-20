@@ -72,7 +72,7 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
 
     // Gets called when the adanced search button is clicked
     // It pushes the sideBar down during the animation
-    advancedSearch(): void {
+    toggleAdvancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;
 
         // Check which top value to assign

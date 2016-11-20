@@ -1,3 +1,8 @@
+//
+// The side bar area
+//
+
+// The sideBar where the orgUnits are displayed
 #sideBarContent {
     position: absolute;
     top: 105px;
@@ -8,7 +13,6 @@
     z-index: 1000;
     background-color: #f5f5f5;
 
-
     border-radius: 5px;
 
     overflow-x: hidden;
@@ -16,9 +20,8 @@
     resize: both;
 }
 
-
+// The area above the sideBar where the buttons are displayed
 #sideBarButtons {
-    //background-color: #f5f5f5;
     position: absolute;
     top: 70px;
     left: 20px;
@@ -29,22 +32,7 @@
     border-radius: 5px 5px 0 0;
 }
 
-
-#orgUnitArea {
-    background-color: white;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    max-height: 90%;
-}
-
-h3.center {
-    text-align: center;
-}
-
+// The button which toggles the sideBar
 #toggleSideBar {
     position: absolute;
     top: 70px;
@@ -55,14 +43,18 @@ h3.center {
     height: 35px;
 }
 
+// Is showed when there are no orgUnits returned from the search
 #noSearchResults {
     padding: 15px;
     text-align: center;
 }
 
 
+//
+// Edit org unit
+//
 
-
+// The black background which is displayed when the user clicks "Edit" on an orgUnit
 .edit-org-unit {
     display: none; 
     position: fixed; 
@@ -76,7 +68,7 @@ h3.center {
     background-color: rgba(0,0,0,0.4); // Black w/ opacity
 }
 
-/* Modal Content/Box */
+// The content in the middle of the black background
 .edit-org-unit-content {
     background-color: #fefefe;
     margin: 10% auto; 
@@ -85,7 +77,7 @@ h3.center {
     width: 50%;
 }
 
-/* The Close Button */
+// The close button in the upper right corner
 .edit-org-unit-close {
     color: black;
     float: right;
@@ -93,6 +85,7 @@ h3.center {
     font-weight: bold;
 }
 
+// Hover and focus effect on the close button
 .edit-org-unit-close:hover,
 .edit-org-unit-close:focus {
     color: black;
@@ -100,7 +93,8 @@ h3.center {
     cursor: pointer;
 }
 
-
+// The content of the edit org unit panel
+// Contains all the info and buttons
 #editOrgUnitPanelArea {
   position: absolute;
   top: 0px;
@@ -115,15 +109,18 @@ h3.center {
   box-shadow: 1px 0px 3px 1px black;
 }
 
-#saveDrawnOrgUnitButton {
-    z-index: 10006;
+// Makes the text-area where the coordinates are displayed only resize-able vertically
+// The user cannot change its width
+textarea { 
+   resize:vertical;
 }
 
-#saveDrawnOrgUnitButton {
-    z-index: 10006;
-}
 
+//
+// Filtet area
+//
 
+// The filter area displayed above the side bar
 #filterArea {
     position: absolute;
 
@@ -144,13 +141,11 @@ h3.center {
 }
 
 
-textarea { 
-   resize:vertical;
-}
+//
+// Confirm delete of orgUnit
+//
 
-
-
-/* The Modal (background) */
+// The background behind the confirm content
 .confirm-delete2  {
     display: none; 
     position: fixed; 
@@ -164,7 +159,7 @@ textarea {
     background-color: rgba(0,0,0,0.4); // Black w/ opacity
 }
 
-/* Modal Content/Box */
+// The cofirm box at the top of the screen
 .confirm-delete-content2 {
     margin: 0% auto; 
     padding: 10px 40px;
@@ -172,6 +167,7 @@ textarea {
 }
 
 
+// Displays any errors occured during the deletion of an orgUnit
 #errorArea {
     z-index: 10009;
     position: absolute;

@@ -14,7 +14,6 @@ General:
 --------
 - Bugchecking
 - Go throug and check if colors and placements are good
-- Go through all HTML & CSS, fix naming conventions and as much as hard coded of pixels as possible
 - Updating wiki
 - Write a README
     - Mention all the api struggles so far

@@ -1,41 +1,39 @@
-<div id="search-component">
-    <div class="form-group">
-        <form id="searchForm">
-            <input type="text" class="form-control" id="search-box" placeholder=" Enter name of an organisation unit ..."
-                   [(ngModel)]="searchOptions.term" name="searchTerm">
+<div class="form-group">
+    <form id="searchForm">
+        <input type="text" class="form-control" id="searchField" placeholder=" Enter name of an organisation unit ..."
+                [(ngModel)]="searchOptions.term" name="searchTerm">
 
-            <input type="submit" value="Search" id="search-button" class="btn btn-primary" (click)="search()">
+        <input type="submit" value="Search" id="searchButton" class="btn btn-primary" (click)="search()">
+    </form>
+    <button id="advancedSearchButton" class="btn btn-info" (click)="toggleAdvancedSearch()">Advanced Search</button>
+</div>
+
+<div id="advancedSearchDiv" style="display: none;">
+    <div class="form-group row">
+        <form id="advancedSearchForm">
+            <label class="col-sm-5 col-form-label-lg">Level</label>
+            <div class="col-xs-7">
+                <select class="form-control" [(ngModel)]="searchOptions.level" name="searchOptionsLevel">
+                    <option value="All">All</option>
+                    <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
+                </select>
+            </div>
+
+            <label class="col-sm-5 col-form-label-lg">Max level</label>
+            <div class="col-xs-7">
+                <select class="form-control" [(ngModel)]="searchOptions.maxLevel" name="searchOptionsMaxLevel">
+                    <option value="None">None</option>
+                    <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
+                </select>
+            </div>
+
+            <label class="col-sm-5 col-form-label-lg">Search type</label>
+            <div class="col-xs-7">
+                <select class="form-control" [(ngModel)]="searchOptions.searchType" name="searchType">
+                    <option value="Organisation units">Organisation units</option> 
+                    <option value="Locations">Locations</option>              
+                </select>
+            </div>
         </form>
-        <button id="advanced-search-button" class="btn btn-info" (click)="advancedSearch()">Advanced Search</button>
-    </div>
-
-    <div id="advancedSearchDiv" style="display: none;">
-        <div class="form-group row">
-            <form id="advancedSearchForm">
-                <label id="labelText" class="col-sm-5 col-form-label-lg">Level</label>
-                <div class="col-xs-7">
-                    <select class="form-control" [(ngModel)]="searchOptions.level" name="searchOptionsLevel">
-                        <option value="All">All</option>
-                        <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
-                    </select>
-                </div>
-
-                <label id="labelText" class="col-sm-5 col-form-label-lg">Max level</label>
-                <div class="col-xs-7">
-                    <select class="form-control" [(ngModel)]="searchOptions.maxLevel" name="searchOptionsMaxLevel">
-                        <option value="None">None</option>
-                        <option *ngFor="let item of orgUnitLevels; let i = index" value="{{item.level}}">{{item.name}}</option>               
-                    </select>
-                </div>
-
-                <label id="labelText" class="col-sm-5 col-form-label-lg">Search type</label>
-                <div class="col-xs-7">
-                    <select class="form-control" [(ngModel)]="searchOptions.searchType" name="searchType">
-                        <option value="Organisation units">Organisation units</option> 
-                        <option value="Locations">Locations</option>              
-                    </select>
-                </div>
-            </form>
-        </div>
     </div>
 </div>

@@ -10,7 +10,7 @@
 }
 
 
-/* The Modal (background) */
+// The addOrgUnitPanel in the midddle of the screen
 .add-org-unit {
     display: none; 
     position: fixed; 
@@ -24,7 +24,6 @@
     background-color: rgba(0,0,0,0.4); // Black w/ opacity
 }
 
-/* Modal Content/Box */
 .add-org-unit-content {
     background-color: #fefefe;
     margin: 10% auto; 
@@ -33,7 +32,6 @@
     width: 50%;
 }
 
-/* The Close Button */
 .add-org-unit-close {
     color: black;
     float: right;
@@ -48,7 +46,12 @@
     cursor: pointer;
 }
 
+textarea { 
+   resize:vertical;
+}
 
+
+// The panel at the top of the screen which is displayed while editing
 #drawOrgUnitPanelArea {
   position: absolute;
   top: 0px;
@@ -61,16 +64,4 @@
   z-index: 10005;
   text-align: center;
   box-shadow: 1px 0px 3px 1px black;
-}
-
-#saveDrawnOrgUnitButton {
-    z-index: 10006;
-}
-
-#saveDrawnOrgUnitButton {
-    z-index: 10006;
-}
-
-textarea { 
-   resize:vertical;
 }

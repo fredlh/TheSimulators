@@ -35,9 +35,8 @@
             <div *ngFor="let group of orgUnitGroups; let i = index">
                 <div id="{{group.id}}">
                     <accordion-group orgUnitGroupId="{{group.id}}" orgUnitGroupIndex={{i}}>
-                        <accordion-heading>{{i + 1}} - {{group.name}}</accordion-heading>
+                        <accordion-heading>{{group.name}}</accordion-heading>
   
-						
 						<div class="col-lg-6">
 							<h3>Edit org unit group</h3>
 							<p>Select the org units you want in the list, and click "remove" to remove them</p>
@@ -122,17 +121,12 @@
 							</button>
 						</div>
 						
-						
                     </accordion-group>
                 </div>
-
             </div>
-
         </accordion>
 
-
         <div id="addOrgUnitGroupForm">
-
 			<form (ngSubmit)="onAddOrgUnitGroup()" #orgUnitGroupForm="ngForm">
 				<h3>Add new org unit group </h3>
 				<div class="form-group row">
@@ -161,7 +155,6 @@
       	<button type="button" class="btn btn-primary pull-right" aria-label="Left Align" (click)="onCancel()">
         	Close
     	</button>
-		
   
 		<br>
 		<br>
