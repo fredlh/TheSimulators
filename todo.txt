@@ -18,7 +18,6 @@ General:
 - Write a README
     - Mention all the api struggles so far
     - Mention angular-starter, multiple select projects and accordion component
-- tmpThis needed in subscribe functions?
 - Make all functions in sideBar and such which isnt meant to be called from outside to private?
 - Any way to get an error message for deleting an orgUnitLevel?
     - If yes, display that one rather than a generic one which is currently used

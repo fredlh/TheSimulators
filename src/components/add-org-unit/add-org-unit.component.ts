@@ -130,9 +130,9 @@ export class AddOrgUnitComponent {
         this.orgUnit.openingDate = new Date();
         this.orgUnit.displayName = this.orgUnit.name;
         this.orgUnit.shortName = this.orgUnit.name;
-        let tmpThis = this;
 
         // Get the parent
+        let tmpThis = this;
         async function getOrgUnitParent() {
             let org = undefined;
             await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id)
@@ -145,9 +145,13 @@ export class AddOrgUnitComponent {
         // Display error and return if the parent wasn't found
         if (!parentOrgUnit) {
             this.saveSuccess = false;
-            tmpThis.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
+            this.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
             return;
         }
+
+        // Reset any prior errors
+        this.errorMessage = "";
+        this.saveSuccess = null;
 
         // Check if a new org unit level is needed
         if (parentOrgUnit.level >= Globals.getMaxLevel()) {
@@ -165,18 +169,18 @@ export class AddOrgUnitComponent {
             res => {
                 $("#orgUnitCancelButton").prop("value", "Close");
                 $("#submitOrgUnitButton").addClass("disabled");
-                tmpThis.saveSuccess = true;
-                tmpThis.haveSubmitted = true;
-                tmpThis.newOrgUnitLevelNeeded = false;
+                this.saveSuccess = true;
+                this.haveSubmitted = true;
+                this.newOrgUnitLevelNeeded = false;
             },
             error => {
-                tmpThis.saveSuccess = false;
+                this.saveSuccess = false;
 
                 // Check if it was a known error
                 if (error.status === 409 && error._body.includes("parent")) {
-                    tmpThis.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
+                    this.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
                 } else {
-                    tmpThis.errorMessage = "Something went wrong, pleas try again.";
+                    this.errorMessage = "Something went wrong, pleas try again.";
                 }
             }
         );

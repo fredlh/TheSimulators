@@ -322,18 +322,17 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         orgUnitGroup.created = new Date();
 
         // Save the orgUnitGroup and display wether it successed or failed
-        let tmpThis = this;
         this.orgUnitService.saveOrganisationUnitGroup(orgUnitGroup).subscribe(
             res => {
-                tmpThis.refreshOrgunitGroups();
+                this.refreshOrgunitGroups();
             },
             error => {
-                tmpThis.newOrgUnitGroupStatus = false;
+                this.newOrgUnitGroupStatus = false;
 
                 try {
-                    tmpThis.newOrgUnitGroupMessage =  error._body.split(`"message":`)[1].split(`"`)[1];
+                    this.newOrgUnitGroupMessage =  error._body.split(`"message":`)[1].split(`"`)[1];
                 } catch (Error) {
-                    tmpThis.newOrgUnitGroupMessage = "Unable to find the reason";
+                    this.newOrgUnitGroupMessage = "Unable to find the reason";
                 }
             }
         );

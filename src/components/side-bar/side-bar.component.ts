@@ -303,16 +303,15 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         this.selectedOrgUnit.displayName = this.selectedOrgUnit.name;
 
         // Send a put update to the api
-        let tmpThis = this;
         this.orgUnitService.updateOrgUnit(this.selectedOrgUnit).subscribe(
             res => {
                 $("#cancelOrgUnitButton").prop("value", "Close");
                 $("#editOrgUnitButton").addClass("disabled");
-                tmpThis.saveSuccess = true;
-                tmpThis.haveSubmitted = true;
+                this.saveSuccess = true;
+                this.haveSubmitted = true;
             },
             error => {
-                tmpThis.saveSuccess = false;
+                this.saveSuccess = false;
             }
         );
 

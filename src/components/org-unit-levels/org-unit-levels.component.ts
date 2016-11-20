@@ -154,7 +154,6 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
     // Deletes the orgUnitLevel
     // If confirmedDelete is false, it will display a confirm field
     deleteOrgUnitLevel(orgUnitLevelId: string, confirmedDelete = false): void {
-        let tmpThis = this;
         this.orgUnitLevel = JSON.parse(JSON.stringify(this.getOrgUnitLevelById(orgUnitLevelId)));
 
         if (!confirmedDelete) {
@@ -164,9 +163,9 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
 
         this.orgUnitService.deleteOrganisationUnitLevel(orgUnitLevelId).subscribe(
             res => {
-                tmpThis.formStatus = true;
-                tmpThis.statusMessage = "Successfully deleted the organisation unit level";
-                tmpThis.orgUnitService.refreshOrganisationUnitLevels();
+                this.formStatus = true;
+                this.statusMessage = "Successfully deleted the organisation unit level";
+                this.orgUnitService.refreshOrganisationUnitLevels();
 
                 // Check if the user deleted an orgUnitLevel which is currently being edited
                 if (this.orgUnitLevel.id === orgUnitLevelId) {
@@ -176,31 +175,29 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
             },
             error => {
                 console.error(error);
-                tmpThis.formStatus = false;
-                tmpThis.statusMessage = "Failed to delete the organisation unit level. Please refresh and try again";
+                this.formStatus = false;
+                this.statusMessage = "Failed to delete the organisation unit level. Please refresh and try again";
             }
         );
     }
 
     // Saves an orgUnitLevel
     onSaveOrgUnit(): void {
-        let tmpThis = this;
-
         // Update the organisation unit level
         if (this.isEditing()) {
             this.orgUnitService.updateOrganisationUnitLevel(this.orgUnitLevel).subscribe(
                 // Success, display success message and leave edit-mode
                 res => {
-                    tmpThis.formStatus = true;
-                    tmpThis.statusMessage = "Successfully updated the organisation unit level";
-                    tmpThis.typeMessage = "Add new organisation unit level";
-                    tmpThis.orgUnitLevel = new OrganisationUnitLevel();
-                    tmpThis.orgUnitService.refreshOrganisationUnitLevels();
+                    this.formStatus = true;
+                    this.statusMessage = "Successfully updated the organisation unit level";
+                    this.typeMessage = "Add new organisation unit level";
+                    this.orgUnitLevel = new OrganisationUnitLevel();
+                    this.orgUnitService.refreshOrganisationUnitLevels();
                 },
                 error => {
                     console.error(error);
-                    tmpThis.formStatus = false;
-                    tmpThis.statusMessage = "Failed to update the organisation unit level. Please refresh and try again";
+                    this.formStatus = false;
+                    this.statusMessage = "Failed to update the organisation unit level. Please refresh and try again";
                 }
             );
 
@@ -208,14 +205,14 @@ export class OrgUnitLevelsComponent implements OrgUnitLevelsUpdateInterface {
         } else {
             this.orgUnitService.saveOrganisationUnitLevel(this.orgUnitLevel).subscribe(
                 res => {
-                    tmpThis.formStatus = true;
-                    tmpThis.statusMessage = "Successfully saved the organisation unit level";
-                    tmpThis.orgUnitService.refreshOrganisationUnitLevels();
+                    this.formStatus = true;
+                    this.statusMessage = "Successfully saved the organisation unit level";
+                    this.orgUnitService.refreshOrganisationUnitLevels();
                 },
                 error => {
                     console.error(error);
-                    tmpThis.formStatus = false;
-                    tmpThis.statusMessage = "Failed to save the organisation unit level. Please refresh and try again";
+                    this.formStatus = false;
+                    this.statusMessage = "Failed to save the organisation unit level. Please refresh and try again";
                 }
             );
         }
