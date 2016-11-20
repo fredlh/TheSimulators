@@ -7,8 +7,6 @@ import { BrowserModule }              from "@angular/platform-browser";
 import { MultiselectDropdownModule }  from "./modules/multiselect-dropdown";
 
 import { AppComponent }               from "./components/app/app.component";
-import { NavigatorComponent }         from "./components/navigator/navigator.component";
-import { MarkerComponent }            from "./components/marker/marker.component";
 import { MapViewComponent }           from "./components/map-view/map-view.component";
 import { MapEditComponent }           from "./components/map-edit/map-edit.component";
 import { OrgUnitSearchComponent }     from "./components/org-unit-search/org-unit-search.component";
@@ -39,8 +37,6 @@ import { SideBarService }             from "./services/side-bar.service";
     bootstrap: [AppComponent],
     declarations: [
         AppComponent,
-        NavigatorComponent,
-        MarkerComponent,
         MapViewComponent,
         MapEditComponent,
         OrgUnitSearchComponent,

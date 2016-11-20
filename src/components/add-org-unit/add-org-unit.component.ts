@@ -4,11 +4,29 @@ import { OrgUnitService }                               from "../../services/org
 import { SideBarService }                               from "../../services/side-bar.service";
 import { MapService }                                   from "../../services/map.service";
 
-import {OrgUnit}                                        from "../../core/org-unit.class";
+import { OrgUnit }                                      from "../../core/org-unit.class";
 
-import {Globals, FeatureType, OrganisationUnitLevel}    from "../../globals/globals.class";
+import { Globals, FeatureType, OrganisationUnitLevel }  from "../../globals/globals.class";
+
+/*
+ * The Add Org Unit component is a panel where the user can add new orgUnits
+ * 
+ * It contains the following features:
+ * - Can choose the name of the orgUnit
+ * - Can draw a polygon or place a marker
+ * - Can specify the ID of its parent
+ * 
+ * If you add an orgUnit as a child of a parent with the highest orgUnitLevel known,
+ * you will be prompted to add an orgUnitLevel first
+ * 
+ * When it is added, you can add the orgUnit
+ * 
+ * When drawing a polygon or placing a marker, leaflet-draw is used
+ * This makes it possible to draw units, edit them and delete them in a user friendly way
+ */
 
 
+// Used for jQuery
 declare var $: any;
 
 @Component({
@@ -19,19 +37,22 @@ declare var $: any;
 
 export class AddOrgUnitComponent {
 
+    // The orgUnit which is being added
     private orgUnit: OrgUnit = new OrgUnit();
+
+    // The orgUnitLevel of the parent
     private orgUnitLevel: OrganisationUnitLevel = new OrganisationUnitLevel();
 
-    private self = this;
+    // Various booleans to check forr what is needed
     private haveSubmitted = false;
     private saveSuccess = null;
     private newOrgUnitLevelNeeded = false;
 
-    private savedOrgUnitId: string = "";
+    // ID of the orgUnitLevel if a new one had to be added
     private savedOrgUnitLevelId: string = "";
 
+    // Status and error messages
     private errorMessage: string = "";
-
     private saveOrgUnitLevelSuccess = null;
     private orgUnitLevelErrormessage: string = "";
 
@@ -41,6 +62,7 @@ export class AddOrgUnitComponent {
         this.orgUnit.featureType = FeatureType.NONE;
     }
 
+    // Called when the add org unit panel is opened
     openAddOrgUnitForm(): void {
         this.orgUnitService.refreshOrganisationUnitLevels();
         this.showAddOrgUnitPanel();
@@ -53,7 +75,6 @@ export class AddOrgUnitComponent {
         this.saveSuccess = null;
         this.newOrgUnitLevelNeeded = false;
         this.saveOrgUnitLevelSuccess = null;
-        this.savedOrgUnitId = "";
         this.savedOrgUnitLevelId = "";
         $("#submitOrgUnitLevelButton").removeClass("disabled");
         $("#submitOrgUnitButton").removeClass("disabled");
@@ -80,22 +101,27 @@ export class AddOrgUnitComponent {
         document.getElementById("addOrgUnitArea").style.display = "none";
     }
 
+    // Closes the add org unit panel
+    // If an orgUnitLevel was added, but the orgUnit was discarded, the orgUnitLevel is deleted
     onCancel(tmpThis = this): void {
         tmpThis.hideAddOrgUnitPanel();
         this.mapService.endEditMode();
 
-        if (this.newOrgUnitLevelNeeded && this.savedOrgUnitLevelId !== "") {
+        // If the orgUnit wasn't saved, but there is a saved orgUnitLevel, delete the orgUnitLevel
+        // The user canceled the panel, so it is no longer needed
+        if (!this.saveSuccess && this.savedOrgUnitLevelId !== "") {
             this.orgUnitService.deleteOrganisationUnitLevel(this.savedOrgUnitLevelId).subscribe(
                 res => {
-                    console.log("Deleted org unit level that the user added but canceled");
                 },
                 error => {
-                    console.log("Failed to delete org unit level on cancel");
+                    console.error(error);
                 }
             );
         }
     }
 
+    // Saves an orgUnit
+    // async function due to the use of await when rgetting the parent
     async onSubmit() {
         // Ignore if user alreayd have submitted successfully
         if (this.haveSubmitted) return;
@@ -108,13 +134,16 @@ export class AddOrgUnitComponent {
 
         // Get the parent
         async function getOrgUnitParent() {
-            let org = await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id);
+            let org = undefined;
+            await tmpThis.orgUnitService.getOrgUnitAsPromise(tmpThis.orgUnit.parent.id)
+                            .then(orgUnit => org = orgUnit)
+                            .catch((error: any) => (console.log(error)));
             return org;
         }
         let parentOrgUnit: OrgUnit = await getOrgUnitParent();
 
         // Display error and return if the parent wasn't found
-        if (parentOrgUnit === undefined) {
+        if (!parentOrgUnit) {
             this.saveSuccess = false;
             tmpThis.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
             return;
@@ -128,7 +157,7 @@ export class AddOrgUnitComponent {
             $("#submitOrgUnitButton").addClass("disabled");
         }
 
-        // Return if the parent was needed
+        // Return if the orgUnitLevel was needed
         if (this.newOrgUnitLevelNeeded && !this.saveOrgUnitLevelSuccess) return;
 
         // Save the org unit
@@ -139,11 +168,11 @@ export class AddOrgUnitComponent {
                 tmpThis.saveSuccess = true;
                 tmpThis.haveSubmitted = true;
                 tmpThis.newOrgUnitLevelNeeded = false;
-                tmpThis.savedOrgUnitId = res.response.uid;
             },
             error => {
                 tmpThis.saveSuccess = false;
 
+                // Check if it was a known error
                 if (error.status === 409 && error._body.includes("parent")) {
                     tmpThis.errorMessage = "Invalid parent ID. Please enter a new one and try again.";
                 } else {
@@ -154,7 +183,9 @@ export class AddOrgUnitComponent {
     }
 
 
+    // Called when adding a orgUnitLevel
     addOrgUnitLevelSubmit(): void {
+        // Set the required fields
         this.orgUnitLevel.created = new Date();
         this.orgUnitLevel.displayName = this.orgUnitLevel.name;
 
@@ -177,6 +208,8 @@ export class AddOrgUnitComponent {
         );
     }
 
+    // Enters the draw polygon mode
+    // Hides all shown panels, shows the edit panel and notifies the map service
     drawOrgUnitPolygon(): void {
         this.sideBarService.hideSideBar();
         this.hideAddOrgUnitPanel();
@@ -184,6 +217,8 @@ export class AddOrgUnitComponent {
         this.mapService.startEdit("", true);
     }
 
+    // Enets the place marker mode
+    // Hides all shown panels, shows the edit panel and notifies the map service
     drawOrgUnitMarker(): void {
         this.sideBarService.hideSideBar();
         this.hideAddOrgUnitPanel();
@@ -191,6 +226,7 @@ export class AddOrgUnitComponent {
         this.mapService.startEdit("", false);
     }
 
+    // Called when the user saves the drawn orgUnit
     saveDrawnOrgUnit(): void {
         this.sideBarService.unHideSideBar();
 
@@ -217,6 +253,7 @@ export class AddOrgUnitComponent {
         this.showAddOrgUnitPanel();
     }
 
+    // The user cancels and discards the drawn orgUnit
     cancelDrawnOrgUnit(): void {
         this.sideBarService.unHideSideBar();
         this.mapService.endEdit(false);
@@ -225,21 +262,25 @@ export class AddOrgUnitComponent {
         this.showAddOrgUnitPanel();
     }
 
+    // Returns whether the orgUnit can be drawn as a marker
     canDrawOrgUnitPolygon(): boolean {
         return this.orgUnit.featureType === FeatureType.POLYGON ||
                this.orgUnit.featureType === FeatureType.MULTI_POLYGON ||
                this.orgUnit.featureType === FeatureType.NONE;
     }
 
+    // Returns whether the orgUnit can be drawn as a polygon
     canDrawOrgUnitMarker(): boolean {
         return this.orgUnit.featureType === FeatureType.POINT ||
                this.orgUnit.featureType === FeatureType.NONE;
     }
 
+    // Returns whether the orgUnit contains any coordinates to be cleared
     canClearCoordinates(): boolean {
         return this.orgUnit.featureType !== FeatureType.NONE;
     }
 
+    // Clears the coordinates and sets the feature type to NONE
     clearCoordinates(): void {
         this.orgUnit.coordinates = "";
         this.orgUnit.featureType = FeatureType.NONE;

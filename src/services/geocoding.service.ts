@@ -1,9 +1,14 @@
-import {Http, Headers, Response} from "@angular/http";
-import {Location} from "../core/location.class";
-import {Injectable} from "@angular/core";
+import { Http, Headers, Response }    from "@angular/http";
+import { Location }                   from "../core/location.class";
+import { Injectable }                 from "@angular/core";
 
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/mergeMap";
+
+/*
+ * This is a service responsible for translating a name to a location
+ * Called when the user wants to search for a location rather than an orgUnit
+ */
 
 @Injectable()
 export class GeocodingService {
@@ -13,7 +18,9 @@ export class GeocodingService {
         this.http = http;
     }
 
-    geocode(address: string) {
+    // Returns the location of the given address
+    // Uses the Google Map API
+    geocode(address: string): any {
         return this.http
             .get("http://maps.googleapis.com/maps/api/geocode/json?address=" + encodeURIComponent(address))
             .map(res => res.json())
@@ -39,20 +46,4 @@ export class GeocodingService {
             });
     }
 
-    getCurrentLocation() {
-        return this.http
-            .get("http://ipv4.myexternalip.com/json")
-            .map(res => res.json().ip)
-            .flatMap(ip => this.http.get("http://freegeoip.net/json/" + ip))
-            .map((res: Response) => res.json())
-            .map(result => {
-                let location = new Location();
-
-                location.address = result.city + ", " + result.region_code + " " + result.zip_code + ", " + result.country_code;
-                location.latitude = result.latitude;
-                location.longitude = result.longitude;
-
-                return location;
-            });
-    }
 }

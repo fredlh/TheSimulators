@@ -36,7 +36,7 @@ export class AccordionGroupComponent {
                 @Host() @Inject(forwardRef(() => AccordionComponent)) public accordion: AccordionComponent) {}
 
     checkAndToggle() {
-        // if custom toggle element is supplied, then do nothing, custom toggler will take care of it
+        // If custom toggle element is supplied, then do nothing, custom toggler will take care of it
         if (this.toggler)
             return;
 
@@ -50,23 +50,29 @@ export class AccordionGroupComponent {
 
         this.isOpened = !isOpenedBeforeWeChange;
 
+        // If orgUnitGroupId is specified, notify the orgUnitService of the opened group and return
         if (this.orgUnitGroupId !== "" && this.isOpened) {
             this.orgUnitService.orgUnitGroupOpened(this.orgUnitGroupId, this.orgUnitGroupIndex);
             return;
         }
 
+        // If no orgUnitId is speficied, return as the rest is irrelevant then
         if (this.orgUnitId === "") return;
 
+        // If opened, notify the mapService and sideBar, and set the selected color
         if (this.isOpened) {
             this.mapService.selectMap(this.orgUnitId);
             this.sideBarService.appendParent(this.orgUnitId);
             $("#" + this.orgUnitId).find(".orgUnitHeader").css({"background-color": "#5bc0de"});
 
+        // If closed, notify the mapService
         } else {
             this.mapService.deselectMap();
         }
     }
 
+    // Opens the orgUnit in the sideBar
+    // Called when the user selects an orgUnit on the map
     toggleOpen() {
         if (this.isOpened) return;
 

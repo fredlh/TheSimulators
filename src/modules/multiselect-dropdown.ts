@@ -1,4 +1,9 @@
 /*
+ * Downloaded a local copy rather than using NPM to avoid weird errors
+ * Also fixed a couple of warnings to make the typescript compiler happy
+ */
+
+/*
  * Angular 2 Dropdown Multiselect for Bootstrap
  * Current version: 0.3.0
  * 

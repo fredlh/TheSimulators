@@ -1,3 +1,9 @@
+/*
+ * The Organisation Unit class
+ * 
+ * A helper class, ID, is used to hold all objects with just an ID
+ */
+
 export class ID {
     id: string;
 

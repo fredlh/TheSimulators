@@ -95,11 +95,8 @@ export class MapViewComponent implements OnInit {
         this.mapService.registerMapView(this);
         let map = this.map;
 
-        this.geocoder.getCurrentLocation()
-            .subscribe(
-                location => map.panTo([8.0, -12.5]).zoomOut(4),
-                err => console.error(err)
-            );
+        // Set the default view to Sierra Leone
+        map.panTo([8.0, -12.5]).zoomOut(4);
 
         // Initialize click counter
         // Used to prevent single click action for doubleclicks

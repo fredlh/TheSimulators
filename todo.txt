@@ -5,17 +5,24 @@ OrganisationUnitGroups:
 
 Map:
 ---
-- Different shapes of select and de-selected facility marker
-    - Makes it zoom a bit out and in when toggling
-- Crashing when trying to display an orgUnit with undefined coordinates
-    - Happens when adding an orgUnit with no coordinates and trying to draw it
+- Change the facility icon such that selected/not selected is more obvious?
+- Crashing when trying to flyTo if allCoords.size === 0
+    - Fredrik have added quick-fix, just change if it can be done better
 
 
 General:
 --------
-- Commenting
-- Decide on final design (placement of things and color)
+- Bugchecking
+- Go throug and check if colors and placements are good
 - Go through all HTML & CSS, fix naming conventions and as much as hard coded of pixels as possible
+- Updating wiki
+- Write a README
+    - Mention all the api struggles so far
+    - Mention angular-starter, multiple select projects and accordion component
+- tmpThis needed in subscribe functions?
+- Make all functions in sideBar and such which isnt meant to be called from outside to private?
+- Any way to get an error message for deleting an orgUnitLevel?
+    - If yes, display that one rather than a generic one which is currently used
 
 
 API notes/suggestions:

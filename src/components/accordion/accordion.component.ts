@@ -4,6 +4,17 @@ import {AccordionGroupComponent}                                                
 import { MapService }                                                                   from "../../services/map.service";
 import { OrgUnitService }                                                               from "../../services/org-unit.service";
 
+/*
+ * Taken from https://github.com/pleerock/ng2-accordion and modified:
+ * - Added css class for hovering
+ * - Added orgUnitId input for the sideBar and mapService
+ * - Added orgUnitGroupId for the orgUnitGroup panel
+ * 
+ * Added background color on the heading when selected in the sideBar
+ * 
+ * Removed som uneccessarry options, such as arrows in the headings
+ */
+
 @Component({
     selector: "accordion",
     template: `
@@ -40,6 +51,7 @@ export class AccordionComponent implements AfterContentInit {
         this.mapService.registerAccordion(this);
     }
 
+    // Closes all orgUnits, and removes the selected color
     closeAll() {
         this.groups.toArray().forEach(group => {
             group.isOpened = false;
@@ -47,6 +59,8 @@ export class AccordionComponent implements AfterContentInit {
         });
     }
 
+    // Toggles the orgUnit with the given ID in the sideBar
+    // Also applies the selected background in the header
     toggleOrgUnitInSideBar(orgUnitId: string) {
         this.groups.toArray().forEach(group => {
             if (group.orgUnitId === orgUnitId) {

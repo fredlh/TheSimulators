@@ -15,9 +15,22 @@ import { OrgUnitLevelsUpdateInterface}    from "../../core/org-unit-levels-updat
 
 import {Map} from "leaflet";
 
+/*
+ * The Org Unit Search component is the search bar in the upper left, including
+ * the search and advanced search buttons
+ * 
+ * It's a simple component which animates the advanced search options box.
+ * Other than that, it forwards the search to orgUnitService or geoCodeService,
+ * depending on the option under advanced search
+ */
 
+
+// For jQuery
 declare var $: any;
 
+
+// Represents the advanced search options
+// Used in a ngModel in the HTML page
 class SearchOptions {
     term: string = "";
     level: string = "All";
@@ -32,25 +45,33 @@ class SearchOptions {
 })
 
 export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterface {
-    private searchTerms = new Subject<string>();
-    private orgUnits: OrgUnit[];
+
     private advancedSearchVisible = false;
+    private searchOptions = new SearchOptions();
+
+    // Used in the advances search form, so the user can filter on levels
     private orgUnitLevels = [];
 
-    private searchOptions = new SearchOptions();
 
     constructor(private orgUnitService: OrgUnitService,
                 private geocoder: GeocodingService,
                 private mapService: MapService) {}
 
+
+    // Register that it wants notification on orgUnitLevels update
     ngOnInit(): void {
         this.orgUnitService.registerOrgUnitLevelsListener(this);
     }
 
+
+    // Called when the orgUnitLevels have been updated
     onOrgUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
+
+    // Gets called when the adanced search button is clicked
+    // It pushes the sideBar down during the animation
     advancedSearch(): void {
         this.advancedSearchVisible = !this.advancedSearchVisible;
 
@@ -79,6 +100,8 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
         $("#advancedSearchDiv").slideToggle("fast");
     }
 
+    // Gets called when the user clicks on the search bar
+    // Calls either mapService og geoCodeService depending on the searchType
     search(): void {
         if (this.searchOptions.searchType === "Organisation units") {
             this.orgUnitService.search(this.searchOptions.term, this.searchOptions.level, this.searchOptions.maxLevel);
@@ -87,6 +110,8 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
         }
     }
 
+    // Calls the geocoder to get the location
+    // When the locations is retrived, it zooms to the location and displays it in the search bar
     searchLocation(location: string) {
         this.geocoder.geocode(location).subscribe(
             location => {
@@ -97,10 +122,6 @@ export class OrgUnitSearchComponent implements OnInit, OrgUnitLevelsUpdateInterf
                 console.error(error);
             }
         );
-    }
-
-    getAllOrgUnits(): void {
-        this.orgUnitService.getAllOrgUnits();
     }
 
 }

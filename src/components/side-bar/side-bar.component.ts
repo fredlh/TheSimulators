@@ -13,9 +13,29 @@ import { OrgUnit, ID }                                                       fro
 
 import { Globals, FeatureType, OrganisationUnitGroup }                       from "../../globals/globals.class";
 
+/*
+ * The Side Bar component is the side bar on the left part of the screen
+ * It contains all org units return on a search
+ * 
+ * The side bar is a toggable list where you can expand an orgUnit at a time
+ * When expanded, you can view all relevant info of the orgUnit
+ * 
+ * There are 3 buttons for each orgUnit
+ * - Children: Retrives and shows the orgUnits children
+ *             If there are no children, nothing happens
+ * - Edit: Edit the name and/or the coordinates of the given orgUnit
+ * - Delete: Deletes the current orgUnit
+ * 
+ * There is also a filter area where the user can further filter the results of a search
+ * 
+ * At last, the sideBar has functions for hiding and show the sideBar, which the sideBarService uses
+ */
 
+// Used for jQuery
 declare var $: any;
 
+// A class representing the filter options
+// Used in a ngModel in the HTML page
 class FilterOptions {
     name: string = "";
     nameFilterType: string = "startsWith";
@@ -31,29 +51,41 @@ class FilterOptions {
 })
 
 export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, OrgUnitLevelsUpdateInterface {
+    // orgUnits are all the orgUnits, while displayedOrgUnits are the orgUnits displayed in the sideBar
     private orgUnits: OrgUnit[] = null;
     private displayedOrgUnits = null;
-    private globals = Globals;
-    private featurType = FeatureType;
 
+    // A reference used in the HTML page
+    private globals = Globals;
+
+    // Various booleans used for checking a certain thing is visible or not
     private toggleSideBarButtonVisible: boolean = false;
     private sideBarVisible: boolean = false;
     private filterAreaVisible: boolean = false;
-
     private filterApplied: boolean = false;
 
+    // Used in the filter area to let the user filter on levels and groups
     private orgUnitLevels = [];
     private orgUnitGroups = [];
 
+    // The reference to the filter options used in the filter area
     private filterOptions = new FilterOptions();
 
+    // The selectedOrgUnit in the sideBar
+    // Is a temporary one which gets reset every time the user selects an orgUnit,
+    // and only saved when the used updates an orgUnit
     private selectedOrgUnit: OrgUnit = new OrgUnit();
+
+    // Used to know which orgUnit to delete, and to show an error message if any
     private orgUnitIdToDelete: string = "";
     private deleteErrorMessage: string = "";
 
+    // Uses during editing of an orgUnit, to check whether the user saved or not
+    // And if saved, whether it was successfull or not
     private haveSubmitted = false;
     private saveSuccess = null;
 
+    // Settings for the multiple select box used in the filter area
     private selectBoxSettings: IMultiSelectSettings = {
         pullRight: true,
         enableSearch: true,
@@ -66,7 +98,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         dynamicTitleMaxItems: 2,
         maxHeight: "300px",
     };
-
     private selectBoxTexts: IMultiSelectTexts = {
         checkAll: "Check all",
         uncheckAll: "Uncheck all",
@@ -80,14 +111,17 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
                 private mapService: MapService,
                 private sideBarService: SideBarService) {}
 
+    // Gets called when the orgUnitLevels have been updated
     onOrgUnitLevelsUpdate(): void {
         this.orgUnitLevels = Globals.organisationUnitLevels;
     }
 
+    // Gets called when the orgUnitGroups have been updated
     onOrgUnitGroupsUpdate(): void {
         this.orgUnitGroups = Globals.organisationUnitGroups;
     }
 
+    // Call all register functions during init
     ngOnInit(): void {
         this.orgUnitService.registerSideBar(this);
         this.orgUnitService.registerOrgUnitGroupsListener(this);
@@ -105,6 +139,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     updateList(orgUnits: OrgUnit[]): void {
         this.displayedOrgUnits = [];
 
+        // Set the displayedOrgUnits to contain all orgUnits
         if (orgUnits.length === 0) {
             this.orgUnits = null;
         } else {
@@ -114,6 +149,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
             }
         }
 
+        // For every new data, show the sideBar no matter what and clear the current filter if any
         this.showSideBar();
         this.clearFilter(true, false);
     }
@@ -208,12 +244,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         return null;
     }
 
-    canGetChildren(featurType: string): boolean {
-        let tmp = featurType !== FeatureType.NONE;
-        console.log(tmp);
-        return tmp;
-    }
-
 
     //
     // Edit org unit
@@ -224,6 +254,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     onEditOrgUnitOpen(orgUnitId = "") {
         this.showEditOrgUnitPanel();
 
+        // Set the selectedOrgUnit to a copy of an orgUnit,
+        // so the user can edit it without concerns before saving
         if (orgUnitId !== "") {
             this.selectedOrgUnit = JSON.parse(JSON.stringify(this.getOrgUnitById(orgUnitId)));
         }
@@ -349,21 +381,28 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         this.onEditOrgUnitOpen();
     }
 
+    // Checks whether the current orgUnit can have a polygon
+    // Only false if it already has a marker
     canDrawOrgUnitPolygon(): boolean {
         return this.selectedOrgUnit.featureType === FeatureType.POLYGON ||
                this.selectedOrgUnit.featureType === FeatureType.MULTI_POLYGON ||
                this.selectedOrgUnit.featureType === FeatureType.NONE;
     }
 
+    // Checks whether the current orgUnit can have a marker
+    // Only fals if it already has a form of polygon
     canDrawOrgUnitMarker(): boolean {
         return this.selectedOrgUnit.featureType === FeatureType.POINT ||
                this.selectedOrgUnit.featureType === FeatureType.NONE;
     }
 
+    // Checks whether the current orgUnit can clear the coordinates
+    // Only false if there is no coordinates to clear
     canClearCoordinates(): boolean {
         return this.selectedOrgUnit.featureType !== FeatureType.NONE;
     }
 
+    // Clears the coordinates of the current orgUnit
     clearCoordinates(): void {
         this.selectedOrgUnit.coordinates = "";
         this.selectedOrgUnit.featureType = FeatureType.NONE;
@@ -376,7 +415,9 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     //
 
     // Deletes the orgUnit with the given id
+    // Returns if confirmDeleteOrgUnit isn't true
     deleteOrgUnit(orgUnitId: string, confirmedDelete: boolean = false) {
+        // Save the ID of the orgUnit to delete
         if (orgUnitId !== "") {
             this.orgUnitIdToDelete = orgUnitId;
         }
@@ -405,7 +446,8 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         );
     }
 
-
+    // Gets called when the user clicks yes/no on the confirm dialog
+    // If yes, it calls deleteOrgUnit() which tries to delete the orgUnit
     confirmDeleteOrgUnit(yes: boolean): void {
         document.getElementById("confirmDeleteAreaOrgUnit").style.display = "none";
         if (yes)  {
@@ -517,10 +559,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
     }
 
 
-    //
-    // Refresh org units
-    //
-
     // Refreshes the organisation units
     refreshOrgUnits(closeEditOrgUnitPanel = false): void {
         this.orgUnitService.refreshOrgUnits();
@@ -531,7 +569,7 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
 
 
     // Appends the parent name to the orgUnit in the list
-    // Call either when orgUnit in list is expanded or when a orgUnit on the map is selected
+    // Called either when orgUnit in list is expanded or when an orgUnit on the map is selected
     appendParent(orgUnitId: string): void {
         // Get the chosen orgUniten
         let orgUnit = this.getOrgUnitById(orgUnitId);
@@ -542,7 +580,6 @@ export class SideBarComponent implements OnInit, OrgUnitGroupsUpdateInterface, O
         // Get the orgUnits parent
         this.orgUnitService.getOrgUnit(orgUnit.parent.id).subscribe(
             res => {
-
                 // Find the wanted <li>-element, and append the name
                 $("#" + orgUnitId).find("li:last-child").each(function(){
                     let textElem = $(this).text();

@@ -40,7 +40,7 @@
                             <button id="#deleteOrgUnitButton" class="btn btn-danger" (click)="deleteOrgUnit(orgUnit.id, false)">Delete</button>
                             <ul style="margin-top: 10px;">
                                 <li><strong>ID:</strong> {{orgUnit.id}}</li>
-                                <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getName(orgUnit.level)}}</li>
+                                <li><strong>Level:</strong> {{orgUnit.level}} - {{globals.getOrgUnitLevelName(orgUnit.level)}}</li>
                                 <li><strong>Feature type:</strong> {{orgUnit.featureType}}</li>
                                 <li *ngIf="orgUnit.parent"><strong>Parent:</strong><br/>
                                     <ul>
