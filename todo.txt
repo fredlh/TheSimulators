@@ -1,8 +1,3 @@
-OrganisationUnitGroups:
------------------------
-- Can get the image from the API, but how to display it?
-
-
 Map:
 ---
 - Change the facility icon such that selected/not selected is more obvious?
@@ -29,3 +24,5 @@ API notes/suggestions:
 - Why do delete error compalin about "DataObject" and not specify which binding it fails on?
 - Why can parent be undefined? Why not require and just have empty string if no parent (level 1)?
 - Documentation of which fields are requiered when saving an orgUnit
+- Lots of hidden stuff:
+    - Like to find https://play.dhis2.org/test/api/filledOrganisationUnitLevels   ? if you dont already know about it
