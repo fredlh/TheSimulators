@@ -34,20 +34,20 @@ API struggles during development:
 We've had quite a few API struggles during the creation of this application
 
 - Organisation Unit Groups
--- No easy to find documentation on the relation between Organisation Units and Organisation Unit Groups.
--- Have to find out yourself that to add or remove a group from an organisation unit, you need to edit the organisation unit group.
+..* No easy to find documentation on the relation between Organisation Units and Organisation Unit Groups.
+..* Have to find out yourself that to add or remove a group from an organisation unit, you need to edit the organisation unit group.
 
 - Organisation Unit Levels
--- Why is Organisation Unit Levels only a reference/lookup-table, while Organisation Unit Groups contain every organisation Unit of its group?
--- Why can there be for example an Organisation Unit with level 5, while there are only Level 1 - 4 in Organisation Unit Levels?
+..* Why is Organisation Unit Levels only a reference/lookup-table, while Organisation Unit Groups contain every organisation Unit of its group?
+..* Why can there be for example an Organisation Unit with level 5, while there are only Level 1 - 4 in Organisation Unit Levels?
 
 - Delete Organisation Units
--- If you try to delete an Organisation Unit Level which is premade, you can an error that it references "Data value", which isn't exactly clear
+..* If you try to delete an Organisation Unit Level which is premade, you can an error that it references "Data value", which isn't exactly clear
 as there is no "Data value" attributt in an Organisation Unit
 
 - Parent of an Organisation Unit
--- Why is it an object instead of a string? From what we can see, there can only be a single parent.
--- If there is no parent, why not have an object with an empty id, rather than undefined? Would require less checking
+..* Why is it an object instead of a string? From what we can see, there can only be a single parent.
+..* If there is no parent, why not have an object with an empty id, rather than undefined? Would require less checking
 
 - No documentation
--- Found no documentation expaining where one could find the symbols for the Organisation Unit Groups
+..* Found no documentation expaining where one could find the symbols for the Organisation Unit Groups
