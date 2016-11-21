@@ -39,7 +39,7 @@ export class OrgUnitService {
 
     // Used during the API interaction
     private baseUrl = "http://localhost:8082/";
-    private serverUrl = this.baseUrl + "api/";
+    private serverUrl = this.baseUrl + "api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
 
@@ -262,16 +262,6 @@ export class OrgUnitService {
     }
 
 
-    // Retrives an orgUnitGroups icon with a give name
-    getOrgUnitIcon(name: string): any {
-        let imageHeader = new Headers({"Content-Type": "image/png", "Authorization": this.basicAuth});
-        return this.http
-            .get(`{this.baseUrl}/images/orgunitgroup/${name}`, {headers: imageHeader})
-            .map((res: Response) => res)
-            .catch((error: any) => Observable.throw(error));
-    }
-
-
     // Returns an array with the parent at index 0 and all its children afterwards
     // - pushToStack: Whether to push the search result to the stack or notfies
     // - checkForIdenticalArrays: Whether to perform a sarch for identical orgUnits
@@ -425,5 +415,10 @@ export class OrgUnitService {
         }
 
         return true;
+    }
+
+
+    getSymbolUrl(): string {
+        return this.baseUrl + "images/orgunitgroup/";
     }
 }

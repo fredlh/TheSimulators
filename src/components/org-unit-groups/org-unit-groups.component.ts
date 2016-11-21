@@ -36,6 +36,7 @@ declare var $: any;
 // - selectedFromSearch: The currently selected orgUnit among the searched ones
 // - status: null by default, true on success and false on error
 // - message: The message corresponding to the status 
+// - symbol: The symbol of the orgUnitGroup displayed in the header
 class SelectedOrgUnitGroups {
     searchTerm: string = "";
     searchResults: OrgUnit[] = [];
@@ -43,6 +44,7 @@ class SelectedOrgUnitGroups {
     selectedFromExisting: string = "";
     status: boolean = null;
     message: string = "";
+    symbol: string = "";
 }
 
 @Component({
@@ -66,11 +68,15 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     private newOrgUnitGroupStatus: boolean = null;
     private newOrgUnitGroupMessage: string = "";
 
-    // Name on the new orgUnitGroup the use can add
+    // Info about the newly added orgUnitGroup
     private newOrgUnitGroupName: string = "";
+    private newOrgUnitGroupSymbol: string = "default.png";
 
     // The index of the orgUnitGroup to be deleted if the user clicks "yes" on confirm
     private groupIndexToBeDeleted: number = -1;
+
+    // Array of all the symbols an orgUnitGroup can have
+    private symbols: string[] = [];
 
 
     constructor(private orgUnitService: OrgUnitService, private sideBarService: SideBarService) {
@@ -82,6 +88,15 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         // Init the selectedOrgUnitGroups
         for (let i = 0; i < this.orgUnitGroups.length; i++) {
             this.selectedOrgUnitGroups.push(new SelectedOrgUnitGroups());
+        }
+
+        // Fill the symbols array
+        this.symbols.push("default.png");
+        for (let i = 1; i <= 40; i++) {
+            let symbol = i < 10 ? "0" + i : "" + i;
+            symbol += i <= 25 ? ".png" : ".svg";
+
+            this.symbols.push(symbol);
         }
     }
 
@@ -166,6 +181,11 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // it retrieves all orgUnits so the user can see the names rather than just IDs
     orgUnitGroupOpened(orgUnitGroupId: string, orgUnitGroupIndex: number) {
         if (!this.orgUnitGroups[orgUnitGroupIndex].orgUnitArray) {
+            if (this.orgUnitGroups[orgUnitGroupIndex].symbol) {
+                this.selectedOrgUnitGroups[orgUnitGroupIndex].symbol = this.orgUnitGroups[orgUnitGroupIndex].symbol;
+            } else {
+                this.selectedOrgUnitGroups[orgUnitGroupIndex].symbol = "default.png";
+            }
             this.getOrgUnitsFromOrgUnitGroup(orgUnitGroupId, orgUnitGroupIndex);
         }
     }
@@ -277,12 +297,17 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     // Saves an orgUnitGroup with updated info
     onSaveOrgUnitGroup(groupIndex: number): void {
         let selectedOrgUnitGroup = this.selectedOrgUnitGroups[groupIndex];
-        let orgUnitGroup = this.orgUnitGroups[groupIndex];
+        let orgUnitGroup = JSON.parse(JSON.stringify(this.orgUnitGroups[groupIndex]));
 
         // Update the organisationUnits in the group
         orgUnitGroup.organisationUnits = [];
         for (let unit of this.orgUnitGroups[groupIndex].orgUnitArray) {
             orgUnitGroup.organisationUnits.push({"id": unit.id});
+        }
+
+        // Set the new icon
+        if (selectedOrgUnitGroup.symbol !== "default.png") {
+            orgUnitGroup.symbol = selectedOrgUnitGroup.symbol;
         }
 
         // Send the updated orgUnitGroup to the API
@@ -320,6 +345,9 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         orgUnitGroup.displayName = this.newOrgUnitGroupName;
         orgUnitGroup.shortName = this.newOrgUnitGroupName;
         orgUnitGroup.created = new Date();
+        if (this.newOrgUnitGroupSymbol !== "default.png") {
+            orgUnitGroup.symbol = this.newOrgUnitGroupSymbol;
+        }
 
         // Save the orgUnitGroup and display wether it successed or failed
         this.orgUnitService.saveOrganisationUnitGroup(orgUnitGroup).subscribe(
@@ -382,6 +410,25 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         this.newOrgUnitGroupName = "";
         this.newOrgUnitGroupStatus = null;
         this.newOrgUnitGroupMessage = "";
+    }
+
+
+    getSymbolUrl(groupIndex: number): string {
+        let symbol = this.orgUnitGroups[groupIndex].symbol;
+
+        if (!symbol) {
+            return "../../../images/default.png";
+        } else {
+            return this.orgUnitService.getSymbolUrl() + symbol;
+        }
+    }
+
+    getSymbol(name: string): string {
+        if (name === "default.png") {
+            return "../../../images/default.png";
+        } else {
+            return this.orgUnitService.getSymbolUrl() + name;
+        }
     }
 
 }

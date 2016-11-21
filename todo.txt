@@ -13,6 +13,7 @@ General:
 - Write a README
     - Mention all the api struggles so far
     - Mention angular-starter, multiple select projects and accordion component
+- Is manifest.webapp as it should?
 
 
 API notes/suggestions:
