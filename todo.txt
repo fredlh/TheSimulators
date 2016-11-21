@@ -3,6 +3,7 @@ Map:
 - Change the facility icon such that selected/not selected is more obvious?
 - Crashing when trying to flyTo if allCoords.size === 0
     - Fredrik have added quick-fix, just change if it can be done better
+- Retrieve the imagePath from orgUnitService.getImagePath() rather then hard-coding it
 
 
 General:
@@ -13,7 +14,7 @@ General:
 - Write a README
     - Mention all the api struggles so far
     - Mention angular-starter, multiple select projects and accordion component
-- Is manifest.webapp as it should?
+- Have an app image which is displayed under App Management in DHIS2?
 
 
 API notes/suggestions:

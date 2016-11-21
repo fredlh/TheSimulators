@@ -7,11 +7,11 @@
     }
   },
   "appType": "APP",
-  "name": "app-skeleton",
+  "name": "TheSimulators",
   "version": "1.0.0",
-  "description": "Skeleton app for a DHIS2 web app",
+  "description": "INF5750 - Group Project 2016 - The Simulators",
   "developer": {
-    "name": "Mark Polak"
+    "name": "Rune Jensen, Asif Khan, Fredrik Lund Henriksen"
   },
   "icons": {
     "48": "icon.png"

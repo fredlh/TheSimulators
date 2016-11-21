@@ -38,6 +38,7 @@ import { Globals, OrganisationUnitLevel, OrganisationUnitGroup} from "../globals
 export class OrgUnitService {
 
     // Used during the API interaction
+    private symbolPath: string = "";
     private baseUrl = "http://localhost:8082/";
     private serverUrl = this.baseUrl + "api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
@@ -65,6 +66,9 @@ export class OrgUnitService {
         // Get all the orgUnitLevels and orgUnitGroups from the API
         this.refreshOrganisationUniGroups();
         this.refreshOrganisationUnitLevels();
+
+        // Get the base path for the custom images
+        this.getSymbolPath();
     }
 
 
@@ -418,7 +422,31 @@ export class OrgUnitService {
     }
 
 
+    // The symbol url for the orgUnitGroup symbols
     getSymbolUrl(): string {
         return this.baseUrl + "images/orgunitgroup/";
     }
+
+    // If the app is uploaded on DHIS, symbolPath is set to the images-folder
+    getSymbolPath(): any {
+        this.getRequest("apps").subscribe(
+            res => {
+                for (let app of res) {
+                    if (app.name === "TheSimulators") {
+                        this.symbolPath = app.launchUrl.split("public/")[0] + "images/";
+                    }
+                }
+            }
+        );
+    }
+
+    // Returns the path where the images are saved
+    getImagePath(): string {
+        if (this.symbolPath !== "") {
+            return this.symbolPath;
+        } else {
+            return "/images/";
+        }
+    }
+
 }

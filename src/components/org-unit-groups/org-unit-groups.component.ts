@@ -417,7 +417,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         let symbol = this.orgUnitGroups[groupIndex].symbol;
 
         if (!symbol) {
-            return "../../../images/default.png";
+            return this.orgUnitService.getImagePath() + "default.png";
         } else {
             return this.orgUnitService.getSymbolUrl() + symbol;
         }
@@ -425,7 +425,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
 
     getSymbol(name: string): string {
         if (name === "default.png") {
-            return "../../../images/default.png";
+            return this.orgUnitService.getImagePath() + "default.png";
         } else {
             return this.orgUnitService.getSymbolUrl() + name;
         }
