@@ -1,5 +1,0 @@
-General:
---------
-- Bugchecking
-- Go throug and check if colors and placements are good
-- Updating wiki
