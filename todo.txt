@@ -1,15 +1,5 @@
-Map:
----
-- Change the facility icon such that selected/not selected is more obvious?
-- Crashing when trying to flyTo if allCoords.size === 0
-    - Fredrik have added quick-fix, just change if it can be done better
-- Retrieve the imagePath from orgUnitService.getImagePath() rather then hard-coding it
-
-
 General:
 --------
 - Bugchecking
 - Go throug and check if colors and placements are good
 - Updating wiki
-- Have an app image which is displayed under App Management in DHIS2?
-- Have a favicon?

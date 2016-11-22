@@ -10,8 +10,8 @@ import { OptionsComponent }             from "../options/options.component";
 import { FeatureType }                  from "../../globals/globals.class";
 
 // Marker icons
-const defaultIcon = require("../../../images/ambulance_green.png");
-const highlightIcon = require("../../../images/ambulance_red.png");
+const defaultIcon = require("../../../images/marker_default.png");
+const highlightIcon = require("../../../images/marker_highlight.png");
 
 
 @Component({
@@ -367,7 +367,7 @@ export class MapViewComponent implements OnInit {
                     // Set up icon object
                     let currentZoom = this.map.getZoom();
                     let defIcon = L.icon({
-                        iconUrl: imagePath + "ambulance_green.png",
+                        iconUrl: imagePath + "marker_default.png",
                         iconSize: [4 * currentZoom, 4 * currentZoom],
                         iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                     });
@@ -399,7 +399,7 @@ export class MapViewComponent implements OnInit {
 
                         if (id === self.selectedElement) {
                             this.setIcon(L.icon({
-                                iconUrl: imagePath + "ambulance_red.png",
+                                iconUrl: imagePath + "marker_highlight.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
@@ -411,7 +411,7 @@ export class MapViewComponent implements OnInit {
 
                         } else {
                             this.setIcon(L.icon({
-                                iconUrl: imagePath + "ambulance_green.png",
+                                iconUrl: imagePath + "marker_default.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
@@ -440,13 +440,13 @@ export class MapViewComponent implements OnInit {
 
                         if (id === self.selectedElement) {
                             this.setIcon(L.icon({
-                                iconUrl: imagePath + "ambulance_red.png",
+                                iconUrl: imagePath + "marker_highlight.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(currentZoom * 3) / 2, 4 * currentZoom]
                             }));
                         } else {
                             this.setIcon(L.icon({
-                                iconUrl: imagePath + "ambulance_green.png",
+                                iconUrl: imagePath + "marker_default.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
