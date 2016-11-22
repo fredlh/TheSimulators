@@ -39,6 +39,7 @@ export class OrgUnitService {
 
     // Used during the API interaction
     private symbolPath: string = "";
+    //private baseUrl = "https://play.dhis2.org/test/";
     private baseUrl = "http://localhost:8082/";
     private serverUrl = this.baseUrl + "api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
@@ -428,12 +429,12 @@ export class OrgUnitService {
     }
 
     // If the app is uploaded on DHIS, symbolPath is set to the images-folder
-    getSymbolPath(): any {
+    private getSymbolPath(): any {
         this.getRequest("apps").subscribe(
             res => {
                 for (let app of res) {
                     if (app.name === "TheSimulators") {
-                        this.symbolPath = app.launchUrl.split("public/")[0] + "public/images/";
+                        this.symbolPath = app.launchUrl.split("index.html")[0] + "images/";
                     }
                 }
             }

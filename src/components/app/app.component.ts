@@ -12,6 +12,8 @@ import { Component, AfterViewInit } from "@angular/core";
  * while still being able to display them for advanced users
  */
 
+const favicon = require("../../../images/favicon.png");
+
 @Component({
     selector : "app",
     template: require<any>("./app.component.html"),
