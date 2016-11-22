@@ -47,6 +47,8 @@ class SelectedOrgUnitGroups {
     symbol: string = "";
 }
 
+const defaultImage = require("../../../images/default.png");
+
 @Component({
     selector: "org-unit-groups",
     template: require<any>("./org-unit-groups.component.html"),

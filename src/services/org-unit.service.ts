@@ -39,7 +39,7 @@ export class OrgUnitService {
 
     // Used during the API interaction
     private symbolPath: string = "";
-    private baseUrl = "https://play.dhis2.org/test/";
+    private baseUrl = "http://localhost:8082/";
     private serverUrl = this.baseUrl + "api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
@@ -433,7 +433,7 @@ export class OrgUnitService {
             res => {
                 for (let app of res) {
                     if (app.name === "TheSimulators") {
-                        this.symbolPath = app.launchUrl.split("public/")[0] + "images/";
+                        this.symbolPath = app.launchUrl.split("public/")[0] + "public/images/";
                     }
                 }
             }
@@ -445,7 +445,7 @@ export class OrgUnitService {
         if (this.symbolPath !== "") {
             return this.symbolPath;
         } else {
-            return "/images/";
+            return "public/images/";
         }
     }
 

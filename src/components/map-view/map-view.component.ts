@@ -9,6 +9,10 @@ import { OrgUnit }                      from "../../core/org-unit.class";
 import { OptionsComponent }             from "../options/options.component";
 import { FeatureType }                  from "../../globals/globals.class";
 
+// Marker icons
+const defaultIcon = require("../../../images/ambulance_green.png");
+const highlightIcon = require("../../../images/ambulance_red.png");
+
 
 @Component({
     selector: "map-view",
@@ -192,6 +196,7 @@ export class MapViewComponent implements OnInit {
         // in such a way that everything is visible afterwards
         this.allCoords = [];
         let allCoords = this.allCoords;
+        let imagePath = this.orgUnitService.getImagePath();
 
         const self = this;
 
@@ -359,14 +364,10 @@ export class MapViewComponent implements OnInit {
                     // Add marker to the set of all coordinates (needed to perform fly-to)
                     allCoords.push([markerCoordinate[1], markerCoordinate[0]]);
 
-                    // Marker icons
-                    const defaultIcon = require("../../../images/ambulance_green.png");
-                    const highlightIcon = require("../../../images/ambulance_red.png");
-
                     // Set up icon object
                     let currentZoom = this.map.getZoom();
                     let defIcon = L.icon({
-                        iconUrl: "../../../images/ambulance_green.png",
+                        iconUrl: imagePath + "ambulance_green.png",
                         iconSize: [4 * currentZoom, 4 * currentZoom],
                         iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                     });
@@ -398,7 +399,7 @@ export class MapViewComponent implements OnInit {
 
                         if (id === self.selectedElement) {
                             this.setIcon(L.icon({
-                                iconUrl: "../../../images/ambulance_red.png",
+                                iconUrl: imagePath + "ambulance_red.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
@@ -410,7 +411,7 @@ export class MapViewComponent implements OnInit {
 
                         } else {
                             this.setIcon(L.icon({
-                                iconUrl: "../../../images/ambulance_green.png",
+                                iconUrl: imagePath + "ambulance_green.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
@@ -439,13 +440,13 @@ export class MapViewComponent implements OnInit {
 
                         if (id === self.selectedElement) {
                             this.setIcon(L.icon({
-                                iconUrl: "../../../images/ambulance_red.png",
+                                iconUrl: imagePath + "ambulance_red.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(currentZoom * 3) / 2, 4 * currentZoom]
                             }));
                         } else {
                             this.setIcon(L.icon({
-                                iconUrl: "../../../images/ambulance_green.png",
+                                iconUrl: imagePath + "ambulance_green.png",
                                 iconSize: [4 * currentZoom, 4 * currentZoom],
                                 iconAnchor: [(4 * currentZoom) / 2, 4 * currentZoom]
                             }));
