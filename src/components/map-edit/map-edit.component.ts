@@ -2,6 +2,23 @@ import { Component, OnInit }                from "@angular/core";
 import { MapService }                       from "../../services/map.service";
 import { MouseEvent }                       from "leaflet";
 
+/*
+ * The Map Edit component is the logic for drawing polygons and setting markers on the map
+ * 
+ * It contains the following features:
+ * - Can draw a polygon or place a marker
+ * - Can edit an existing polygon or move an existing marker
+ * - Can delete polygons and markers
+ * - Can delete single polygon with out affecting others for multipolygons
+ * - Remembers last saved values to be able to cancel
+ * - Can load polygon or marker data from existing organisation units
+ * 
+ * When you edit, there will be draw controls for either marker or polygons to the right
+ * 
+ * When drawing a polygon or placing a marker, leaflet-draw is used
+ * This makes it possible to draw units, edit them and delete them in a user friendly way
+ */
+
 
 const leafletDraw = require("leaflet-draw");
 

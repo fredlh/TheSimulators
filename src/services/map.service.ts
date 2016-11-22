@@ -12,6 +12,14 @@ import { Globals }              from "../globals/globals.class";
 
 import { Map }                  from "leaflet";
 
+/*
+ * This is a service between Map Edit and Map View, 
+ * and between Map View and any component communicating with the map in any way
+ * 
+ * Contains the actual map used in Map View and Map Edit
+ */
+
+
 @Injectable()
 export class MapService {
     public map: Map;

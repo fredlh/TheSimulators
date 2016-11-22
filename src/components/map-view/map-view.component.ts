@@ -9,10 +9,24 @@ import { OrgUnit }                      from "../../core/org-unit.class";
 import { OptionsComponent }             from "../options/options.component";
 import { FeatureType }                  from "../../globals/globals.class";
 
+/*
+ * The Map View component is a panel displaying the map and
+ * all loaded organisation units containing coordinates
+ * 
+ * It contains the following features:
+ * - Loading and setting elements from organisation unit list
+ * - Can click polygon or marker to highlight and show information in side bar
+ * - Can doubleclick polygon or marker to retrieve all children from api and display them
+ * - Polygons changes styles depending on highlighted, mouseover or default
+ * - Styles retrieved from Map Options
+ * - Markers change icon depending on highlighted or default
+ * - Depending on Map Options, flies to selected upon select and all upon deselect
+ */
+
+
 // Marker icons
 const defaultIcon = require("../../../images/marker_default.png");
 const highlightIcon = require("../../../images/marker_highlight.png");
-
 
 @Component({
     selector: "map-view",
