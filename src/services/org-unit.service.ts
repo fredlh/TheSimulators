@@ -39,7 +39,7 @@ export class OrgUnitService {
 
     // Used during the API interaction
     private symbolPath: string = "";
-    private baseUrl = "http://localhost:8082/";
+    private baseUrl = "https://play.dhis2.org/test/";
     private serverUrl = this.baseUrl + "api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
     private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});

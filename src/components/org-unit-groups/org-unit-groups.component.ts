@@ -88,6 +88,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         // Init the selectedOrgUnitGroups
         for (let i = 0; i < this.orgUnitGroups.length; i++) {
             this.selectedOrgUnitGroups.push(new SelectedOrgUnitGroups());
+            this.selectedOrgUnitGroups[i].symbol = "default.png";
         }
 
         // Fill the symbols array
@@ -109,6 +110,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         this.selectedOrgUnitGroups = [];
         for (let i = 0; i < this.orgUnitGroups.length; i++) {
             this.selectedOrgUnitGroups.push(new SelectedOrgUnitGroups());
+            this.selectedOrgUnitGroups[i].symbol = "default.png";
         }
     }
 
@@ -308,6 +310,8 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         // Set the new icon
         if (selectedOrgUnitGroup.symbol !== "default.png") {
             orgUnitGroup.symbol = selectedOrgUnitGroup.symbol;
+        } else {
+            orgUnitGroup.symbol = undefined;
         }
 
         // Send the updated orgUnitGroup to the API
@@ -347,6 +351,8 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
         orgUnitGroup.created = new Date();
         if (this.newOrgUnitGroupSymbol !== "default.png") {
             orgUnitGroup.symbol = this.newOrgUnitGroupSymbol;
+        } else {
+            orgUnitGroup.symbol = undefined;
         }
 
         // Save the orgUnitGroup and display wether it successed or failed
@@ -424,7 +430,7 @@ export class OrgUnitGroupsComponent implements OrgUnitGroupsUpdateInterface {
     }
 
     getSymbol(name: string): string {
-        if (name === "default.png") {
+        if (!name || name.trim() === "" || name === "default.png") {
             return this.orgUnitService.getImagePath() + "default.png";
         } else {
             return this.orgUnitService.getSymbolUrl() + name;
