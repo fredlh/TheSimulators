@@ -1,20 +1,27 @@
 INF5750 Group Project - Fall 2016 - TheSimulators
 =================================================
+Written in Markdown, so recommended to use a Markdown viewer for reading.
 
 Group members:
 --------------
-- Fredrik Lund Henriksen
-- Rune Jensen
-- Asif Khan
+* Fredrik Lund Henriksen
+* Rune Jensen
+* Asif Khan
 
 How to download and run:
 ------------------------
--	Clone the git
--	Change to the wanted branch
--	npm install
--	typings install
--	npm run build
--	npm run start
+* Requires node + npm, typings, webpack and webpack-dev-server
+* Clone the git
+* Change to the "refactor" branch
+* Run the following commands:
+    * npm install
+    * typings install
+    * npm run build
+    * npm run start
+* Open "http://localhost:8080/" in a browser
+
+#### Note: Tested in newest (stable) Firefox and Chrome, but recommended to run in Chrome
+#### Note: One of the libraries we're using uses http rather than https, so the console will contain some warnings if you upload the app and run it from DHIS2 (with https)
 
 #### Wiki page: https://wiki.uio.no/mn/ifi/inf5750/index.php/TheSimulators
 

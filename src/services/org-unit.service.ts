@@ -44,7 +44,8 @@ export class OrgUnitService {
     // private baseUrl = "http://localhost:8082/";
     private serverUrl = this.baseUrl + "api";
     private basicAuth = `Basic ${btoa("admin:district")}`;
-    private headers = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
+    private sendHeader = new Headers({"Content-Type": "application/json", "Authorization": this.basicAuth});
+    private getHeader = new Headers({"Accept": "application/json", "Authorization": this.basicAuth});
 
     // The orgUnit and the orgUnitStack
     private orgUnits: OrgUnit[] = [];
@@ -153,7 +154,7 @@ export class OrgUnitService {
     // - request: the request, including API and all paramters
     getRequest(request: string): any {
         return this.http
-            .get(`${this.serverUrl}/${request}`, {headers: this.headers})
+            .get(`${this.serverUrl}/${request}`, {headers: this.getHeader})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }
@@ -163,7 +164,7 @@ export class OrgUnitService {
     // - unit: the orgUnit, orgUnitLevel or orgUnitGroup to save
     saveRequest(api: string, unit: OrgUnit | OrganisationUnitGroup | OrganisationUnitLevel): any {
         return this.http
-            .post(`${this.serverUrl}/${api}`, JSON.stringify(unit), {headers: this.headers})
+            .post(`${this.serverUrl}/${api}`, JSON.stringify(unit), {headers: this.sendHeader})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }
@@ -173,7 +174,7 @@ export class OrgUnitService {
     // - unit: the orgUnit, orgUnitLevel or orgUnitGroup to update
     updateRequest(api: string, unit: OrgUnit | OrganisationUnitGroup | OrganisationUnitLevel): any {
         return this.http
-            .put(`${this.serverUrl}/${api}/${unit.id}`, JSON.stringify(unit), {headers: this.headers})
+            .put(`${this.serverUrl}/${api}/${unit.id}`, JSON.stringify(unit), {headers: this.sendHeader})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }
@@ -184,7 +185,7 @@ export class OrgUnitService {
     // - id: the id of the unit, group or level to delete
     deleteRequest(api: string, id: string): any {
         return this.http
-            .delete(`${this.serverUrl}/${api}/${id}`, {headers: this.headers})
+            .delete(`${this.serverUrl}/${api}/${id}`, {headers: this.sendHeader})
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error));
     }
@@ -198,7 +199,7 @@ export class OrgUnitService {
 
     getOrgUnitAsPromise(orgUnitId: string): Promise<any> {
         return this.http.
-                get(`${this.serverUrl}/organisationUnits/${orgUnitId}?fields=:all&paging=false`, {headers: this.headers})
+                get(`${this.serverUrl}/organisationUnits/${orgUnitId}?fields=:all&paging=false`, {headers: this.sendHeader})
                .toPromise()
                .then(response => response.json() as OrgUnit)
                .catch((error: any) => Promise.reject(new Error("Unable to find orgUnit")));
