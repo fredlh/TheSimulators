@@ -20,7 +20,7 @@ How to download and run:
 
 We've chosen to use "https://play.dhis2.org/test/api/"
 as API in the delivery, in case the corrector doesn't have a local version.
-To change this, edit line 43 in /src/services/orgUnitService.ts
+To change this, edit line 43 in /src/services/org-unit.service.ts
 to whatever is wanted.
 
 We've used the following open source projects in our application:
