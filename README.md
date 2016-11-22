@@ -18,7 +18,10 @@ How to download and run:
 
 #### Wiki page: https://wiki.uio.no/mn/ifi/inf5750/index.php/TheSimulators
 
-
+We've chosen to use "https://play.dhis2.org/test/api/"
+as API in the delivery, in case the corrector doesn't have a local version.
+To change this, edit line 43 in /src/services/orgUnitService.ts
+to whatever is wanted.
 
 We've used the following open source projects in our application:
 -----------------------------------------------------------------
