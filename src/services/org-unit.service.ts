@@ -199,7 +199,7 @@ export class OrgUnitService {
 
     getOrgUnitAsPromise(orgUnitId: string): Promise<any> {
         return this.http.
-                get(`${this.serverUrl}/organisationUnits/${orgUnitId}?fields=:all&paging=false`, {headers: this.sendHeader})
+                get(`${this.serverUrl}/organisationUnits/${orgUnitId}?fields=:all&paging=false`, {headers: this.getHeader})
                .toPromise()
                .then(response => response.json() as OrgUnit)
                .catch((error: any) => Promise.reject(new Error("Unable to find orgUnit")));
