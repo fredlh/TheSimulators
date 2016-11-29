@@ -12,7 +12,6 @@ How to download and run:
 ------------------------
 * Requires node + npm, typings, webpack and webpack-dev-server
 * Clone the git
-* Change to the "refactor" branch
 * Run the following commands:
     * npm install
     * typings install
@@ -22,6 +21,7 @@ How to download and run:
 
 #### Note: Tested in newest (stable) Firefox and Chrome, but recommended to run in Chrome
 #### Note: One of the libraries we're using uses http rather than https, so the console will contain some warnings if you upload the app and run it from DHIS2 (with https)
+#### Note: If the icons in the "Organisation unit groups" panel is missing, you need to log in first in the API you're using. For example, are you using "https://play.dhis2.org/test/", you need to sign in there to display the images.
 
 #### Wiki page: https://wiki.uio.no/mn/ifi/inf5750/index.php/TheSimulators
 
